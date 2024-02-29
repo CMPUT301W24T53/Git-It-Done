@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/browze_events_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#8BFF8F"
+        android:gravity="center"
+        android:padding="10dp"
+        android:shadowColor="#76FF7C"
+        android:text="@string/browze_events_text"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+    </TextView>
+
+    <ListView
+        android:id="@+id/browze_events_listview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/browze_events_text">
+
+    </ListView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

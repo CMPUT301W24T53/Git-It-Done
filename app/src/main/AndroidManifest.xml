@@ -21,6 +21,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Add other views as needed -->
+        <activity android:name=".AttendeeActivity" />
+        <activity android:name=".OrganizerActivity" />
+        <activity android:name=".AdministratorActivity" />
     </application>
 
 </manifest>

@@ -7,12 +7,48 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Pick a role!"
+        android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.168" />
+
+    <Button
+        android:id="@+id/attendeeButton"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="76dp"
+        android:text="Attendee"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <Button
+        android:id="@+id/organizerButton"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="60dp"
+        android:text="Organizer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/attendeeButton" />
+
+    <Button
+        android:id="@+id/administratorButton"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="60dp"
+        android:text="Administrator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/organizerButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

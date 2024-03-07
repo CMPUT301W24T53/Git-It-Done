@@ -25,6 +25,7 @@
         <activity android:name=".AttendeeActivity" />
         <activity android:name=".OrganizerActivity" />
         <activity android:name=".AdministratorActivity" />
+        <activity android:name=".ProfileEditActivity" />
     </application>
 
 </manifest>

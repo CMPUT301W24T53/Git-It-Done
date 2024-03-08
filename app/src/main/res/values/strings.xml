@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GID Events</string>
+    <string name="browze_events_text">Browze Events</string>
 </resources>

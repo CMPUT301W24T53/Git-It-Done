@@ -29,4 +29,15 @@
         app:layout_constraintTop_toBottomOf="@+id/notification_text"
         app:layout_constraintVertical_bias="0.0" />
 
+    <Button
+        android:id="@+id/back_button"
+        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:text="Back"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

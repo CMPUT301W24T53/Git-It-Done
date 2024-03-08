@@ -34,8 +34,6 @@ public class NotificationsAdapter extends ArrayAdapter<Notifications> {
         notifDate.setText(notif.getDate());
         notifDetails.setText(notif.getNotifInfo());
 
-
-
         return convertView;
     }
 }

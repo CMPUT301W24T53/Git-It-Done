@@ -1,6 +1,7 @@
 package com.example.gidevents;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,6 +12,8 @@ public class NotifDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notif_details_page);
+
+        Button backBtn = (Button) findViewById(R.id.back_button);
 
         Notifications notifDetails = (Notifications) getIntent().getSerializableExtra("notifDetails");
 
@@ -23,5 +26,8 @@ public class NotifDetailsActivity extends AppCompatActivity {
         date.setText(notifDetails.getDate());
         description.setText(notifDetails.getNotifInfo());
 
+        backBtn.setOnClickListener(v -> {
+            finish();
+        });
     }
 }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -25,7 +26,10 @@ public class NotificationActivity extends AppCompatActivity {
         listView = findViewById(R.id.notif_listview);
         appInfo = getApplicationInfo();
 
+        Button backBtn = (Button) findViewById(R.id.back_button);
 
+
+        // Placeholder notifications
         Notifications notif1 = new Notifications("Title 1", "Notif info 1", "2024-1-1");
         Notifications notif2 = new Notifications("Title 2", "Notif info 2", "2024-2-3");
         Notifications notif3 = new Notifications("Title 3", "Notif info 3", "2024-2-3");
@@ -44,8 +48,10 @@ public class NotificationActivity extends AppCompatActivity {
                 intent.putExtra("notifDetails", notifList.get(position));
                 startActivity(intent);
             }
+        });
 
-
+        backBtn.setOnClickListener(v -> {
+            finish();
         });
 
     }

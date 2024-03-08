@@ -21,11 +21,11 @@
 
     <TextView
         android:id="@+id/notif_date"
-        android:layout_width="wrap_content"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:text="Notif Date"
-        app:layout_constraintEnd_toStartOf="@+id/event_title"
-        app:layout_constraintBottom_toBottomOf="@id/event_title">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
     </TextView>
 
     <TextView
@@ -34,6 +34,6 @@
         android:layout_height="wrap_content"
         android:text="Notif Description"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/notif_date">
+        app:layout_constraintTop_toBottomOf="@id/event_title">
     </TextView>
 </androidx.constraintlayout.widget.ConstraintLayout>

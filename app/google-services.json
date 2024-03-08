@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "365093840070",
+    "project_id": "git-it-done-5e088",
+    "storage_bucket": "git-it-done-5e088.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365093840070:android:3a84eb68312c8b53d3a3c7",
+        "android_client_info": {
+          "package_name": "com.example.gidevents"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxo61g0_7QoBGyvzNU0HH1YatkVYFoYdE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -47,17 +47,31 @@ public class EventDetailsPageActivity extends AppCompatActivity {
 
         eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
 
-        TextView title = findViewById(R.id.event_title);
-        ImageView poster = findViewById(R.id.poster);
-        TextView date = findViewById(R.id.event_date);
-        TextView organizer = findViewById(R.id.event_organizer);
-        TextView description = findViewById(R.id.event_description);
 
-        title.setText(eventDetails.getEventTitle());
-        poster.setImageResource(eventDetails.getEventPoster());
-        date.setText(eventDetails.getEventDate());
-        organizer.setText((eventDetails.getEventOrganizer()));
-        description.setText(eventDetails.getEventDescription());
+        try {
+            Events eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
+
+            if (eventDetails != null) {
+                TextView title = findViewById(R.id.event_title);
+                ImageView poster = findViewById(R.id.poster);
+                TextView date = findViewById(R.id.event_date);
+                TextView organizer = findViewById(R.id.event_organizer);
+                TextView description = findViewById(R.id.event_description);
+
+                title.setText(eventDetails.getEventTitle());
+                // Check if the event poster resource exists.
+                int posterResource = eventDetails.getEventPoster();
+                if (isValidResource(posterResource)) {
+                    poster.setImageResource(posterResource);
+                } else {
+                    poster.setImageResource(R.drawable.my_event_icon);
+                }
+                date.setText(eventDetails.getEventDate());
+                organizer.setText(eventDetails.getEventOrganizer());
+                description.setText(eventDetails.getEventDescription());
+            } else {
+                Log.e("EventDetailsPageActivity", "No event details were provided.");
+                finish(); // End the activity since there's no data to display
 
         signUpButton = findViewById(R.id.sign_up_button);
 
@@ -65,6 +79,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 signUpWindow();
+
             }
         });
     }
@@ -130,6 +145,23 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                         Log.d("Firestore", "New participant added with ID: " +eventID);
                     }
                 });
+
+
+    /**
+     * Checks if the given resource identifier is valid by attempting to retrieve the resource name.
+     * If the resource name is not found, it means the resource identifier is invalid.
+     *
+     * @param resId The resource identifier to validate.
+     * @return True if the resource identifier is valid, false otherwise.
+     */
+    private boolean isValidResource(int resId) {
+        try {
+            // Attempting to obtain the resource will throw if it doesn't exist
+            getResources().getResourceName(resId);
+            return true;
+        } catch (Resources.NotFoundException e) {
+            return false;
+        }
 
     }
 }

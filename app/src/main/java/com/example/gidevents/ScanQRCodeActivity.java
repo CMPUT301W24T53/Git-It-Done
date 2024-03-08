@@ -33,6 +33,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * This activity handles the scanning of QR codes for event check-ins and navigation to event details.
+ * After a QR code is scanned, the activity may either check-in the attendee or navigate
+ * to the event details activity with the appropriate information based on the content of the QR code.
+ * Outstanding Issues:
+ * - Consider implementing better error handling for database operations.
+ */
 public class ScanQRCodeActivity extends AppCompatActivity {
 
     private static final int REQUEST_CAMERA_PERMISSION = 1;
@@ -43,10 +50,8 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scan_qr_code);
 
         if (hasCameraPermission()) {
-            // If permission is already granted, start the scan
             ScanQRCode();
         } else {
-            // Else request permission
             requestCameraPermission();
         }
     }
@@ -64,16 +69,13 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission was granted, continue with camera-related tasks
                 ScanQRCode();
             } else {
-                // Permission was denied
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-                    // User selected 'Never Ask Again', guide the user to settings
                     showManualPermissionSettingDialog();
                 } else {
-                    // User denied permission without selecting 'Never Ask Again'
-                    Toast.makeText(this, "Camera permission is required to scan QR codes", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Camera permission is required to scan QR" +
+                            " codes", Toast.LENGTH_LONG).show();
                     returnToAttendeeActivity();
                 }
             }
@@ -83,7 +85,8 @@ public class ScanQRCodeActivity extends AppCompatActivity {
     private void showManualPermissionSettingDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Permission Denied")
-                .setMessage("Camera permission is needed to scan QR codes. Please enable it in app settings.")
+                .setMessage("Camera permission is needed to scan QR codes. " +
+                        "Please enable it in app settings.")
                 .setPositiveButton("Settings", (dialog, which) -> {
                     // Take the user to the app settings page
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
@@ -113,7 +116,6 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         if (result != null) {
             String scannedData = result.getContents();
             if (scannedData != null) {
-                // Check if the QRCode matches any QR code's data present in Firestore
                 checkQRCode(scannedData);
             }
         } else {
@@ -121,19 +123,27 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         }
     }
 
-    private void checkQRCode(String scannedData) {
+
+    /**
+     * Checks the QR code data for proper format and determines the subsequent action,
+     * either check-in handling or navigation to event details.
+     */
+    void checkQRCode(String scannedData) {
         if (scannedData != null && scannedData.startsWith("CHECKIN-")) {
             String eventId = scannedData.substring("CHECKIN-".length());
-            // Log only if the QR code format is correct and we are about to handle a check-in
             Log.i("ScanQRCodeActivity", "Handling check-in for event ID: " + eventId);
             handleCheckIn(eventId);
         } else if (scannedData != null) {
-            // Log only if the QR code does not start with the expected prefix
             Log.w("ScanQRCodeActivity", "Unexpected QR code format: " + scannedData);
             navigateToEventDetails(scannedData);
         }
     }
 
+
+    /**
+     * Handles the check-in process by verifying the event and participant's status in Firestore
+     * and updating the check-in status accordingly.
+     */
     private void handleCheckIn(String eventId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String deviceId = getUniqueDeviceId();
@@ -154,8 +164,8 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                                         // Participant found, update check-in status
                                         updateParticipantCheckIn(participantsTask.getResult().getDocuments().get(0));
                                     } else {
-                                        // Handle participant lookup failure
-                                        handleFailure("Participants lookup failed: " + participantsTask.getException().getMessage());
+                                        handleFailure("Participants lookup failed: " +
+                                                participantsTask.getException().getMessage());
                                     }
                                 });
                     } else {
@@ -166,6 +176,10 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> returnToAttendeeActivity());
     }
 
+/**
+ * Queries the Firestore database for event details associated with the given eventId.
+ * If the event is found, it navigates to the EventDetailsPageActivity with the event details.
+ */
     private void navigateToEventDetails(String eventId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("qrcodes")
@@ -181,7 +195,9 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                             intent.putExtra("eventDetails", eventDetails);
                             startActivity(intent);
                         } else {
+                            returnToAttendeeActivity();
                             showToast("Invalid QR code.");
+
                         }
                     } else {
                         logError("Error getting documents: ", task.getException());
@@ -189,6 +205,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     logError("Error accessing the database: ", e);
+                    returnToAttendeeActivity();
                     showToast("Database access error.");
                 });
     }

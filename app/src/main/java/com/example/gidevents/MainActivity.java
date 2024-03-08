@@ -49,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Signs in user passively and allows for retention of information through app relaunches
+     */
     private void signInAnonymously() {
         mAuth.signInAnonymously()
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("UserAuth", "signInAnonymously:success");
-                            AttendeeDB.populateDB();
+                            AttendeeDBConnector.populateDB();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("UserAuth", "signInAnonymously:failure", task.getException());

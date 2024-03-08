@@ -6,7 +6,16 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * This Class defines the overall function for the Attendee Activity
+ */
 public class AttendeeActivity extends AppCompatActivity {
+    /**
+     * Runs on creation of the activity and holds most functionality
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

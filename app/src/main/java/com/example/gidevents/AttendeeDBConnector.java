@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -20,6 +21,9 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class to directly interact with database for Attendee data
+ */
 public class AttendeeDBConnector {
     private String TAG = "AttendeeDBConnector";
     private FirebaseAuth mAuth;
@@ -27,6 +31,10 @@ public class AttendeeDBConnector {
     private DocumentReference userRef;
     private AttendeeProfileEditAdapter optionAdapter;
 
+    /**
+     * Constructor that initiates variables, initializes data, and sets up a listener to update data when it is changed
+     * @param optionAdapter Adapter to store fetched data in
+     */
     public AttendeeDBConnector(AttendeeProfileEditAdapter optionAdapter){
         this.optionAdapter = optionAdapter;
         mAuth = FirebaseAuth.getInstance();
@@ -46,6 +54,11 @@ public class AttendeeDBConnector {
             }
         });
     }
+
+    /**
+     * Clears Adapter and re-fills it with data from snapshot
+     * @param data data to fill adapter with
+     */
     private void updateData(DocumentSnapshot data){
         optionAdapter.clear();
         for (Map.Entry<String, Object> option: data.getData().entrySet()){
@@ -54,6 +67,10 @@ public class AttendeeDBConnector {
         }
         optionAdapter.notifyDataSetChanged();
     }
+
+    /**
+     * Initializes data to be displayed
+     */
     private void initData(){
         userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -71,6 +88,11 @@ public class AttendeeDBConnector {
             }
         });
         }
+
+    /**
+     * Writes data to the database to change a field in user options
+     * @param option provides key and value pair to change
+     */
     public void setData(AttendeeProfileEditOption option){
         HashMap<String, String> data = new HashMap<>();
         data.put(option.getOptionType(), option.getCurrentvalue());
@@ -86,5 +108,36 @@ public class AttendeeDBConnector {
                         Log.d("Firestore", "UserSnapshot not successfully written");
                     }
                 });
+    }
+
+    /**
+     * Populates DB with empty values when a user not already in the database signs in
+     */
+    public static void populateDB(){
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String Uid = mAuth.getCurrentUser().getUid();
+        db = FirebaseFirestore.getInstance();
+        CollectionReference collUsers = db.collection("Users");
+        Map<String, String> data = Map.of
+                ("Email", "",
+                        "Address", "",
+                        "Username", "",
+                        "Phone", "",
+                        "Birthday", "",
+                        "GeoLocation", "",
+                        "Gender", "",
+                        "Name", "");
+
+        collUsers.document(Uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (!task.getResult().exists()){
+                    collUsers.document(Uid).set(data);
+                }
+            }
+        });
+
+
     }
 }

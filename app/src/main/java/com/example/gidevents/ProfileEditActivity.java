@@ -21,11 +21,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * Controls activity for editing a profile
+ */
 public class ProfileEditActivity extends AppCompatActivity  implements AttendeeEditOptionFragment.EditOptionDialogListener{
     private AttendeeDB user;
     private ArrayList<AttendeeProfileEditOption> options = new ArrayList<>();
     private ListView optionsList;
     private AttendeeProfileEditAdapter optionAdapter;
+
+    /**
+     * Implements edit option from AttendeeEditOptionFragment to pass value to database
+     * @param option option to pass
+     */
     @Override
     public void editOption(AttendeeProfileEditOption option){
         user.setData(option);

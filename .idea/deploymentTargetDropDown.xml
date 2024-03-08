@@ -3,6 +3,7 @@
   <component name="deploymentTargetDropDown">
     <value>
       <entry key="BrowseEventsTest">
+      <entry key="ProfileEditActivityTest">
         <State />
       </entry>
       <entry key="app">
@@ -41,6 +42,9 @@
         <State />
       </entry>
       <entry key="testDialogAppearsAfterButtonClick() (1)">
+        <State />
+      </entry>
+      <entry key="testNotifActivity()">
         <State />
       </entry>
     </value>

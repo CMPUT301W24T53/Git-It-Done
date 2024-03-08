@@ -25,7 +25,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                 TextView description = findViewById(R.id.event_description);
 
                 title.setText(eventDetails.getEventTitle());
-                // Check if the event poster resource exists
+                // Check if the event poster resource exists.
                 int posterResource = eventDetails.getEventPoster();
                 if (isValidResource(posterResource)) {
                     poster.setImageResource(posterResource);
@@ -45,7 +45,14 @@ public class EventDetailsPageActivity extends AppCompatActivity {
         }
     }
 
-    // Helper method to check if a resource ID is valid
+
+    /**
+     * Checks if the given resource identifier is valid by attempting to retrieve the resource name.
+     * If the resource name is not found, it means the resource identifier is invalid.
+     *
+     * @param resId The resource identifier to validate.
+     * @return True if the resource identifier is valid, false otherwise.
+     */
     private boolean isValidResource(int resId) {
         try {
             // Attempting to obtain the resource will throw if it doesn't exist

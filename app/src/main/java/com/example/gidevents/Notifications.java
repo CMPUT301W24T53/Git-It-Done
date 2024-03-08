@@ -1,15 +1,14 @@
 package com.example.gidevents;
 
+import java.io.Serializable;
 import java.util.Date;
-public class Notifications {
+public class Notifications implements Serializable {
     private String eventTitle;
-    private String organizer;
     private String notifInfo;
-    private Date date;
+    private String date;
 
-    public Notifications(String title, String organizer, String info, Date date) {
+    public Notifications(String title, String info, String date) {
         this.eventTitle = title;
-        this.organizer = organizer;
         this.notifInfo = info;
         this.date = date;
     }
@@ -19,15 +18,11 @@ public class Notifications {
         return this.eventTitle;
     }
 
-    public String getOrganizer() {
-        return this.organizer;
-    }
-
     public String getNotifInfo() {
         return this.notifInfo;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return this.date;
     }
 
@@ -36,15 +31,11 @@ public class Notifications {
         this.eventTitle = eventTitle;
     }
 
-    public void setOrganizer(String organizer) {
-         this.organizer = organizer;
-    }
-
     public void setNotifInfo(String notifInfo) {
          this.notifInfo = notifInfo;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
          this.date = date;
     }
 

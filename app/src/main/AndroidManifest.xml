@@ -51,6 +51,7 @@
         </activity>
 
         <!-- Add other views as needed -->
+        <activity android:name=".EventDetailsPageActivity" />
         <activity android:name=".ScanQRCodeActivity"/>
         <activity android:name=".AttendeeActivity" />
         <activity android:name=".OrganizerActivity" />

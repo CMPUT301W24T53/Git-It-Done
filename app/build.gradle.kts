@@ -34,8 +34,11 @@ android {
 
 dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
+    implementation ("com.google.firebase:firebase-firestore")
+    implementation ("com.google.firebase:firebase-auth")
 
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation ("com.google.code.gson:gson:2.8.9")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")

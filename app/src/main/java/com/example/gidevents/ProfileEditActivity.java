@@ -3,7 +3,10 @@ package com.example.gidevents;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,47 +19,34 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class ProfileEditActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
-    private DocumentReference userRef;
+import java.util.ArrayList;
+
+public class ProfileEditActivity extends AppCompatActivity  implements AttendeeEditOptionFragment.EditOptionDialogListener{
+    private AttendeeDB user;
+    private ArrayList<AttendeeProfileEditOption> options = new ArrayList<>();
+    private ListView optionsList;
+    private AttendeeProfileEditAdapter optionAdapter;
+    @Override
+    public void editOption(AttendeeProfileEditOption option){
+        user.setData(option);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_profile);
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        userRef = db.collection("Users").document(mAuth.getCurrentUser().getUid());
 
-        Button UsernameBtn = findViewById(R.id.upUsernameButton);
-        TextView UsernameTxt = findViewById(R.id.upUsernameText);
-        Button NameBtn = findViewById(R.id.upNameButton);
-        TextView NameTxt = findViewById(R.id.upNameText);
-        Button EmailBtn = findViewById(R.id.upEmailButton);
-        TextView EmailTxt = findViewById(R.id.upEmailText);
-        Button PhoneBtn = findViewById(R.id.upPhoneButton);
-        TextView PhoneTxt = findViewById(R.id.upPhoneText);
-        Button GenderBtn = findViewById(R.id.upGenderButton);
-        TextView GenderTxt = findViewById(R.id.upGenderText);
-        Button BirthdayBtn = findViewById(R.id.upBirthdayButton);
-        TextView BirthdayTxt = findViewById(R.id.upBirthdayText);
-        Button AddressBtn = findViewById(R.id.upAddressButton);
-        TextView AddressTxt = findViewById(R.id.upAddressText);
-        Button GeoLocBtn = findViewById(R.id.upGeoLocationButton);
-        TextView GeoLocTxt = findViewById(R.id.upGeoLocationText);
+        optionsList = findViewById(R.id.attendeeOptionsList);
+        optionAdapter = new AttendeeProfileEditAdapter(this, options);
+        optionsList.setAdapter(optionAdapter);
 
-        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        user = new AttendeeDB(optionAdapter);
+
+        optionsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                DocumentSnapshot user = task.getResult();
-                if (user.exists()) {
-                    UsernameTxt.setText(user.getString("Username"));
-                } else {
-                    UsernameTxt.setText("");
-                }
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                new AttendeeEditOptionFragment(options.get(position)).show(getSupportFragmentManager(), "Edit Option");
             }
         });
-
     }
 
 }

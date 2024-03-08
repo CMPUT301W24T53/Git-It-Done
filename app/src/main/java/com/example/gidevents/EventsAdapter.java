@@ -1,7 +1,6 @@
 package com.example.gidevents;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+/** This is the EventsAdapter class
+ * Sets up the adapter
+ */
 public class EventsAdapter extends ArrayAdapter<Events> {
     public EventsAdapter(Context context, List<Events> events) {
         super(context, 0, events);
@@ -26,7 +28,6 @@ public class EventsAdapter extends ArrayAdapter<Events> {
         TextView titleTextView = convertView.findViewById(R.id.event_title);
         TextView dateTextView = convertView.findViewById(R.id.event_date);
         TextView organizerTextView = convertView.findViewById(R.id.event_organizer);
-        Log.d("EventsAdapter", "Organizer for position " + position + ": " + event.getEventOrganizer());
         TextView descriptionTextView = convertView.findViewById(R.id.event_description);
 
         assert event != null;

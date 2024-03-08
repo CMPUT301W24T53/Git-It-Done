@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:text="Event Title"
         android:textStyle="bold"
-        android:textSize="30dp"
+        android:textSize="18dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         >
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Event Organizer"
-        android:textSize="20dp"
+        android:textSize="10dp"
         app:layout_constraintStart_toStartOf="@+id/event_title"
         app:layout_constraintTop_toBottomOf="@+id/event_title">
     </TextView>

@@ -133,6 +133,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
             navigateToEventDetails(scannedData);
         }
     }
+
     private void handleCheckIn(String eventId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String deviceId = getUniqueDeviceId();

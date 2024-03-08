@@ -25,6 +25,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/** This is the activity class for BrowseEvents
+ * It displays the browse events page, listing every events in the database for the user to see
+ * Once clicked on an event, go to that event's details page
+ */
 public class BrowseEventActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -33,6 +37,13 @@ public class BrowseEventActivity extends AppCompatActivity {
     private ArrayList<Events> eventsList = new ArrayList<>();
     private ListView listView;
 
+    /** onCreate method for BrowseEventActivity
+     * Connect to database on create
+     * Set up onItemClickListener for listview to get to EventDetailsPage
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +66,7 @@ public class BrowseEventActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        //Set up Snapshot listener, populate listview with events in database
         eventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
@@ -70,8 +81,9 @@ public class BrowseEventActivity extends AppCompatActivity {
                         String eventDate = doc.getString("eventDate");
                         String organizer = doc.getString("organizer");
                         String eventDescription = doc.getString("eventDescription");
+                        String eventID = doc.getId();
                         Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
-                        eventsList.add(new Events(eventTitle, eventDate, organizer, eventDescription, R.drawable.poster1));
+                        eventsList.add(new Events(eventTitle, eventDate, organizer, eventDescription, R.drawable.poster1, eventID));
                     }
                     adapter.notifyDataSetChanged();
                 }

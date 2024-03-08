@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+/** This is the EventsAdapter class
+ * Sets up the adapter
+ */
 public class EventsAdapter extends ArrayAdapter<Events> {
     public EventsAdapter(Context context, List<Events> events) {
         super(context, 0, events);

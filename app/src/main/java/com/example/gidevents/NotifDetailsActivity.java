@@ -12,11 +12,12 @@ public class NotifDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notif_details_page);
 
-        Notifications notifDetails = (Notifications) getIntent().getSerializableExtra("eventDetails");
+        Notifications notifDetails = (Notifications) getIntent().getSerializableExtra("notifDetails");
 
         TextView title = findViewById(R.id.event_title);
         TextView date = findViewById(R.id.notif_date);
         TextView description = findViewById(R.id.notif_details);
+
 
         title.setText(notifDetails.getEventTitle());
         date.setText(notifDetails.getDate());

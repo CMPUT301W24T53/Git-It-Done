@@ -25,6 +25,8 @@
         <activity android:name=".AttendeeActivity" />
         <activity android:name=".OrganizerActivity" />
         <activity android:name=".AdministratorActivity" />
+        <activity android:name=".NotificationActivity" />
+        <activity android:name=".NotifDetailsActivity" />
     </application>
 
 </manifest>

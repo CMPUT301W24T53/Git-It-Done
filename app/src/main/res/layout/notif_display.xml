@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/event_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notif Title"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+    </TextView>
+
+    <TextView
+        android:id="@+id/notif_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notif Date"
+        app:layout_constraintEnd_toStartOf="@+id/event_title"
+        app:layout_constraintBottom_toBottomOf="@id/event_title">
+    </TextView>
+
+    <TextView
+        android:id="@+id/notif_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notif Description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notif_date">
+    </TextView>
+</androidx.constraintlayout.widget.ConstraintLayout>

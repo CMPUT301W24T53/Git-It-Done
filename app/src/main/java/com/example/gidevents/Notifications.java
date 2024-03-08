@@ -1,5 +1,7 @@
 package com.example.gidevents;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.Date;
 public class Notifications implements Serializable {

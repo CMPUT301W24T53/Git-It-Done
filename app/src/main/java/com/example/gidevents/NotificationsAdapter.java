@@ -1,7 +1,6 @@
 package com.example.gidevents;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,8 @@ import androidx.annotation.NonNull;
 
 import java.util.List;
 
-public class NotificationsAdapter extends ArrayAdapter<Notifications> {
-    public NotificationsAdapter(Context context, List<Notifications> notificationsList) {
+public class NotificationsAdapter extends ArrayAdapter<Notification> {
+    public NotificationsAdapter(Context context, List<Notification> notificationsList) {
         super(context, 0, notificationsList);
     }
 
@@ -24,7 +23,7 @@ public class NotificationsAdapter extends ArrayAdapter<Notifications> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.notif_display, parent, false);
         }
 
-        Notifications notif = getItem(position);
+        Notification notif = getItem(position);
         TextView notifEvent = convertView.findViewById(R.id.event_title);
         TextView notifDate = convertView.findViewById(R.id.notif_date);
         TextView notifDetails = convertView.findViewById(R.id.notif_description);

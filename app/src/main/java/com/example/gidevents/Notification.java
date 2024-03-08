@@ -1,10 +1,8 @@
 package com.example.gidevents;
 
-import androidx.annotation.NonNull;
-
 import java.io.Serializable;
-import java.util.Date;
-public class Notifications implements Serializable {
+
+public class Notification implements Serializable {
     private String eventTitle;
     private String notifInfo;
     private String date;
@@ -15,7 +13,7 @@ public class Notifications implements Serializable {
      * @param info The details of the notification
      * @param date The date the notification was sent
      */
-    public Notifications(String title, String info, String date) {
+    public Notification(String title, String info, String date) {
         this.eventTitle = title;
         this.notifInfo = info;
         this.date = date;

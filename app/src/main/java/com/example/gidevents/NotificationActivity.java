@@ -2,20 +2,18 @@ package com.example.gidevents;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Application;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
 public class NotificationActivity extends AppCompatActivity {
-    private ArrayList<Notifications> notifList = new ArrayList<>();
+    private ArrayList<Notification> notifList = new ArrayList<Notification>();
     private ListView listView;
     ApplicationInfo appInfo;
     NotificationsAdapter adapter;
@@ -28,16 +26,10 @@ public class NotificationActivity extends AppCompatActivity {
 
         Button backBtn = (Button) findViewById(R.id.back_button);
 
-
         // Placeholder notifications
-        Notifications notif1 = new Notifications("Title 1", "Notif info 1", "2024-1-1");
-        Notifications notif2 = new Notifications("Title 2", "Notif info 2", "2024-2-3");
-        Notifications notif3 = new Notifications("Title 3", "Notif info 3", "2024-2-3");
-
-
-        notifList.add(notif1);
-        notifList.add(notif2);
-        notifList.add(notif3);
+        notifList.add(new Notification("Title 1", "Notif info 1", "2024-1-1"));
+        notifList.add(new Notification("Title 2", "Notif info 2", "2024-2-3"));
+        notifList.add(new Notification("Title 3", "Notif info 3", "2024-2-3"));
 
         adapter = new NotificationsAdapter(this, notifList);
         listView.setAdapter(adapter);

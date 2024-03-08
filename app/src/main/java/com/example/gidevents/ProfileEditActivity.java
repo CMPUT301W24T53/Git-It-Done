@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 /**
  * Controls activity for editing a profile
+ * Yet to add: Input filtering
  */
 public class ProfileEditActivity extends AppCompatActivity  implements AttendeeEditOptionFragment.EditOptionDialogListener{
     private AttendeeDB user;

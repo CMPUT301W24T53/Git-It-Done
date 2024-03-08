@@ -127,7 +127,8 @@ public class AttendeeDBConnector {
                         "Birthday", "",
                         "GeoLocation", "",
                         "Gender", "",
-                        "Name", "");
+                        "Name", "",
+                        "Homepage","");
 
         collUsers.document(Uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

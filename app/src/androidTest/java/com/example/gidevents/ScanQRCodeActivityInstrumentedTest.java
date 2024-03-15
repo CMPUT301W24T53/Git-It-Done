@@ -42,6 +42,6 @@ public class ScanQRCodeActivityInstrumentedTest {
         onView(withId(R.id.attendee_main)).check(matches(isDisplayed()));
 
         onView(withId(R.id.checkInButton)).perform(click());
-        
+
     }
 }

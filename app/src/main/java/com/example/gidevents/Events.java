@@ -12,6 +12,9 @@ public class Events implements Serializable {
     private String eventID;
     private int eventPoster;
 
+    /** No-argument constructor for Firebase */
+    public Events() {
+    }
     /** This is the constructor for Events class
      * @param title is the title of the event
      * @param date is the date of the event

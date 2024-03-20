@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -25,13 +26,16 @@ import java.util.ArrayList;
  * It displays the browse events page, listing every events in the database for the user to see
  * Once clicked on an event, go to that event's details page
  */
+
 public class AdminBrowseEvent extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private CollectionReference eventRef;
     ApplicationInfo appInfo;
     private ArrayList<Events> eventsList = new ArrayList<>();
+    private ArrayList<String> eventTitleList = new ArrayList<>();
     private ListView listView;
+    private SearchView searchview;
 
     /** onCreate method for BrowseEventActivity
      * Connect to database on create
@@ -49,7 +53,7 @@ public class AdminBrowseEvent extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         eventRef = db.collection("Events");
-
+        searchview = findViewById(R.id.search_bar);
 
         EventsAdapter adapter = new EventsAdapter(this, eventsList);
         listView.setAdapter(adapter);
@@ -62,6 +66,8 @@ public class AdminBrowseEvent extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
         //Set up Snapshot listener, populate listview with events in database
         eventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -74,6 +80,7 @@ public class AdminBrowseEvent extends AppCompatActivity {
                     eventsList.clear();
                     for (QueryDocumentSnapshot doc : querySnapshots) {
                         String eventTitle = doc.getString("eventTitle");
+                        eventTitleList.add(eventTitle);
                         String eventDate = doc.getString("eventDate");
                         String organizer = doc.getString("organizer");
                         String eventDescription = doc.getString("eventDescription");
@@ -85,6 +92,20 @@ public class AdminBrowseEvent extends AppCompatActivity {
                 }
             }
         });
+
+
+//        searchview.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                AdminBrowseEvent.this.eventTitleList.getFilter().filter(query);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                return false;
+//            }
+//        });
     }
 
 }

@@ -56,7 +56,9 @@
         <activity android:name=".ScanQRCodeActivity"/>
         <activity android:name=".AttendeeActivity" />
         <activity android:name=".OrganizerActivity" />
-        <activity android:name=".AdministratorActivity" />
+        <activity android:name=".AdminActivity" />
+        <activity android:name=".AdminBrowseEvent" />
+        <activity android:name=".AdminEventDetailsActivity" />
         <activity android:name=".NotificationActivity" />
         <activity android:name=".NotifDetailsActivity" />
         <activity android:name=".ProfileEditActivity" />

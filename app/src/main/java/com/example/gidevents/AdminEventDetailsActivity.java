@@ -29,7 +29,6 @@ import java.util.Objects;
 
 public class AdminEventDetailsActivity extends AppCompatActivity implements DeleteEventFragment.AddCityDialogListener{
 
-
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private CollectionReference eventRef;
@@ -73,7 +72,7 @@ public class AdminEventDetailsActivity extends AppCompatActivity implements Dele
             }
         });
 
-        Intent intent = new Intent(AdminEventDetailsActivity.this, BrowseEventActivity.class);
+        Intent intent = new Intent(AdminEventDetailsActivity.this, AdminBrowseEvent.class);
         startActivity(intent);
     }
 
@@ -133,11 +132,11 @@ public class AdminEventDetailsActivity extends AppCompatActivity implements Dele
 
         // goes to BrowseEventActivity page
         Button backBtn = (Button) findViewById(R.id.back_button);
-
         backBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(AdminEventDetailsActivity.this, BrowseEventActivity.class);
+            Intent intent = new Intent(AdminEventDetailsActivity.this, AdminBrowseEvent.class);
             startActivity(intent);
         });
+
 
         // deletes an event
         // goes to BrowseEventActivity page which displays the new event list after deletion
@@ -147,6 +146,7 @@ public class AdminEventDetailsActivity extends AppCompatActivity implements Dele
                     addCityFragment.show(getSupportFragmentManager(), "Delete event");
         });
     }
+
 
     // Helper method to check if a resource ID is valid
     private boolean isValidResource(int resId) {
@@ -158,6 +158,4 @@ public class AdminEventDetailsActivity extends AppCompatActivity implements Dele
             return false;
         }
     }
-
-
 }

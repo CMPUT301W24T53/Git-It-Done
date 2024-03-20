@@ -36,7 +36,6 @@ public class DeleteEventFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_delete_event, null);
 
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setView (view)

@@ -31,7 +31,7 @@ public class AdminActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.admin_main_1);
+        setContentView(R.layout.admin_main);
 
 
         Button backBtn = (Button) findViewById(R.id.back_button);

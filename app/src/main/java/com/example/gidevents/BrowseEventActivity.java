@@ -75,7 +75,7 @@ public class BrowseEventActivity extends AppCompatActivity {
                     return;
                 }
                 if (querySnapshots != null) {
-                    eventsList.clear();
+                     eventsList.clear();
                     for (QueryDocumentSnapshot doc : querySnapshots) {
                         String eventTitle = doc.getString("eventTitle");
                         String eventDate = doc.getString("eventDate");

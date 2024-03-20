@@ -13,7 +13,7 @@
         android:padding="10dp"
         android:shadowColor="#76FF7C"
         android:text="@string/browze_events_text"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold|italic"
         app:layout_constraintStart_toStartOf="parent"

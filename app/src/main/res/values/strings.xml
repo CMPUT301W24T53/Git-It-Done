@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">GID Events</string>
     <string name="browze_events_text">Browze Events</string>
+    <string name="back_button">Back</string>
+    <string name="admin_tasks_textview">ADMIN TASKS</string>
+    <string name="browse_events_button">Browse events</string>
+    <string name="browse_profiles_button">Browse profiles</string>
+    <string name="browse_images_button">Browse images</string>
 </resources>

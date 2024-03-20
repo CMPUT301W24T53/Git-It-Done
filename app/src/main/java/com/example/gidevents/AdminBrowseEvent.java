@@ -28,9 +28,6 @@ import java.util.ArrayList;
  */
 
 public class AdminBrowseEvent extends AppCompatActivity {
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
-    private CollectionReference eventRef;
     ApplicationInfo appInfo;
     private ArrayList<Events> eventsList = new ArrayList<>();
     private ArrayList<String> eventTitleList = new ArrayList<>();
@@ -50,9 +47,9 @@ public class AdminBrowseEvent extends AppCompatActivity {
         setContentView(R.layout.browze_events_page);
         listView = findViewById(R.id.browze_events_listview);
         appInfo = getApplicationInfo();
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        eventRef = db.collection("Events");
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference eventRef = db.collection("Events");
         searchview = findViewById(R.id.search_bar);
 
         EventsAdapter adapter = new EventsAdapter(this, eventsList);

@@ -33,7 +33,7 @@ public class AdminEventDetailsActivity extends AppCompatActivity implements Dele
     private FirebaseFirestore db;
     private CollectionReference eventRef;
     ApplicationInfo appInfo;
-    private ArrayList<Events> eventsList = new ArrayList<>();
+
     private String id;
     private String old_title;
     Events eventDetailsNew;
@@ -102,7 +102,7 @@ public class AdminEventDetailsActivity extends AppCompatActivity implements Dele
             // eventDetails same as event_details_new
 
             if (eventDetails != null) {
-                TextView title = findViewById(R.id.event_title);;
+                TextView title = findViewById(R.id.event_title);
                 ImageView poster = findViewById(R.id.poster);
                 TextView date = findViewById(R.id.event_date);
                 TextView organizer = findViewById(R.id.event_organizer);

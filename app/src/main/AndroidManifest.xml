@@ -65,6 +65,7 @@
         <activity android:name=".QRCodeActivity" />
 
 
+        <activity android:name=".MyEventsPageActivity"/>
     </application>
 
 </manifest>

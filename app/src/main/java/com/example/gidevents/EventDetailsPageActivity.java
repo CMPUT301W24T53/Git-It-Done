@@ -16,9 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -34,6 +34,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
     Button signUpButton;
     Events eventDetails;
     private FirebaseFirestore db;
+    private FirebaseAuth firebaseAuth;
 
 
 
@@ -141,6 +142,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                 String username = usernameInput.getText().toString();
                 String email = emailInput.getText().toString();
                 String phoneNumber = phoneNumberInput.getText().toString();
+                addEventToMyEvents(eventID);
 
                 participantSignUp(username, email, phoneNumber);
                 dialog.dismiss();
@@ -149,6 +151,31 @@ public class EventDetailsPageActivity extends AppCompatActivity {
         dialog.show();
     }
 
+
+    /**
+     * This method now add the eventID of the current event to the User's MyEvents collection
+     * @param eventID the ID of the current event
+     */
+    private void addEventToMyEvents (String eventID) {
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser!= null) {
+            String userID = currentUser.getUid();
+            Map <String, Object> event = new HashMap<>();
+            event.put ("eventID", eventID);
+            db.collection("Users").document(userID).collection("MyEvents").document(eventID)
+                    .set(event)
+                    .addOnSuccessListener(documentReference -> {
+                        Log.d("EventSignUp", "EventID added to MyEvents");
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w("EventSignUp", "Failed to add EventID to MyEvents" + e);
+                    });
+        } else {
+            Log.d("EventSignUp", "No User found");
+        }
+
+    }
 
 
 

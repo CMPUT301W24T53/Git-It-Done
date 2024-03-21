@@ -35,7 +35,7 @@ public class AttendeeActivity extends AppCompatActivity {
         });
 
         enrolledEventsBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(AttendeeActivity.this, EnrolledEventsActivity.class);
+            Intent intent = new Intent(AttendeeActivity.this, MyEventsPageActivity.class);
             startActivity(intent);
 
         });

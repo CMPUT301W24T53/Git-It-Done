@@ -62,6 +62,7 @@
         <activity android:name=".NotificationActivity" />
         <activity android:name=".NotifDetailsActivity" />
         <activity android:name=".ProfileEditActivity" />
+        <activity android:name=".MyEventsPageActivity"/>
     </application>
 
 </manifest>

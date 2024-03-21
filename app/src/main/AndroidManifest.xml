@@ -56,11 +56,14 @@
         <activity android:name=".ScanQRCodeActivity"/>
         <activity android:name=".AttendeeActivity" />
         <activity android:name=".OrganizerActivity" />
-        <activity android:name=".AdministratorActivity" />
+        <activity android:name=".AdminActivity" />
+        <activity android:name=".AdminBrowseEvent" />
+        <activity android:name=".AdminEventDetails" />
         <activity android:name=".NotificationActivity" />
         <activity android:name=".NotifDetailsActivity" />
         <activity android:name=".ProfileEditActivity" />
         <activity android:name=".MyEventsPageActivity"/>
+        <activity android:name=".DeleteEventFragment"/>
     </application>
 
 </manifest>

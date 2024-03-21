@@ -54,7 +54,6 @@ public class BrowseEventActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         eventRef = db.collection("Events");
 
-
         EventsAdapter adapter = new EventsAdapter(this, eventsList);
         listView.setAdapter(adapter);
 
@@ -75,15 +74,17 @@ public class BrowseEventActivity extends AppCompatActivity {
                     return;
                 }
                 if (querySnapshots != null) {
-                    eventsList.clear();
+                     eventsList.clear();
                     for (QueryDocumentSnapshot doc : querySnapshots) {
                         String eventTitle = doc.getString("eventTitle");
                         String eventDate = doc.getString("eventDate");
+                        String eventTime = doc.getString("eventTime");
+                        String location = doc.getString("location");
                         String organizer = doc.getString("organizer");
                         String eventDescription = doc.getString("eventDescription");
                         String eventID = doc.getId();
                         Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
-                        eventsList.add(new Events(eventTitle, eventDate, organizer, eventDescription, R.drawable.poster1, eventID));
+                        eventsList.add(new Events(eventTitle, eventDate, eventTime, location, organizer, eventDescription, R.drawable.poster1, eventID));
                     }
                     adapter.notifyDataSetChanged();
                 }

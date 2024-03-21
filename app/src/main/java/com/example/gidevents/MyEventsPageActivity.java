@@ -1,21 +1,19 @@
 package com.example.gidevents;
 
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
+import android.widget.ListView;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import android.widget.TextView;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -23,36 +21,39 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
-/** This is the activity class for BrowseEvents
- * It displays the browse events page, listing every events in the database for the user to see
- * Once clicked on an event, go to that event's details page
+/**
+ * This is the class for MyEvents page, it displays all the events that the current user signed up for
+ * It is the same format as the BrowseEventsPage
  */
-public class BrowseEventActivity extends AppCompatActivity {
+public class MyEventsPageActivity extends AppCompatActivity{
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private CollectionReference eventRef;
-    ApplicationInfo appInfo;
     private ArrayList<Events> eventsList = new ArrayList<>();
     private ListView listView;
+    private TextView MyEventsText;
 
-    /** onCreate method for BrowseEventActivity
-     * Connect to database on create
-     * Set up onItemClickListener for listview to get to EventDetailsPage
+    /**
+     * onCreate method of the MyEventsPage Activity
+     * Added code to check which events are in the current users MyEvents collection
+     * display those events in MyEvents collection, since those are what the user signed up to attend
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browze_events_page);
         listView = findViewById(R.id.browze_events_listview);
-        appInfo = getApplicationInfo();
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         eventRef = db.collection("Events");
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        MyEventsText = findViewById(R.id.browze_events_text);
+        MyEventsText.setText("My Events");
 
 
         EventsAdapter adapter = new EventsAdapter(this, eventsList);
@@ -61,12 +62,13 @@ public class BrowseEventActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(BrowseEventActivity.this, EventDetailsPageActivity.class);
+                Intent intent = new Intent(MyEventsPageActivity.this, EventDetailsPageActivity.class);
                 intent.putExtra("eventDetails", eventsList.get(position));
                 startActivity(intent);
             }
         });
-        //Set up Snapshot listener, populate listview with events in database
+        //Set up Snapshot listener, populate listview with events in MyEvents
+        String userID = currentUser.getUid();
         eventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
@@ -77,18 +79,24 @@ public class BrowseEventActivity extends AppCompatActivity {
                 if (querySnapshots != null) {
                     eventsList.clear();
                     for (QueryDocumentSnapshot doc : querySnapshots) {
-                        String eventTitle = doc.getString("eventTitle");
-                        String eventDate = doc.getString("eventDate");
-                        String organizer = doc.getString("organizer");
-                        String eventDescription = doc.getString("eventDescription");
                         String eventID = doc.getId();
-                        Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
-                        eventsList.add(new Events(eventTitle, eventDate, organizer, eventDescription, R.drawable.poster1, eventID));
+                        db.collection("Users").document(userID).collection("MyEvents").document(eventID).get()
+                                .addOnSuccessListener(myEvent -> {
+                                    if (myEvent.exists()) {
+                                        String eventTitle = doc.getString("eventTitle");
+                                        String eventDate = doc.getString("eventDate");
+                                        String organizer = doc.getString("organizer");
+                                        String eventDescription = doc.getString("eventDescription");
+                                        Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
+                                        eventsList.add(new Events(eventTitle, eventDate, organizer, eventDescription, R.drawable.poster1, eventID));
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                })
+                                .addOnFailureListener(e -> Log.e("Firestore", "Unable to fetch event"));
                     }
                     adapter.notifyDataSetChanged();
                 }
             }
         });
     }
-
 }

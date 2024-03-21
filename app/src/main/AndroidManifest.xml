@@ -55,6 +55,7 @@
         </activity>
 
         <!-- Add other views as needed -->
+        <activity android:name=".BrowseEventActivity"/>
         <activity android:name=".EventDetailsPageActivity" />
         <activity android:name=".ScanQRCodeActivity"/>
         <activity android:name=".AttendeeActivity" />
@@ -64,6 +65,7 @@
         <activity android:name=".NotifDetailsActivity" />
         <activity android:name=".ProfileEditActivity" />
         <activity android:name=".OrgNotifActivity" />
+        <activity android:name=".MyEventsPageActivity"/>
 
     </application>
 

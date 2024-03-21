@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -60,6 +61,10 @@
         <activity android:name=".NotificationActivity" />
         <activity android:name=".NotifDetailsActivity" />
         <activity android:name=".ProfileEditActivity" />
+        <activity android:name=".CreateEventActivity" />
+        <activity android:name=".QRCodeActivity" />
+
+
     </application>
 
 </manifest>

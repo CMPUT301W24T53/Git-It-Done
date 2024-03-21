@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -62,13 +63,14 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                 TextView description = findViewById(R.id.event_description);
 
                 title.setText(eventDetails.getEventTitle());
+                String posterUrl = eventDetails.getEventPoster();
                 // Check if the event poster resource exists.
-                int posterResource = eventDetails.getEventPoster();
-                if (isValidResource(posterResource)) {
-                    poster.setImageResource(posterResource);
-                } else {
-                    poster.setImageResource(R.drawable.my_event_icon);
-                }
+                Glide.with(this)
+                        .load(posterUrl)
+                        .placeholder(R.drawable.my_event_icon) // Optional placeholder while image loads
+                        .error(R.drawable.my_event_icon)       // Optional error image if load fails
+                        .into(poster);                         // Set the ImageView to display the image
+
                 date.setText(eventDetails.getEventDate());
                 organizer.setText(eventDetails.getEventOrganizer());
                 description.setText(eventDetails.getEventDescription());

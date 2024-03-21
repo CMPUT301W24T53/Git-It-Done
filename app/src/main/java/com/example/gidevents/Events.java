@@ -10,7 +10,7 @@ public class Events implements Serializable {
     private String organizer;
     private String eventDescription;
     private String eventID;
-    private int eventPoster;
+    private String eventPoster;
 
     /** No-argument constructor for Firebase */
     public Events() {
@@ -23,7 +23,7 @@ public class Events implements Serializable {
      * @param eventPoster poster of event
      * @param eventID event ID
      */
-    public Events (String title, String date, String organizer, String description, int eventPoster, String eventID) {
+    public Events (String title, String date, String organizer, String description, String eventPoster, String eventID) {
         this.eventTitle = title;
         this.eventDate = date;
         this.organizer = organizer;
@@ -64,7 +64,7 @@ public class Events implements Serializable {
      * Not working for now
      * @return the event poster
      */
-    public int getEventPoster() {
+    public String getEventPoster() {
         return eventPoster;
     }
 
@@ -111,7 +111,7 @@ public class Events implements Serializable {
      * not working for now
      * @param posterAddress the address of the poster
      */
-    public void setEventPoster(int posterAddress) {
+    public void setEventPoster(String posterAddress) {
         this.eventPoster = posterAddress;
     }
 

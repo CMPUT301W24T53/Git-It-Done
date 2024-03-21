@@ -82,8 +82,9 @@ public class BrowseEventActivity extends AppCompatActivity {
                         String organizer = doc.getString("organizer");
                         String eventDescription = doc.getString("eventDescription");
                         String eventID = doc.getId();
+                        String eventPoster = doc.getString("eventPoster");
                         Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
-                        eventsList.add(new Events(eventTitle, eventDate, organizer, eventDescription, R.drawable.poster1, eventID));
+                        eventsList.add(new Events(eventTitle, eventDate, organizer, eventDescription, eventPoster, eventID));
                     }
                     adapter.notifyDataSetChanged();
                 }

@@ -1,5 +1,6 @@
 package com.example.gidevents;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,12 +34,13 @@ public class EventDetailsPageActivity extends AppCompatActivity {
     Events eventDetails;
     private FirebaseFirestore db;
 
+
+
     /**
      * Initialize the views, set up an onClickListener for the signUpButton
-     * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      *
+     * @param savedInstanceState being shut down then this Bundle contains the data it most
+     *                 recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,27 +50,64 @@ public class EventDetailsPageActivity extends AppCompatActivity {
 
         eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
 
-        TextView title = findViewById(R.id.event_title);
-        ImageView poster = findViewById(R.id.poster);
-        TextView date = findViewById(R.id.event_date);
-        TextView organizer = findViewById(R.id.event_organizer);
-        TextView description = findViewById(R.id.event_description);
 
-        title.setText(eventDetails.getEventTitle());
-        poster.setImageResource(eventDetails.getEventPoster());
-        date.setText(eventDetails.getEventDate());
-        organizer.setText((eventDetails.getEventOrganizer()));
-        description.setText(eventDetails.getEventDescription());
+        try {
+            Events eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
 
-        signUpButton = findViewById(R.id.sign_up_button);
+            if (eventDetails != null) {
+                TextView title = findViewById(R.id.event_title);
+                ImageView poster = findViewById(R.id.poster);
+                TextView date = findViewById(R.id.event_date);
+                TextView organizer = findViewById(R.id.event_organizer);
+                TextView description = findViewById(R.id.event_description);
 
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signUpWindow();
+                title.setText(eventDetails.getEventTitle());
+                // Check if the event poster resource exists.
+                int posterResource = eventDetails.getEventPoster();
+                if (isValidResource(posterResource)) {
+                    poster.setImageResource(posterResource);
+                } else {
+                    poster.setImageResource(R.drawable.my_event_icon);
+                }
+                date.setText(eventDetails.getEventDate());
+                organizer.setText(eventDetails.getEventOrganizer());
+                description.setText(eventDetails.getEventDescription());
+
+                signUpButton = findViewById(R.id.sign_up_button);
+
+                signUpButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        signUpWindow();
+                    }
+                });
+            } else {
+                Log.e("EventDetailsPageActivity", "No event details were provided.");
+                finish(); // End the activity since there's no data to display
             }
-        });
+        } catch (Exception e) {
+            Log.e("EventDetailsPageActivity", "Error setting event details", e);
+            Toast.makeText(this, "Error displaying event details.", Toast.LENGTH_LONG).show();
+        }
     }
+    /**
+     * Checks if the given resource identifier is valid by attempting to retrieve the resource name.
+     * If the resource name is not found, it means the resource identifier is invalid.
+     *
+     * @param resId The resource identifier to validate.
+     * @return True if the resource identifier is valid, false otherwise.
+     */
+    private boolean isValidResource(int resId) {
+        try {
+            // Attempting to obtain the resource will throw if it doesn't exist
+            getResources().getResourceName(resId);
+            return true;
+        } catch (Resources.NotFoundException e) {
+            return false;
+        }
+
+    }
+
     TextView eventTitleDisplay;
     Button signUpConfirm;
     String eventID;
@@ -107,6 +147,9 @@ public class EventDetailsPageActivity extends AppCompatActivity {
         dialog.show();
     }
 
+
+
+
     /**
      * This method complete the user event sign up, sends the user info to the database
      * Once the confirm button is clicked, the inputs from the EditTexts are read and send
@@ -130,6 +173,6 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                         Log.d("Firestore", "New participant added with ID: " +eventID);
                     }
                 });
-
     }
+
 }

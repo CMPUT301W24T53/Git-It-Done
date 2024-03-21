@@ -10,9 +10,11 @@
         android:id="@+id/poster"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_marginTop="20dp"
         android:padding="6dp"
         android:src="@drawable/ic_launcher_background"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/back_button"></ImageView>
 
@@ -20,12 +22,12 @@
         android:id="@+id/event_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="Event Title"
-        android:textStyle="bold"
         android:textSize="30dp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/poster">
-    </TextView>
+        app:layout_constraintTop_toBottomOf="@+id/poster"></TextView>
 
     <TextView
         android:id="@+id/event_date"
@@ -67,12 +69,11 @@
         android:id="@+id/delete_event_button"
         android:layout_width="309dp"
         android:layout_height="44dp"
-        android:layout_marginBottom="16dp"
         android:text="Delete Event"
+        android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/poster"></Button>
+        app:layout_constraintStart_toStartOf="parent"></Button>
 
     <Button
         android:id="@+id/back_button"

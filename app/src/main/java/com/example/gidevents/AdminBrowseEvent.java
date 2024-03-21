@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
@@ -63,6 +64,13 @@ public class AdminBrowseEvent extends AppCompatActivity {
                 intent.putExtra("eventDetails", eventsList.get(position));
                 startActivity(intent);
             }
+        });
+
+        // goes to AdminBrowseEvent page
+        Button backBtn = (Button) findViewById(R.id.back_button);
+        backBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminBrowseEvent.this, AdminActivity.class);
+            startActivity(intent);
         });
 
         //Set up Snapshot listener, populate listview with events in database

@@ -54,13 +54,13 @@ public class AdminEventDetails extends AppCompatActivity implements DeleteEventF
                             @Override
                             public void onSuccess(Void unused) {
 
-                                Log.d("Firestore", "City fetched");
+                                Log.d("Firestore", "Event deleted successfully");
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Log.w("Firestore", "Error deleting document", e);
+                                Log.w("Firestore", "Error deleting event", e);
                             }
                         });
 //                            pos = adapter.getPosition(eventDetailsNew);
@@ -142,8 +142,8 @@ public class AdminEventDetails extends AppCompatActivity implements DeleteEventF
         // after deletion of the event
         Button deleteBtn = (Button) findViewById(R.id.delete_event_button);
         deleteBtn.setOnClickListener(v -> {
-                    DeleteEventFragment addCityFragment = new DeleteEventFragment();
-                    addCityFragment.show(getSupportFragmentManager(), "Delete event");
+                    DeleteEventFragment deleteEventFragment_1 = new DeleteEventFragment();
+                    deleteEventFragment_1.show(getSupportFragmentManager(), "Delete event");
         });
     }
 

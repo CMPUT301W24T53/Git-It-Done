@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         organizerBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
+            Intent intent = new Intent(MainActivity.this, OrganizerActivity.class);
             startActivity(intent);
 
         });

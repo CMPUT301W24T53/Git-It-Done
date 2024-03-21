@@ -56,6 +56,8 @@ public class AdminBrowseEvent extends AppCompatActivity {
         EventsAdapter adapter = new EventsAdapter(this, eventsList);
         listView.setAdapter(adapter);
 
+
+
         // onItemClickListener, goes to that event's detail page
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -101,19 +103,19 @@ public class AdminBrowseEvent extends AppCompatActivity {
             }
         });
 
-        // search and filter options, user enters event to be searched
-        searchview.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.filter(newText);
-                return false;
-            }
-        });
+        //search and filter options, user enters event to be searched
+//        searchview.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                adapter.filter(newText);
+//                return false;
+//            }
+//        });
     }
 
 }

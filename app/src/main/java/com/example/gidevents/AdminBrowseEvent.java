@@ -79,11 +79,14 @@ public class AdminBrowseEvent extends AppCompatActivity {
                         String eventTitle = doc.getString("eventTitle");
                         eventTitleList.add(eventTitle);
                         String eventDate = doc.getString("eventDate");
+                        String eventTime = doc.getString("eventTime");
+                        String location = doc.getString("location");
                         String organizer = doc.getString("organizer");
                         String eventDescription = doc.getString("eventDescription");
+
                         String eventID = doc.getId();
                         Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
-                        eventsList.add(new Events(eventTitle, eventDate, organizer, eventDescription, R.drawable.poster1, eventID));
+                        eventsList.add(new Events(eventTitle, eventDate, eventTime, location, organizer, eventDescription, R.drawable.poster1, eventID));
                     }
                     adapter.notifyDataSetChanged();
                 }

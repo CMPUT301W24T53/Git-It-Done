@@ -27,6 +27,8 @@ public class EventsAdapter extends ArrayAdapter<Events> {
         ImageView posterImageView = convertView.findViewById(R.id.poster);
         TextView titleTextView = convertView.findViewById(R.id.event_title);
         TextView dateTextView = convertView.findViewById(R.id.event_date);
+        TextView timeTextView = convertView.findViewById(R.id.event_time);
+        TextView locationTextView = convertView.findViewById(R.id.event_location);
         TextView organizerTextView = convertView.findViewById(R.id.event_organizer);
         TextView descriptionTextView = convertView.findViewById(R.id.event_description);
 
@@ -35,6 +37,8 @@ public class EventsAdapter extends ArrayAdapter<Events> {
 
         titleTextView.setText(event.getEventTitle());
         dateTextView.setText(event.getEventDate());
+        timeTextView.setText(event.getEventTime());
+        locationTextView.setText(event.getLocation());
         organizerTextView.setText(event.getEventOrganizer());
         descriptionTextView.setText(event.getEventDescription());
 

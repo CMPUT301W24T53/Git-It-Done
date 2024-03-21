@@ -105,6 +105,8 @@ public class AdminEventDetailsActivity extends AppCompatActivity implements Dele
                 TextView title = findViewById(R.id.event_title);
                 ImageView poster = findViewById(R.id.poster);
                 TextView date = findViewById(R.id.event_date);
+                TextView time = findViewById(R.id.event_time);
+                TextView location = findViewById(R.id.event_location);
                 TextView organizer = findViewById(R.id.event_organizer);
                 TextView description = findViewById(R.id.event_description);
 
@@ -121,6 +123,8 @@ public class AdminEventDetailsActivity extends AppCompatActivity implements Dele
                 date.setText(eventDetails.getEventDate());
                 organizer.setText(eventDetails.getEventOrganizer());
                 description.setText(eventDetails.getEventDescription());
+                time.setText(eventDetails.getEventTime());
+                location.setText(eventDetails.getLocation());
             } else {
                 Log.e("EventDetailsPageActivity", "No event details were provided.");
                 finish(); // End the activity since there's no data to display

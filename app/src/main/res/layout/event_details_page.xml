@@ -39,19 +39,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Event Organizer"
-        android:textSize="10dp"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="@+id/event_title"
-        app:layout_constraintTop_toBottomOf="@+id/event_title">
-    </TextView>
+        app:layout_constraintTop_toBottomOf="@+id/event_title"></TextView>
 
     <TextView
         android:id="@+id/event_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Event Description"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/event_organizer">
-    </TextView>
+        app:layout_constraintTop_toBottomOf="@id/event_organizer"></TextView>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

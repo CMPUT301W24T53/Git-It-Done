@@ -1,11 +1,15 @@
 package com.example.gidevents;
 
+
 import java.io.Serializable;
+
 
 public class Notification implements Serializable {
     private String eventTitle;
     private String notifInfo;
     private String date;
+    private String notifType;
+
 
     /**
      * Default constructor
@@ -13,11 +17,13 @@ public class Notification implements Serializable {
      * @param info The details of the notification
      * @param date The date the notification was sent
      */
-    public Notification(String title, String info, String date) {
+    public Notification(String title, String info, String date, String type) {
         this.eventTitle = title;
         this.notifInfo = info;
         this.date = date;
+        this.notifType = type;
     }
+
 
     // Getters
 
@@ -45,6 +51,16 @@ public class Notification implements Serializable {
         return this.date;
     }
 
+    /**
+     * Returns the type of notification that was sent
+     * May be removed if users cannot select which notifications to receive and opt out of
+     * @return Notification type (currently planned to be `reminder`, `update`, and `promotion`)
+     */
+    public String getNotifType() {
+        return this.notifType;
+    }
+
+
     // Setters
 
     /**
@@ -60,7 +76,7 @@ public class Notification implements Serializable {
      * @param notifInfo Notification details
      */
     public void setNotifInfo(String notifInfo) {
-         this.notifInfo = notifInfo;
+        this.notifInfo = notifInfo;
     }
 
     /**
@@ -68,7 +84,6 @@ public class Notification implements Serializable {
      * @param date Notification send date
      */
     public void setDate(String date) {
-         this.date = date;
+        this.date = date;
     }
-
 }

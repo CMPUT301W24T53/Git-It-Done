@@ -34,9 +34,9 @@ public class AdminBrowseEvent extends AppCompatActivity {
     private ListView listView;
     private SearchView searchview;
 
-    /** onCreate method for BrowseEventActivity
+    /** onCreate method for AdminBrowseEvent
      * Connect to database on create
-     * Set up onItemClickListener for listview to get to EventDetailsPage
+     * Set up onItemClickListener for listview to get to AdminEventDetails
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
@@ -55,15 +55,15 @@ public class AdminBrowseEvent extends AppCompatActivity {
         EventsAdapter adapter = new EventsAdapter(this, eventsList);
         listView.setAdapter(adapter);
 
+        // onItemClickListener, goes to that event's detail page
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(AdminBrowseEvent.this, AdminEventDetailsActivity.class);
+                Intent intent = new Intent(AdminBrowseEvent.this, AdminEventDetails.class);
                 intent.putExtra("eventDetails", eventsList.get(position));
                 startActivity(intent);
             }
         });
-
 
         //Set up Snapshot listener, populate listview with events in database
         eventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -93,7 +93,7 @@ public class AdminBrowseEvent extends AppCompatActivity {
             }
         });
 
-
+        // search and filter options, user enters event to be searched
         searchview.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

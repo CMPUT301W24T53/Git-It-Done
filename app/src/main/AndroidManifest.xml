@@ -58,11 +58,12 @@
         <activity android:name=".OrganizerActivity" />
         <activity android:name=".AdminActivity" />
         <activity android:name=".AdminBrowseEvent" />
-        <activity android:name=".AdminEventDetailsActivity" />
+        <activity android:name=".AdminEventDetails" />
         <activity android:name=".NotificationActivity" />
         <activity android:name=".NotifDetailsActivity" />
         <activity android:name=".ProfileEditActivity" />
         <activity android:name=".MyEventsPageActivity"/>
+        <activity android:name=".DeleteEventFragment"/>
     </application>
 
 </manifest>

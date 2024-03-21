@@ -24,20 +24,17 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
-public class AdminEventDetailsActivity extends AppCompatActivity implements DeleteEventFragment.AddCityDialogListener{
+public class AdminEventDetails extends AppCompatActivity implements DeleteEventFragment.EventDialogListener{
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private CollectionReference eventRef;
     ApplicationInfo appInfo;
-
     private String id;
     private String old_title;
     Events eventDetailsNew;
-
 
     public void deleteEvent() {
 
@@ -72,14 +69,14 @@ public class AdminEventDetailsActivity extends AppCompatActivity implements Dele
             }
         });
 
-        Intent intent = new Intent(AdminEventDetailsActivity.this, AdminBrowseEvent.class);
+        Intent intent = new Intent(AdminEventDetails.this, AdminBrowseEvent.class);
         startActivity(intent);
     }
 
-    /** onCreate method for AdminEventDetailsActivity
+    /** onCreate method for AdminEventDetails
      * Connect to database on create
      * Set up OnClickListener for delete button which deletes an event
-     * Set up OnClickListener for back button to go to BrowseEventActivity page
+     * Set up OnClickListener for back button to go to AdminBrowseEvent page
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
@@ -94,7 +91,6 @@ public class AdminEventDetailsActivity extends AppCompatActivity implements Dele
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         eventRef = db.collection("Events");
-
 
         try {
             Events eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
@@ -134,23 +130,22 @@ public class AdminEventDetailsActivity extends AppCompatActivity implements Dele
             Toast.makeText(this, "Error displaying event details.", Toast.LENGTH_LONG).show();
         }
 
-        // goes to BrowseEventActivity page
+        // goes to AdminBrowseEvent page
         Button backBtn = (Button) findViewById(R.id.back_button);
         backBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(AdminEventDetailsActivity.this, AdminBrowseEvent.class);
+            Intent intent = new Intent(AdminEventDetails.this, AdminBrowseEvent.class);
             startActivity(intent);
         });
 
-
         // deletes an event
-        // goes to BrowseEventActivity page which displays the new event list after deletion
+        // goes to BrowseEventActivity page which displays the updated event list
+        // after deletion of the event
         Button deleteBtn = (Button) findViewById(R.id.delete_event_button);
         deleteBtn.setOnClickListener(v -> {
                     DeleteEventFragment addCityFragment = new DeleteEventFragment();
                     addCityFragment.show(getSupportFragmentManager(), "Delete event");
         });
     }
-
 
     // Helper method to check if a resource ID is valid
     private boolean isValidResource(int resId) {

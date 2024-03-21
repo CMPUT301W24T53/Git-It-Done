@@ -14,20 +14,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * This Class defines the overall function for the Administrator Activity
+ */
 public class AdminActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
-    private CollectionReference eventRef;
-    ApplicationInfo appInfo;
-    private ArrayList<Events> eventsList = new ArrayList<>();
-    private ListView listView;
-
-//    public void addEvent(Events events){
-//        EventsAdapter.add(events);
-//        EventsAdapter.notifyDataSetChanged();
-//    }
-
+    /**
+     * Runs on creation of the activity and holds most functionality
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -44,7 +44,7 @@ import java.util.UUID;
  * Outstanding Issues:
  * - Consider implementing better error handling for database operations.
  */
-public class ScanQRCodeActivity extends AppCompatActivity {
+public class  ScanQRCodeActivity extends AppCompatActivity {
 
     private static final int REQUEST_CAMERA_PERMISSION = 1;
 

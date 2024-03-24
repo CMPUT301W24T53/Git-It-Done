@@ -8,6 +8,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
+import com.bumptech.glide.Glide;
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +68,11 @@ public class EventsAdapter extends ArrayAdapter<Events> {
         TextView descriptionTextView = convertView.findViewById(R.id.event_description);
 
         assert event != null;
-        posterImageView.setImageResource(event.getEventPoster());
+        Glide.with(getContext())
+                .load(event.getEventPoster())
+                .placeholder(R.drawable.my_event_icon) // Optional placeholder while image loads
+                .error(R.drawable.my_event_icon)       // Optional error image if load fails
+                .into(posterImageView);                // Set the ImageView to display the image
 
         titleTextView.setText(event.getEventTitle());
         dateTextView.setText(event.getEventDate());

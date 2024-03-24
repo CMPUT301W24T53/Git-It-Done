@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -50,6 +51,17 @@
             </intent-filter>
         </activity>
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+
         <!-- Add other views as needed -->
         <activity android:name=".BrowseEventActivity"/>
         <activity android:name=".EventDetailsPageActivity" />
@@ -62,6 +74,10 @@
         <activity android:name=".NotificationActivity" />
         <activity android:name=".NotifDetailsActivity" />
         <activity android:name=".ProfileEditActivity" />
+        <activity android:name=".CreateEventActivity" />
+        <activity android:name=".QRCodeActivity" />
+
+
         <activity android:name=".MyEventsPageActivity"/>
         <activity android:name=".DeleteEventFragment"/>
     </application>

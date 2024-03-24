@@ -25,8 +25,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
+import com.google.zxing.ResultPoint;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.BarcodeCallback;
+import com.journeyapps.barcodescanner.BarcodeResult;
+import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -103,14 +107,43 @@ public class ScanQRCodeActivity extends AppCompatActivity {
     }
 
     private void ScanQRCode() {
-        IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.setCaptureActivity(CustomScannerActivity.class);
-        integrator.setOrientationLocked(true);
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-        integrator.initiateScan();
+        setContentView(R.layout.activity_scan_qr_code);
+
+        DecoratedBarcodeView barcodeView = findViewById(R.id.scanner_view);
+        barcodeView.setStatusText("");
+        barcodeView.decodeContinuous(callback);
+    }
+
+    private final BarcodeCallback callback = new BarcodeCallback() {
+        @Override
+        public void barcodeResult(BarcodeResult result) {
+            if (result.getText() != null) {
+                String scannedData = result.getText();
+                checkQRCode(scannedData);
+            }
+        }
+
+        @Override
+        public void possibleResultPoints(List<ResultPoint> resultPoints) {
+            // 可以在这里处理可能的结果点
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DecoratedBarcodeView barcodeView = findViewById(R.id.scanner_view);
+        barcodeView.resume();
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        DecoratedBarcodeView barcodeView = findViewById(R.id.scanner_view);
+        barcodeView.pause();
+    }
+
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
@@ -121,7 +154,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
-    }
+    }*/
 
 
     /**
@@ -202,11 +235,6 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                     } else {
                         logError("Error getting documents: ", task.getException());
                     }
-                })
-                .addOnFailureListener(e -> {
-                    logError("Error accessing the database: ", e);
-                    returnToAttendeeActivity();
-                    showToast("Database access error.");
                 });
     }
 

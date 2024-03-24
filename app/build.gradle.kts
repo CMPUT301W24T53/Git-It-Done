@@ -67,5 +67,12 @@ dependencies {
     androidTestImplementation("org.mockito:mockito-inline:4.2.0")
     androidTestImplementation("org.mockito:mockito-core:4.5.1")
     testImplementation ("org.hamcrest:hamcrest:2.2")
+    implementation ("com.google.firebase:firebase-storage:20.3.0")
+
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+
+    implementation ("com.google.android.gms:play-services-base:18.3.0")
+
 
 }

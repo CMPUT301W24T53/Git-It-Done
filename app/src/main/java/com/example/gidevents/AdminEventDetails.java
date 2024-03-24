@@ -110,7 +110,8 @@ public class AdminEventDetails extends AppCompatActivity implements DeleteEventF
                 old_title = eventDetails.getEventTitle();
 
                 // Check if the event poster resource exists
-                int posterResource = eventDetails.getEventPoster();
+                String posterResourceName = eventDetails.getEventPoster();
+                int posterResource = getResources().getIdentifier(posterResourceName, "drawable", getPackageName());
                 if (isValidResource(posterResource)) {
                     poster.setImageResource(posterResource);
                 } else {

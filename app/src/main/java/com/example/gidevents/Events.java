@@ -7,10 +7,12 @@ import java.io.Serializable;
 public class Events implements Serializable {
     private String eventTitle;
     private String eventDate;
+    private String eventTime;
+    private String location;
     private String organizer;
     private String eventDescription;
     private String eventID;
-    private int eventPoster;
+    private String eventPoster;
 
     /** No-argument constructor for Firebase */
     public Events() {
@@ -23,14 +25,19 @@ public class Events implements Serializable {
      * @param eventPoster poster of event
      * @param eventID event ID
      */
-    public Events (String title, String date, String organizer, String description, int eventPoster, String eventID) {
+
+    public Events (String title, String date, String time, String location, String organizer, String description, String eventPoster, String eventID) {
+      
         this.eventTitle = title;
         this.eventDate = date;
+        this.eventTime = time;
+        this.location = location;
         this.organizer = organizer;
         this.eventDescription = description;
         this.eventPoster = eventPoster;
         this.eventID = eventID;
     }
+
 
     /** Getter of event title
      * @return String of event title
@@ -45,6 +52,16 @@ public class Events implements Serializable {
     public String getEventDate() {
         return eventDate;
     }
+
+    /** Getter of event time
+     * @return String of event time
+     */
+    public String getEventTime() { return eventTime; }
+
+    /** Getter of event location
+     * @return String of event location
+     */
+    public String getLocation() { return location; }
 
     /** Getter of event organizer
      * @return the string of event organizer
@@ -64,7 +81,7 @@ public class Events implements Serializable {
      * Not working for now
      * @return the event poster
      */
-    public int getEventPoster() {
+    public String getEventPoster() {
         return eventPoster;
     }
 
@@ -111,7 +128,7 @@ public class Events implements Serializable {
      * not working for now
      * @param posterAddress the address of the poster
      */
-    public void setEventPoster(int posterAddress) {
+    public void setEventPoster(String posterAddress) {
         this.eventPoster = posterAddress;
     }
 

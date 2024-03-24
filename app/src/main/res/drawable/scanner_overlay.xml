@@ -8,24 +8,24 @@
     <!-- Top-left corner -->
     <path
         android:pathData="M0,0 L20,0 L0,0 L0,20"
-        android:strokeWidth="10"
+        android:strokeWidth="5"
         android:strokeColor="#2E2C2C"/>
 
     <!-- Top-right corner -->
     <path
         android:pathData="M100,0 L80,0 L100,0 L100,20"
-        android:strokeWidth="10"
+        android:strokeWidth="5"
         android:strokeColor="#2E2C2C"/>
 
     <!-- Bottom-left corner -->
     <path
         android:pathData="M0,100 L0,80 L0,100 L20,100"
-        android:strokeWidth="10"
+        android:strokeWidth="5"
         android:strokeColor="#2E2C2C"/>
 
     <!-- Bottom-right corner -->
     <path
         android:pathData="M100,100 L100,80 L100,100 L80,100"
-        android:strokeWidth="10"
+        android:strokeWidth="5"
         android:strokeColor="#2E2C2C"/>
 </vector>

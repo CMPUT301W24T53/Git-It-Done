@@ -9,22 +9,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationsAdapter extends ArrayAdapter<Notification> {
-    private Context context;
-
-    public NotificationsAdapter(Context context, ArrayList<Notification> notifList) {
-        super(context, 0, notifList);
-        this.context = context;
+    public NotificationsAdapter(Context context, List<Notification> notificationsList) {
+        super(context, 0, notificationsList);
     }
 
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.notif_display, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.notif_display, parent, false);
         }
 
         Notification notif = getItem(position);

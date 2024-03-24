@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         administratorBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AdministratorActivity.class);
+            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
             startActivity(intent);
         });
 

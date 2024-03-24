@@ -3,6 +3,7 @@ package com.example.gidevents;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -27,7 +28,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
@@ -47,14 +54,17 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri posterImageUri;
+    private StorageReference qrCodeStorageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
+        // Initialize Firebase Firestore and Storage references
         db = FirebaseFirestore.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference("eventPosters");
+        qrCodeStorageRef = FirebaseStorage.getInstance().getReference("QRCodeBitmap");
 
         etOrganizerName = findViewById(R.id.etOrganizerName);
         etEventTitle = findViewById(R.id.etEventTitle);
@@ -87,6 +97,9 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Show a date picker dialog to select the event date.
+     */
     private void showDatePickerDialog() {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -110,7 +123,9 @@ public class CreateEventActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-
+    /**
+     * Open a file chooser to select an image for the event poster.
+     */
     private void openFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -129,11 +144,15 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Generate QR codes for the event and upload them to Firebase Storage.
+     */
     private void generateQRCodes() {
         String organizerName = etOrganizerName.getText().toString().trim();
         String eventTitle = etEventTitle.getText().toString().trim();
         String eventDescription = etEventDescription.getText().toString().trim();
         String eventDate = tvSelectedDate.getText().toString().trim();
+
 
         if (TextUtils.isEmpty(organizerName) || TextUtils.isEmpty(eventTitle)
                 || TextUtils.isEmpty(eventDescription) || TextUtils.isEmpty(eventDate)
@@ -163,6 +182,13 @@ public class CreateEventActivity extends AppCompatActivity {
                                     public void onSuccess(Uri downloadUri) {
                                         eventData.put("eventPoster", downloadUri.toString());
                                         saveEventDataToFirestore(eventData);
+
+                                        // Generate QR code image and upload to Firebase Storage
+                                        Bitmap checkInQRCodeBitmap = QRCodeBitmap.generateQRCodeBitmap(checkInEventId);
+                                        uploadQRCodeToFirebase(checkInQRCodeBitmap, checkInEventId + ".png");
+
+                                        Bitmap eventQRCodeBitmap = QRCodeBitmap.generateQRCodeBitmap(eventId);
+                                        uploadQRCodeToFirebase(eventQRCodeBitmap, eventId + ".png");
                                     }
                                 });
                     }
@@ -175,17 +201,58 @@ public class CreateEventActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Upload the event poster image to Firebase Storage.
+     *
+     * @param imageUri The URI of the image to upload.
+     * @return The UploadTask for the image upload.
+     */
     private UploadTask uploadPosterImage(Uri imageUri) {
         StorageReference fileReference = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
         return fileReference.putFile(imageUri);
     }
 
+    /**
+     * Upload a QR code bitmap to Firebase Storage.
+     *
+     * @param qrCodeBitmap The QR code bitmap to upload.
+     * @param qrCodeName   The name of the QR code file.
+     */
+    private void uploadQRCodeToFirebase(Bitmap qrCodeBitmap, String qrCodeName) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        qrCodeBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        StorageReference qrCodeRef = qrCodeStorageRef.child(qrCodeName);
+        UploadTask uploadTask = qrCodeRef.putBytes(data);
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(CreateEventActivity.this, "QR Code uploaded successfully", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(CreateEventActivity.this, "Failed to upload QR Code", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Get the file extension from a URI.
+     * @param uri The URI of the file.
+     * @return The file extension.
+     */
     private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
+    /**
+     * Save the event data to Firestore.
+     * @param eventData The event data to save.
+     */
     private void saveEventDataToFirestore(Map<String, Object> eventData) {
         db.collection("qrcodes")
                 .add(eventData)
@@ -210,9 +277,12 @@ public class CreateEventActivity extends AppCompatActivity {
                 });
     }
 
-
-
+    /**
+     * Generate a random event ID.
+     * @return The generated event ID.
+     */
     private String generateRandomEventId() {
         return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 6);
     }
+
 }

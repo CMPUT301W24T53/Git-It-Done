@@ -42,7 +42,21 @@
             android:id="@+id/btnSelectDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Event Date" />
+            android:text="Select Event start time" />
+
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/toggleAttendeeLimit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Set Attendee Limit" />
+
+        <EditText
+            android:id="@+id/etAttendeeLimit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Attendee Limit" />
 
 
         <ImageView
@@ -58,6 +72,7 @@
             android:layout_height="wrap_content"
             android:text="Upload Event Poster" />
 
+
         <Button
             android:id="@+id/btnGenerateQRCodes"
             android:layout_width="match_parent"
@@ -65,18 +80,7 @@
             android:layout_marginTop="16dp"
             android:text="Generate QR Codes" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/toggleAttendeeLimit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:text="Set Attendee Limit" />
 
-        <EditText
-            android:id="@+id/etAttendeeLimit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Attendee Limit" />
 
     </LinearLayout>
 

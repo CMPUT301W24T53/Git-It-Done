@@ -125,7 +125,6 @@ public class ScanQRCodeActivity extends AppCompatActivity {
 
         @Override
         public void possibleResultPoints(List<ResultPoint> resultPoints) {
-            // 可以在这里处理可能的结果点
         }
     };
 
@@ -142,19 +141,6 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         DecoratedBarcodeView barcodeView = findViewById(R.id.scanner_view);
         barcodeView.pause();
     }
-
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            String scannedData = result.getContents();
-            if (scannedData != null) {
-                checkQRCode(scannedData);
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }*/
 
 
     /**
@@ -180,9 +166,9 @@ public class ScanQRCodeActivity extends AppCompatActivity {
     private void handleCheckIn(String eventId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String deviceId = getUniqueDeviceId();
-        CollectionReference qrcodesRef = db.collection("qrcodes");
+        CollectionReference eventsRef = db.collection("Events");
 
-        qrcodesRef.whereEqualTo("eventID", eventId).limit(1).get()
+        eventsRef.whereEqualTo("eventID", eventId).limit(1).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
                         DocumentSnapshot eventDocument = task.getResult().getDocuments().get(0);
@@ -191,10 +177,8 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                         participantsRef.whereEqualTo("deviceId", deviceId).limit(1).get()
                                 .addOnCompleteListener(participantsTask -> {
                                     if (participantsTask.isSuccessful() && participantsTask.getResult().isEmpty()) {
-                                        // No participant found, create a new participant record
                                         addNewParticipant(participantsRef, deviceId);
                                     } else if (participantsTask.isSuccessful()) {
-                                        // Participant found, update check-in status
                                         updateParticipantCheckIn(participantsTask.getResult().getDocuments().get(0));
                                     } else {
                                         handleFailure("Participants lookup failed: " +
@@ -215,7 +199,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
  */
     private void navigateToEventDetails(String eventId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("qrcodes")
+        db.collection("Events")
                 .whereEqualTo("eventID", eventId)
                 .limit(1) // Limit the documents to return only one
                 .get()

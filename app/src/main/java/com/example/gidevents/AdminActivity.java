@@ -1,18 +1,10 @@
 package com.example.gidevents;
 
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
 
 /**
  * This Class defines the overall function for the Administrator Activity
@@ -41,6 +33,13 @@ public class AdminActivity extends AppCompatActivity {
         browseEventsBtn.setOnClickListener(v -> {
             Intent intent = new Intent(AdminActivity.this, AdminBrowseEvent.class);
             startActivity(intent);
+        });
+
+        Button browseProfileButton = (Button) findViewById(R.id.browse_profiles_button);
+        browseProfileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminActivity.this, AdminBrowseProfilesActivity.class);
+            startActivity(intent);
+
         });
 
 //        Button browseProfilesBtn = (Button) findViewById(R.id.browse_profiles_button);

@@ -101,19 +101,7 @@ public class AdminBrowseEvent extends AppCompatActivity {
             }
         });
 
-        // search and filter options, user enters event to be searched
-        searchview.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.filter(newText);
-                return false;
-            }
-        });
     }
 
 }

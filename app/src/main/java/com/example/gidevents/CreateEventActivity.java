@@ -43,7 +43,7 @@ import java.util.UUID;
 
 public class CreateEventActivity extends AppCompatActivity {
 
-    private EditText etOrganizerName, etEventTitle, etEventDescription, etAttendeeLimit;
+    private EditText etOrganizerName, etEventTitle, etEventDescription, etAttendeeLimit,etEventLocation;
     private TextView tvSelectedDate;
     private ImageView ivEventPoster;
     private Button btnSelectDate, btnUploadPoster, btnGenerateQRCodes;
@@ -69,6 +69,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         etOrganizerName = findViewById(R.id.etOrganizerName);
         etEventTitle = findViewById(R.id.etEventTitle);
+        etEventLocation = findViewById(R.id.etEventLocation);
         etEventDescription = findViewById(R.id.etEventDescription);
         ivEventPoster = findViewById(R.id.ivEventPoster);
         btnUploadPoster = findViewById(R.id.btnUploadPoster);
@@ -178,6 +179,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private void generateQRCodes() {
         String organizerName = etOrganizerName.getText().toString().trim();
         String eventTitle = etEventTitle.getText().toString().trim();
+        String eventLocation = etEventLocation.getText().toString().trim();
         String eventDescription = etEventDescription.getText().toString().trim();
         String eventDate = tvSelectedDate.getText().toString().trim();
         String strAttendeeLimit = etAttendeeLimit.getText().toString().trim();
@@ -189,7 +191,7 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
 
-        if (TextUtils.isEmpty(organizerName) || TextUtils.isEmpty(eventTitle)
+        if (TextUtils.isEmpty(organizerName) || TextUtils.isEmpty(eventTitle) || TextUtils.isEmpty(eventLocation)
                 || TextUtils.isEmpty(eventDescription) || TextUtils.isEmpty(eventDate)
                 || posterImageUri == null) {
             Toast.makeText(this, "Please fill in all fields and upload an event poster", Toast.LENGTH_SHORT).show();
@@ -202,11 +204,14 @@ public class CreateEventActivity extends AppCompatActivity {
         Map<String, Object> eventData = new HashMap<>();
         eventData.put("eventOrganizer", organizerName);
         eventData.put("eventTitle", eventTitle);
+        eventData.put("eventLocation", eventLocation);
         eventData.put("eventDescription", eventDescription);
         eventData.put("eventDate", eventDate);
         eventData.put("checkInEventID", checkInEventId);
         eventData.put("eventID", eventId);
         eventData.put("attendeeLimit", attendeeLimit);
+
+
 
         uploadPosterImage(posterImageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

@@ -24,6 +24,13 @@
             android:inputType="text" />
 
         <EditText
+            android:id="@+id/etEventLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Event Location"
+            android:inputType="text" />
+
+        <EditText
             android:id="@+id/etEventDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

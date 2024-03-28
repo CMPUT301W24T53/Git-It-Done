@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -58,7 +59,11 @@ public class BrowseEventActivity extends AppCompatActivity {
 
         EventsAdapter adapter = new EventsAdapter(this, eventsList);
         listView.setAdapter(adapter);
-
+        Button backBtn = (Button) findViewById(R.id.back_button);
+        backBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(BrowseEventActivity.this, AttendeeActivity.class);
+            startActivity(intent);
+        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

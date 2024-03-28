@@ -61,6 +61,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                 ImageView poster = findViewById(R.id.poster);
                 TextView date = findViewById(R.id.event_date);
                 TextView organizer = findViewById(R.id.event_organizer);
+                TextView location = findViewById(R.id.event_location);
                 TextView description = findViewById(R.id.event_description);
 
                 title.setText(eventDetails.getEventTitle());
@@ -74,6 +75,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
 
                 date.setText(eventDetails.getEventDate());
                 organizer.setText(eventDetails.getEventOrganizer());
+                location.setText(eventDetails.getLocation());
                 description.setText(eventDetails.getEventDescription());
 
                 signUpButton = findViewById(R.id.sign_up_button);

@@ -65,6 +65,19 @@
             android:layout_marginTop="16dp"
             android:text="Generate QR Codes" />
 
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/toggleAttendeeLimit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Set Attendee Limit" />
+
+        <EditText
+            android:id="@+id/etAttendeeLimit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Attendee Limit" />
+
     </LinearLayout>
 
 </ScrollView>

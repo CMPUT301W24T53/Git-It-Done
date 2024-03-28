@@ -81,12 +81,13 @@
         <activity android:name=".AdminActivity" />
         <activity android:name=".AdminBrowseEvent" />
         <activity android:name=".AdminEventDetails" />
-        <activity android:name=".ProfileEditActivity" />
         <activity android:name=".CreateEventActivity" />
         <activity android:name=".QRCodeActivity" />
         <activity android:name=".DeleteEventFragment"/>
         <activity android:name=".AdminBrowseProfilesActivity"/>
         <activity android:name=".UserProfileDetailsPage"/>
+        <activity android:name=".EventDetailsEditActivity"/>
+        <activity android:name=".ParticipantListActivity"/>
     </application>
 
 </manifest>

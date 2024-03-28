@@ -9,12 +9,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,8 +27,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -34,6 +42,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
@@ -49,6 +58,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private Button btnSelectDate, btnUploadPoster, btnGenerateQRCodes;
 
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
     private StorageReference posterStorageRef;
 
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -61,7 +71,6 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
-
         // Initialize Firebase Firestore and Storage references
         db = FirebaseFirestore.getInstance();
         posterStorageRef = FirebaseStorage.getInstance().getReference("eventPosters");
@@ -176,6 +185,9 @@ public class CreateEventActivity extends AppCompatActivity {
      * Generate QR codes for the event and upload them to Firebase Storage.
      */
     private void generateQRCodes() {
+        mAuth = FirebaseAuth.getInstance();
+        String creatorID = mAuth.getCurrentUser().getUid();
+
         String organizerName = etOrganizerName.getText().toString().trim();
         String eventTitle = etEventTitle.getText().toString().trim();
         String eventDescription = etEventDescription.getText().toString().trim();
@@ -207,6 +219,7 @@ public class CreateEventActivity extends AppCompatActivity {
         eventData.put("checkInEventID", checkInEventId);
         eventData.put("eventID", eventId);
         eventData.put("attendeeLimit", attendeeLimit);
+        eventData.put("creatorID", creatorID);
 
         uploadPosterImage(posterImageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -285,6 +298,32 @@ public class CreateEventActivity extends AppCompatActivity {
         return mime.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
+
+    /**
+     * This method now add the eventID of the current event to the User's MyEvents collection
+     * @param eventID the ID of the current event
+     */
+    private void addCreatedEvent(String eventID) {
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser!= null) {
+            String creatorID = currentUser.getUid();
+            Map <String, Object> event = new HashMap<>();
+            event.put("eventID", eventID);
+            db.collection("Users").document(creatorID).collection("CreatedEvents").document(eventID)
+                    .set(event)
+                    .addOnSuccessListener(documentReference -> {
+                        Log.d("EventSignUp", "EventID added to CreatedEvents");
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w("EventSignUp", "Failed to add EventID to CreatedEvents" + e);
+                    });
+        } else {
+            Log.d("EventSignUp", "No User found");
+        }
+
+    }
+
     /**
      * Save the event data to Firestore.
      * @param eventData The event data to save.
@@ -296,12 +335,15 @@ public class CreateEventActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Toast.makeText(CreateEventActivity.this, "Event created successfully", Toast.LENGTH_SHORT).show();
-                        String eventId = documentReference.getId();
+                        String eventID = documentReference.getId();
                         String checkInQRCodeContent = eventData.get("checkInEventID").toString();
                         String eventQRCodeContent = eventData.get("eventID").toString();
+                        addCreatedEvent(eventID);
+
                         Intent intent = new Intent(CreateEventActivity.this, QRCodeActivity.class);
                         intent.putExtra("checkInQRCodeContent", checkInQRCodeContent);
                         intent.putExtra("eventQRCodeContent", eventQRCodeContent);
+
                         startActivity(intent);
                     }
                 })
@@ -320,6 +362,4 @@ public class CreateEventActivity extends AppCompatActivity {
     private String generateRandomEventId() {
         return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 6);
     }
-
-
 }

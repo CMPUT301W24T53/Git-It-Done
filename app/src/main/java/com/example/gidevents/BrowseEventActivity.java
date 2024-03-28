@@ -61,8 +61,7 @@ public class BrowseEventActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
         Button backBtn = (Button) findViewById(R.id.back_button);
         backBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(BrowseEventActivity.this, AttendeeActivity.class);
-            startActivity(intent);
+            finish();
         });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

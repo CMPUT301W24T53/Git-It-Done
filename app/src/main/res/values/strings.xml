@@ -7,4 +7,6 @@
     <string name="browse_profiles_button">Browse profiles</string>
     <string name="browse_images_button">Browse images</string>
     <string name="delete_confirm_msg">Are you sure you want to delete event?</string>
+    <string name="browse_profiles">Browse Profiles</string>
+    <string name="delete_user">Delete User</string>
 </resources>

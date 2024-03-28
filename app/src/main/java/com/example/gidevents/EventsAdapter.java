@@ -9,10 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import com.bumptech.glide.Glide;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 /** This is the EventsAdapter class
@@ -20,37 +18,8 @@ import java.util.List;
  */
 public class EventsAdapter extends ArrayAdapter<Events> {
 
-    private List<Events> events;
-    private List<Events> filteredEvents;
-    @Override
-    public int getCount() {
-        return filteredEvents.size();
-    }
-    @Override
-    public Events getItem(int position) {
-        return filteredEvents.get(position);
-    }
-    public void filter(String text) {
-        text = text.toLowerCase();
-        filteredEvents.clear();
-        if (text.length() == 0) {
-            filteredEvents.addAll(events);
-        } else {
-            for (Events item : events) {
-                if (item.getEventTitle().toLowerCase().contains(text) ||
-                        item.getEventDate().toLowerCase().contains(text) ||
-                        item.getLocation().toLowerCase().contains(text)) {
-                    filteredEvents.add(item);
-                }
-            }
-        }
-        notifyDataSetChanged();
-    }
-
     public EventsAdapter(Context context, List<Events> events) {
         super(context, 0, events);
-        this.events = events;
-        this.filteredEvents = new ArrayList<>(events);
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -68,11 +37,6 @@ public class EventsAdapter extends ArrayAdapter<Events> {
         TextView descriptionTextView = convertView.findViewById(R.id.event_description);
 
         assert event != null;
-        Glide.with(getContext())
-                .load(event.getEventPoster())
-                .placeholder(R.drawable.my_event_icon) // Optional placeholder while image loads
-                .error(R.drawable.my_event_icon)       // Optional error image if load fails
-                .into(posterImageView);                // Set the ImageView to display the image
 
         titleTextView.setText(event.getEventTitle());
         dateTextView.setText(event.getEventDate());

@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -69,6 +70,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri posterImageUri;
     private StorageReference qrCodeStorageRef;
+    private String reuseQR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +151,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private void showQRPickerDialog(){
         ListView listView = new ListView(this);
+
         List<String> QRCodes = new ArrayList<>();
         ArrayAdapter<String> adapter= new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, QRCodes);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -163,7 +166,6 @@ public class CreateEventActivity extends AppCompatActivity {
                                           @Override
                                           public void accept(QueryDocumentSnapshot queryDocumentSnapshot) {
                                               QRCodes.add(queryDocumentSnapshot.get("checkInEventID").toString());
-                                              Log.d("Firestore", "Data = "+ queryDocumentSnapshot.get("checkInEventID"));
                                               adapter.notifyDataSetChanged();
                                           }
                                       }
@@ -176,6 +178,15 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
         listView.setAdapter(adapter);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listView.setFocusable(false);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                listView.setSelection(position);
+                Log.d("test", "this item has been clicked" );
+            }
+        });
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true)
                 .setTitle("Pick a QR Code")
@@ -183,6 +194,15 @@ public class CreateEventActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        reuseQR = QRCodes.get(listView.getCheckedItemPosition());
+                        Log.d("test", "this is the selected item" + (String)listView.getSelectedItem());
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        reuseQR = null;
                     }
                 })
                 .setView(listView);
@@ -234,8 +254,15 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         String eventId = generateRandomEventId();
-        String checkInEventId = "CHECKIN-" + eventId;
+        String checkInEventId;
+        if (reuseQR != null) {
+            checkInEventId = reuseQR;
 
+        }else {
+            checkInEventId ="CHECKIN-" + eventId;
+
+        }
+        Log.d("test", "created event qr with this checkin ID: " + checkInEventId);
         Map<String, Object> eventData = new HashMap<>();
         eventData.put("eventOrganizer", organizerName);
         eventData.put("eventTitle", eventTitle);

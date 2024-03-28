@@ -8,16 +8,16 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class OrganizerActivity extends AppCompatActivity {
-
-
-    /**
-     * add all these into your organizerActivity when you try to merge.
-     */
-    private Button btnNewEvent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer);
+
+    /**
+     * add all these into your organizerActivity when you try to merge.
+     */
+        Button btnNewEvent;
+
 
         btnNewEvent = findViewById(R.id.btnNewEvent);
 

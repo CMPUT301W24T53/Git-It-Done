@@ -21,7 +21,6 @@ public class AttendeeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_main);
 
-
         Button checkInBtn = (Button) findViewById(R.id.checkInButton);
         Button enrolledEventsBtn = (Button) findViewById(R.id.enrolledEventsButton);
         Button notifBtn = (Button) findViewById(R.id.notificationButton);
@@ -31,24 +30,21 @@ public class AttendeeActivity extends AppCompatActivity {
         checkInBtn.setOnClickListener(v -> {
             Intent intent = new Intent(AttendeeActivity.this, ScanQRCodeActivity.class);
             startActivity(intent);
-
         });
 
         enrolledEventsBtn.setOnClickListener(v -> {
             Intent intent = new Intent(AttendeeActivity.this, MyEventsPageActivity.class);
             startActivity(intent);
-
         });
 
         notifBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(AttendeeActivity.this, NotificationActivity.class);
+            Intent intent = new Intent(AttendeeActivity.this, NotifActivity.class);
             startActivity(intent);
         });
 
         profileEditBtn.setOnClickListener(v -> {
             Intent intent = new Intent(AttendeeActivity.this, ProfileEditActivity.class);
             startActivity(intent);
-
         });
 
         browseEventsBtn.setOnClickListener(v -> {

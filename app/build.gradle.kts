@@ -43,6 +43,10 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     androidTestImplementation("androidx.test:runner:1.5.0")
 
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation ("com.google.code.gson:gson:2.8.9")
+    implementation("androidx.core:core-ktx:1.12.0")
+
 
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.code.gson:gson:2.10.1")
@@ -76,3 +80,4 @@ dependencies {
 
 
 }
+

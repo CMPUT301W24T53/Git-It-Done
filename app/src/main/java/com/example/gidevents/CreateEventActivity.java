@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -33,6 +35,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
@@ -44,7 +47,7 @@ import java.util.UUID;
 
 public class CreateEventActivity extends AppCompatActivity {
 
-    private EditText etOrganizerName, etEventTitle, etEventDescription;
+    private EditText etOrganizerName, etEventTitle, etEventDescription, etAttendeeLimit;
     private TextView tvSelectedDate;
     private ImageView ivEventPoster;
     private Button btnSelectDate, btnUploadPoster, btnGenerateQRCodes;
@@ -55,6 +58,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri posterImageUri;
     private StorageReference qrCodeStorageRef;
+    private SwitchMaterial toggleAttendeeLimit;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +79,20 @@ public class CreateEventActivity extends AppCompatActivity {
         btnSelectDate = findViewById(R.id.btnSelectDate);
         btnUploadPoster = findViewById(R.id.btnUploadPoster);
         btnGenerateQRCodes = findViewById(R.id.btnGenerateQRCodes);
+        toggleAttendeeLimit = findViewById(R.id.toggleAttendeeLimit);
+        etAttendeeLimit = findViewById(R.id.etAttendeeLimit);
+
+        etAttendeeLimit.setEnabled(false);
+        etAttendeeLimit.setFilters(new InputFilter[] {
+                (source, start, end, dest, dstart, dend) -> {
+                    for(int i = start; i< end; i++) {
+                        if (!Character.isDigit((source.charAt(i)))) {
+                            return "";
+                        }
+                    }
+                    return null;
+                }
+        });
 
         btnSelectDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +114,10 @@ public class CreateEventActivity extends AppCompatActivity {
                 generateQRCodes();
             }
         });
+
+        toggleAttendeeLimit.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+            etAttendeeLimit.setEnabled(isChecked);
+        }));
     }
 
     /**
@@ -152,6 +175,13 @@ public class CreateEventActivity extends AppCompatActivity {
         String eventTitle = etEventTitle.getText().toString().trim();
         String eventDescription = etEventDescription.getText().toString().trim();
         String eventDate = tvSelectedDate.getText().toString().trim();
+        String strAttendeeLimit = etAttendeeLimit.getText().toString().trim();
+        int attendeeLimit;
+        if (!strAttendeeLimit.isEmpty()) {
+            attendeeLimit = Integer.parseInt(strAttendeeLimit);
+        } else {
+            attendeeLimit = 0;
+        }
 
 
         if (TextUtils.isEmpty(organizerName) || TextUtils.isEmpty(eventTitle)
@@ -171,6 +201,7 @@ public class CreateEventActivity extends AppCompatActivity {
         eventData.put("eventDate", eventDate);
         eventData.put("checkInEventID", checkInEventId);
         eventData.put("eventID", eventId);
+        eventData.put("attendeeLimit", attendeeLimit);
 
         uploadPosterImage(posterImageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {

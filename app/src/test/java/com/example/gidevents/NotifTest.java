@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class NotifTest {
     private Notification mockNotif() {
-        return new Notification("Mock Notification", "This is a mock notification", "2024-3-8");
+        return new NotifUpdate("Mock Notification", "This is a mock notification", "2024-3-8");
     }
 
     @Test

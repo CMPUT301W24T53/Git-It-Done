@@ -172,6 +172,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
                         DocumentSnapshot eventDocument = task.getResult().getDocuments().get(0);
+                        eventDocument.getId();
                         CollectionReference participantsRef = eventDocument.getReference().collection("Participants");
 
                         participantsRef.whereEqualTo("deviceId", deviceId).limit(1).get()
@@ -207,7 +208,16 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         QuerySnapshot querySnapshot = task.getResult();
                         if (!querySnapshot.isEmpty()) {
-                            Events eventDetails = querySnapshot.getDocuments().get(0).toObject(Events.class);
+                            DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
+                            String eventTitle = doc.getString("eventTitle");
+                            String eventDate = doc.getString("eventDate");
+                            String organizer = doc.getString("organizer");
+                            String eventDescription = doc.getString("eventDescription");
+                            String eventID = doc.getId();
+                            String time= doc.getString("eventTime");
+                            String location= doc.getString("eventLocation");
+                            String eventPoster = doc.getString("eventPoster");
+                            Events eventDetails = new Events(eventTitle, eventDate, organizer,time, location, eventDescription, eventPoster, eventID);
                             Intent intent = new Intent(ScanQRCodeActivity.this, EventDetailsPageActivity.class);
                             intent.putExtra("eventDetails", eventDetails);
                             startActivity(intent);

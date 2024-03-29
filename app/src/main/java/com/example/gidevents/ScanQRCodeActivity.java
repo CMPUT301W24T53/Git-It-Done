@@ -269,13 +269,13 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                             DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
                             String eventTitle = doc.getString("eventTitle");
                             String eventDate = doc.getString("eventDate");
-                            String organizer = doc.getString("organizer");
+                            String eventOrganizer = doc.getString("eventOrganizer");
                             String eventDescription = doc.getString("eventDescription");
                             String eventID = doc.getId();
                             String time= doc.getString("eventTime");
-                            String location= doc.getString("eventLocation");
+                            String eventLocation= doc.getString("eventLocation");
                             String eventPoster = doc.getString("eventPoster");
-                            Events eventDetails = new Events(eventTitle, eventDate, organizer,time, location, eventDescription, eventPoster, eventID);
+                            Events eventDetails = new Events(eventTitle, eventDate, time, eventLocation, eventOrganizer, eventDescription, eventPoster, eventID);
                             Intent intent = new Intent(ScanQRCodeActivity.this, EventDetailsPageActivity.class);
                             intent.putExtra("eventDetails", eventDetails);
                             startActivity(intent);

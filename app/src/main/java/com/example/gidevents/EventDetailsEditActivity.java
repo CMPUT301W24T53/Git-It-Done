@@ -47,6 +47,8 @@ public class EventDetailsEditActivity extends AppCompatActivity {
                 TextView date = findViewById(R.id.event_date);
                 TextView organizer = findViewById(R.id.event_organizer);
                 TextView description = findViewById(R.id.event_description);
+                TextView location = findViewById(R.id.event_location);
+
 
                 title.setText(eventDetails.getEventTitle());
                 String posterUrl = eventDetails.getEventPoster();
@@ -59,6 +61,8 @@ public class EventDetailsEditActivity extends AppCompatActivity {
 
                 date.setText(eventDetails.getEventDate());
                 organizer.setText(eventDetails.getEventOrganizer());
+                location.setText(eventDetails.getEventLocation());
+
                 description.setText(eventDetails.getEventDescription());
 
             }

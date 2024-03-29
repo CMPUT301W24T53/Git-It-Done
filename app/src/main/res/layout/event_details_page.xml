@@ -43,8 +43,7 @@
         android:text="Event Organizer"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="@+id/event_title"
-        app:layout_constraintTop_toBottomOf="@+id/event_title">
-    </TextView>
+        app:layout_constraintTop_toBottomOf="@+id/event_title" />
 
     <TextView
         android:id="@+id/event_location"
@@ -52,9 +51,9 @@
         android:layout_height="wrap_content"
         android:text="Event Location"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="@id/event_organizer"
-        app:layout_constraintEnd_toEndOf="parent">
-    </TextView>
+        app:layout_constraintStart_toStartOf="@+id/event_organizer"
+        app:layout_constraintTop_toBottomOf="@+id/event_organizer" />
+
 
     <TextView
         android:id="@+id/event_description"
@@ -63,7 +62,7 @@
         android:text="Event Description"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/event_organizer">
+        app:layout_constraintTop_toBottomOf="@id/event_location">
 
     </TextView>
 

@@ -13,10 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,11 +28,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -42,17 +36,15 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
 
 public class CreateEventActivity extends AppCompatActivity {
 
-    private EditText etOrganizerName, etEventTitle, etEventDescription, etAttendeeLimit,etEventLocation;
+    private EditText etEventOrganizer, etEventTitle, etEventDescription, etAttendeeLimit,etEventLocation;
     private TextView tvSelectedDate;
     private ImageView ivEventPoster;
     private Button btnSelectDate, btnUploadPoster, btnGenerateQRCodes;
@@ -71,12 +63,16 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+
+        Button btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> onBackPressed());
+
         // Initialize Firebase Firestore and Storage references
         db = FirebaseFirestore.getInstance();
         posterStorageRef = FirebaseStorage.getInstance().getReference("eventPosters");
         qrCodeStorageRef = FirebaseStorage.getInstance().getReference("QRCodeBitmap");
 
-        etOrganizerName = findViewById(R.id.etOrganizerName);
+        etEventOrganizer = findViewById(R.id.etEventOrganizer);
         etEventTitle = findViewById(R.id.etEventTitle);
         etEventLocation = findViewById(R.id.etEventLocation);
         etEventDescription = findViewById(R.id.etEventDescription);
@@ -101,6 +97,7 @@ public class CreateEventActivity extends AppCompatActivity {
                     return null;
                 }
         });
+
 
         btnSelectDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,7 +186,7 @@ public class CreateEventActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         String creatorID = mAuth.getCurrentUser().getUid();
 
-        String organizerName = etOrganizerName.getText().toString().trim();
+        String eventOrganizer = etEventOrganizer.getText().toString().trim();
         String eventTitle = etEventTitle.getText().toString().trim();
         String eventLocation = etEventLocation.getText().toString().trim();
         String eventDescription = etEventDescription.getText().toString().trim();
@@ -203,7 +200,7 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
 
-        if (TextUtils.isEmpty(organizerName) || TextUtils.isEmpty(eventTitle) || TextUtils.isEmpty(eventLocation)
+        if (TextUtils.isEmpty(eventOrganizer) || TextUtils.isEmpty(eventTitle) || TextUtils.isEmpty(eventLocation)
                 || TextUtils.isEmpty(eventDescription) || TextUtils.isEmpty(eventDate)
                 || posterImageUri == null) {
             Toast.makeText(this, "Please fill in all fields and upload an event poster", Toast.LENGTH_SHORT).show();
@@ -214,7 +211,7 @@ public class CreateEventActivity extends AppCompatActivity {
         String checkInEventId = "CHECKIN-" + eventId;
 
         Map<String, Object> eventData = new HashMap<>();
-        eventData.put("eventOrganizer", organizerName);
+        eventData.put("eventOrganizer", eventOrganizer);
         eventData.put("eventTitle", eventTitle);
         eventData.put("eventLocation", eventLocation);
         eventData.put("eventDescription", eventDescription);
@@ -282,12 +279,12 @@ public class CreateEventActivity extends AppCompatActivity {
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(CreateEventActivity.this, "QR Code uploaded successfully", Toast.LENGTH_SHORT).show();
+                // QR Code uploaded successfully
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(CreateEventActivity.this, "Failed to upload QR Code", Toast.LENGTH_SHORT).show();
+                // Failed to upload QR Code
             }
         });
     }

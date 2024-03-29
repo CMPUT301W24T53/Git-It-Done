@@ -41,7 +41,7 @@ public class EventsAdapter extends ArrayAdapter<Events> {
         titleTextView.setText(event.getEventTitle());
         dateTextView.setText(event.getEventDate());
         timeTextView.setText(event.getEventTime());
-        locationTextView.setText(event.getLocation());
+        locationTextView.setText(event.getEventLocation());
         organizerTextView.setText(event.getEventOrganizer());
         descriptionTextView.setText(event.getEventDescription());
 

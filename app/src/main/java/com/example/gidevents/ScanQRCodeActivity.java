@@ -2,12 +2,16 @@ package com.example.gidevents;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,20 +26,23 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.gson.Gson;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
 import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * This activity handles the scanning of QR codes for event check-ins and navigation to event details.
@@ -47,6 +54,7 @@ import java.util.UUID;
 public class ScanQRCodeActivity extends AppCompatActivity {
 
     private static final int REQUEST_CAMERA_PERMISSION = 1;
+    private static final int SELECT_IMAGE_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +66,20 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         } else {
             requestCameraPermission();
         }
+
+        Button backButton = findViewById(R.id.btnBack);
+        backButton.setOnClickListener(v -> onBackPressed());
+
+        Button selectImageButton = findViewById(R.id.btnSelectImage);
+        selectImageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, SELECT_IMAGE_REQUEST_CODE);
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     private boolean hasCameraPermission() {
@@ -75,13 +97,8 @@ public class ScanQRCodeActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 ScanQRCode();
             } else {
-                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-                    showManualPermissionSettingDialog();
-                } else {
-                    Toast.makeText(this, "Camera permission is required to scan QR" +
-                            " codes", Toast.LENGTH_LONG).show();
-                    returnToAttendeeActivity();
-                }
+                Button selectImageButton = findViewById(R.id.btnSelectImage);
+                selectImageButton.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -143,6 +160,42 @@ public class ScanQRCodeActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_IMAGE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            Uri selectedImageUri = data.getData();
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                Result result = scanQRCodeFromBitmap(bitmap);
+                if (result != null) {
+                    String scannedData = result.getText();
+                    checkQRCode(scannedData);
+                } else {
+                    showToast("No valid QR code found in the image");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                showToast("Fail to read image");
+            }
+        }
+    }
+
+    private Result scanQRCodeFromBitmap(Bitmap bitmap) {
+        int[] intArray = new int[bitmap.getWidth() * bitmap.getHeight()];
+        bitmap.getPixels(intArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        LuminanceSource source = new RGBLuminanceSource(bitmap.getWidth(), bitmap.getHeight(), intArray);
+        BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
+        QRCodeReader reader = new QRCodeReader();
+        try {
+            return reader.decode(binaryBitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * Checks the QR code data for proper format and determines the subsequent action,
      * either check-in handling or navigation to event details.
@@ -165,7 +218,9 @@ public class ScanQRCodeActivity extends AppCompatActivity {
      */
     private void handleCheckIn(String eventId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String deviceId = getUniqueDeviceId();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        String userId = mAuth.getCurrentUser().getUid();
+
         CollectionReference eventsRef = db.collection("Events");
 
         eventsRef.whereEqualTo("eventID", eventId).limit(1).get()
@@ -173,14 +228,17 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
                         DocumentSnapshot eventDocument = task.getResult().getDocuments().get(0);
                         eventDocument.getId();
-                        CollectionReference participantsRef = eventDocument.getReference().collection("Participants");
+                        CollectionReference participantsRef = eventDocument.getReference().collection("participants");
 
-                        participantsRef.whereEqualTo("deviceId", deviceId).limit(1).get()
+                        participantsRef.document(userId).get()
                                 .addOnCompleteListener(participantsTask -> {
-                                    if (participantsTask.isSuccessful() && participantsTask.getResult().isEmpty()) {
-                                        addNewParticipant(participantsRef, deviceId);
-                                    } else if (participantsTask.isSuccessful()) {
-                                        updateParticipantCheckIn(participantsTask.getResult().getDocuments().get(0));
+                                    if (participantsTask.isSuccessful()) {
+                                        DocumentSnapshot participantDocument = participantsTask.getResult();
+                                        if (participantDocument.exists()) {
+                                            updateParticipantCheckIn(participantDocument);
+                                        } else {
+                                            addNewParticipant(participantsRef, userId);
+                                        }
                                     } else {
                                         handleFailure("Participants lookup failed: " +
                                                 participantsTask.getException().getMessage());
@@ -232,14 +290,14 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                 });
     }
 
-    private void addNewParticipant(CollectionReference participantsRef, String deviceId) {
+    private void addNewParticipant(CollectionReference participantsRef, String userId) {
         Map<String, Object> participantData = new HashMap<>();
-        participantData.put("Device ID:", deviceId);
-        participantData.put("CheckIn Time:", FieldValue.serverTimestamp());
-        participantData.put("CheckedIn Status:", true);
+        participantData.put("userId", userId);
+        participantData.put("checkedIn", true);
+        participantData.put("timestamp", FieldValue.serverTimestamp());
 
-        participantsRef.add(participantData)
-                .addOnSuccessListener(documentReference -> showToast("Check-in successful"))
+        participantsRef.document(userId).set(participantData)
+                .addOnSuccessListener(aVoid -> showToast("Check-in successful"))
                 .addOnFailureListener(e -> handleFailure("New participant check-in failed: " + e.getMessage()));
     }
 
@@ -262,15 +320,6 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AttendeeActivity.class);
         startActivity(intent);
         finish();
-    }
-    private String getUniqueDeviceId() {
-        SharedPreferences sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        String deviceId = sharedPreferences.getString("device_id", null);
-        if (deviceId == null) {
-            deviceId = UUID.randomUUID().toString();
-            sharedPreferences.edit().putString("device_id", deviceId).apply();
-        }
-        return deviceId;
     }
 
     private void logError(String message, Exception e) {

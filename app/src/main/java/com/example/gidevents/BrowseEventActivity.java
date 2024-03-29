@@ -84,7 +84,7 @@ public class BrowseEventActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot doc : querySnapshots) {
                         String eventTitle = doc.getString("eventTitle");
                         String eventDate = doc.getString("eventDate");
-                        String organizer = doc.getString("organizer");
+                        String organizer = doc.getString("evenOrganizer");
                         String eventDescription = doc.getString("eventDescription");
                         String eventID = doc.getId();
                         String time= doc.getString("eventTime");

@@ -8,8 +8,8 @@ public class Events implements Serializable {
     private String eventTitle;
     private String eventDate;
     private String eventTime;
-    private String location;
-    private String organizer;
+    private String eventLocation;
+    private String eventOrganizer;
     private String eventDescription;
     private String eventID;
     private String eventPoster;
@@ -31,8 +31,8 @@ public class Events implements Serializable {
         this.eventTitle = title;
         this.eventDate = date;
         this.eventTime = time;
-        this.location = location;
-        this.organizer = organizer;
+        this.eventLocation = location;
+        this.eventOrganizer = organizer;
         this.eventDescription = description;
         this.eventPoster = eventPoster;
         this.eventID = eventID;
@@ -61,13 +61,13 @@ public class Events implements Serializable {
     /** Getter of event location
      * @return String of event location
      */
-    public String getLocation() { return location; }
+    public String getEventLocation() { return eventLocation; }
 
     /** Getter of event organizer
      * @return the string of event organizer
      */
     public String getEventOrganizer() {
-        return organizer;
+        return eventOrganizer;
     }
 
     /** Getter of event description
@@ -113,8 +113,13 @@ public class Events implements Serializable {
      * @param eventOrganizer string of the organizer name
      */
     public void setEventOrganizer(String eventOrganizer) {
-        this.organizer = eventOrganizer;
+        this.eventOrganizer = eventOrganizer;
     }
+
+    public void setEventLocation(String eventLocation) {
+        this.eventLocation = eventLocation;
+    }
+
 
     /** Setter of event description
      *

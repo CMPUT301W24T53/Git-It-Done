@@ -121,7 +121,7 @@ public class AdminEventDetails extends AppCompatActivity implements DeleteEventF
                 organizer.setText(eventDetails.getEventOrganizer());
                 description.setText(eventDetails.getEventDescription());
                 time.setText(eventDetails.getEventTime());
-                location.setText(eventDetails.getLocation());
+                location.setText(eventDetails.getEventLocation());
             } else {
                 Log.e("EventDetailsPageActivity", "No event details were provided.");
                 finish(); // End the activity since there's no data to display

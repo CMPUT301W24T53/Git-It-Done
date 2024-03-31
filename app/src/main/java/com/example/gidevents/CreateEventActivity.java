@@ -2,13 +2,14 @@ package com.example.gidevents;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +17,6 @@ import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -32,6 +32,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -39,37 +40,33 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 
 public class CreateEventActivity extends AppCompatActivity {
 
-    private EditText etOrganizerName, etEventTitle, etEventDescription;
+    private EditText etEventOrganizer, etEventTitle, etEventDescription, etAttendeeLimit,etEventLocation;
     private TextView tvSelectedDate;
     private ImageView ivEventPoster;
     private Button btnSelectDate, btnUploadPoster, btnGenerateQRCodes, btnReuseQR;
     private ListView QRList;
     private ArrayAdapter<String> QRListAdapter;
     private FirebaseFirestore db;
-    private StorageReference storageRef;
+    private FirebaseAuth mAuth;
+    private StorageReference posterStorageRef;
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri posterImageUri;
     private StorageReference qrCodeStorageRef;
+    private SwitchMaterial toggleAttendeeLimit;
+
     private String reuseQR;
 
     @Override
@@ -77,27 +74,48 @@ public class CreateEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
+        Button btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> onBackPressed());
+
         // Initialize Firebase Firestore and Storage references
         db = FirebaseFirestore.getInstance();
-        storageRef = FirebaseStorage.getInstance().getReference("eventPosters");
+        posterStorageRef = FirebaseStorage.getInstance().getReference("eventPosters");
         qrCodeStorageRef = FirebaseStorage.getInstance().getReference("QRCodeBitmap");
 
-        etOrganizerName = findViewById(R.id.etOrganizerName);
+        etEventOrganizer = findViewById(R.id.etEventOrganizer);
         etEventTitle = findViewById(R.id.etEventTitle);
+        etEventLocation = findViewById(R.id.etEventLocation);
         etEventDescription = findViewById(R.id.etEventDescription);
-        tvSelectedDate = findViewById(R.id.tvSelectedDate);
         ivEventPoster = findViewById(R.id.ivEventPoster);
-        btnSelectDate = findViewById(R.id.btnSelectDate);
         btnUploadPoster = findViewById(R.id.btnUploadPoster);
         btnReuseQR = findViewById(R.id.btnReuseQR);
 
         btnGenerateQRCodes = findViewById(R.id.btnGenerateQRCodes);
+        toggleAttendeeLimit = findViewById(R.id.toggleAttendeeLimit);
+        etAttendeeLimit = findViewById(R.id.etAttendeeLimit);
+
+        tvSelectedDate = findViewById(R.id.tvSelectedDate);
+        btnSelectDate = findViewById(R.id.btnSelectDate);
+
+
+        etAttendeeLimit.setEnabled(false);
+        etAttendeeLimit.setFilters(new InputFilter[] {
+                (source, start, end, dest, dstart, dend) -> {
+                    for(int i = start; i< end; i++) {
+                        if (!Character.isDigit((source.charAt(i)))) {
+                            return "";
+                        }
+                    }
+                    return null;
+                }
+        });
+
 
 
         btnSelectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePickerDialog();
+                showTimePickerDialog();
             }
         });
 
@@ -121,31 +139,42 @@ public class CreateEventActivity extends AppCompatActivity {
                 generateQRCodes();
             }
         });
+
+        toggleAttendeeLimit.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+            etAttendeeLimit.setEnabled(isChecked);
+        }));
     }
 
     /**
-     * Show a date picker dialog to select the event date.
+     * Show a time picker dialog to select the event time.
      */
-    private void showDatePickerDialog() {
-        final Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+    private void showTimePickerDialog() {
+        final Calendar currentCalendar = Calendar.getInstance();
+        int currentYear = currentCalendar.get(Calendar.YEAR);
+        int currentMonth = currentCalendar.get(Calendar.MONTH);
+        int currentDay = currentCalendar.get(Calendar.DAY_OF_MONTH);
+        int currentHour = currentCalendar.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = currentCalendar.get(Calendar.MINUTE);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                CreateEventActivity.this,
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        // Directly set the selected date to the TextView
-                        tvSelectedDate.setText(String.format(Locale.getDefault(), "%04d/%02d/%02d", year, month + 1, dayOfMonth));
-                    }
-                },
-                year, month, day);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                (view, year, month, dayOfMonth) -> {
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                            (timeView, hourOfDay, minute) -> {
+                                Calendar selectedCalendar = Calendar.getInstance();
+                                selectedCalendar.set(year, month, dayOfMonth, hourOfDay, minute);
 
-        // Set the minimum date to the current date to prevent selection of past dates
-        datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
+                                if (selectedCalendar.before(currentCalendar)) {
+                                    Toast.makeText(CreateEventActivity.this, "The start time must be after the current time", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    String selectedDateTime = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.MEDIUM, SimpleDateFormat.SHORT).format(selectedCalendar.getTime());
+                                    tvSelectedDate.setText("Event start time: " + selectedDateTime);
+                                }
+                            }, currentHour, currentMinute, false);
 
+                    timePickerDialog.show();
+                }, currentYear, currentMonth, currentDay);
+
+        datePickerDialog.getDatePicker().setMinDate(currentCalendar.getTimeInMillis());
         datePickerDialog.show();
     }
 
@@ -239,14 +268,24 @@ public class CreateEventActivity extends AppCompatActivity {
      * Generate QR codes for the event and upload them to Firebase Storage.
      */
     private void generateQRCodes() {
-        String organizerName = etOrganizerName.getText().toString().trim();
+        mAuth = FirebaseAuth.getInstance();
+        String creatorID = mAuth.getCurrentUser().getUid();
+
+        String eventOrganizer = etEventOrganizer.getText().toString().trim();
         String eventTitle = etEventTitle.getText().toString().trim();
+        String eventLocation = etEventLocation.getText().toString().trim();
         String eventDescription = etEventDescription.getText().toString().trim();
         String eventDate = tvSelectedDate.getText().toString().trim();
-        String organizerUID = FirebaseAuth.getInstance().getUid();
+        String strAttendeeLimit = etAttendeeLimit.getText().toString().trim();
+        int attendeeLimit;
+        if (!strAttendeeLimit.isEmpty()) {
+            attendeeLimit = Integer.parseInt(strAttendeeLimit);
+        } else {
+            attendeeLimit = 0;
+        }
 
 
-        if (TextUtils.isEmpty(organizerName) || TextUtils.isEmpty(eventTitle)
+        if (TextUtils.isEmpty(eventOrganizer) || TextUtils.isEmpty(eventTitle) || TextUtils.isEmpty(eventLocation)
                 || TextUtils.isEmpty(eventDescription) || TextUtils.isEmpty(eventDate)
                 || posterImageUri == null) {
             Toast.makeText(this, "Please fill in all fields and upload an event poster", Toast.LENGTH_SHORT).show();
@@ -264,19 +303,23 @@ public class CreateEventActivity extends AppCompatActivity {
         }
         Log.d("test", "created event qr with this checkin ID: " + checkInEventId);
         Map<String, Object> eventData = new HashMap<>();
-        eventData.put("eventOrganizer", organizerName);
+        eventData.put("eventOrganizer", eventOrganizer);
         eventData.put("eventTitle", eventTitle);
+        eventData.put("eventLocation", eventLocation);
         eventData.put("eventDescription", eventDescription);
         eventData.put("eventDate", eventDate);
         eventData.put("checkInEventID", checkInEventId);
         eventData.put("eventID", eventId);
-        eventData.put("organizerUID", organizerUID);
+        eventData.put("attendeeLimit", attendeeLimit);
+        eventData.put("creatorID", creatorID);
+
+
 
         uploadPosterImage(posterImageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        storageRef.child(taskSnapshot.getMetadata().getName()).getDownloadUrl()
+                        posterStorageRef.child(taskSnapshot.getMetadata().getName()).getDownloadUrl()
                                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri downloadUri) {
@@ -308,7 +351,7 @@ public class CreateEventActivity extends AppCompatActivity {
      * @return The UploadTask for the image upload.
      */
     private UploadTask uploadPosterImage(Uri imageUri) {
-        StorageReference fileReference = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
+        StorageReference fileReference = posterStorageRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
         return fileReference.putFile(imageUri);
     }
 
@@ -328,12 +371,12 @@ public class CreateEventActivity extends AppCompatActivity {
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(CreateEventActivity.this, "QR Code uploaded successfully", Toast.LENGTH_SHORT).show();
+                // QR Code uploaded successfully
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(CreateEventActivity.this, "Failed to upload QR Code", Toast.LENGTH_SHORT).show();
+                // Failed to upload QR Code
             }
         });
     }
@@ -349,23 +392,52 @@ public class CreateEventActivity extends AppCompatActivity {
         return mime.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
+
+    /**
+     * This method now add the eventID of the current event to the User's MyEvents collection
+     * @param eventID the ID of the current event
+     */
+    private void addCreatedEvent(String eventID) {
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser!= null) {
+            String creatorID = currentUser.getUid();
+            Map <String, Object> event = new HashMap<>();
+            event.put("eventID", eventID);
+            db.collection("Users").document(creatorID).collection("CreatedEvents").document(eventID)
+                    .set(event)
+                    .addOnSuccessListener(documentReference -> {
+                        Log.d("EventSignUp", "EventID added to CreatedEvents");
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w("EventSignUp", "Failed to add EventID to CreatedEvents" + e);
+                    });
+        } else {
+            Log.d("EventSignUp", "No User found");
+        }
+
+    }
+
     /**
      * Save the event data to Firestore.
      * @param eventData The event data to save.
      */
     private void saveEventDataToFirestore(Map<String, Object> eventData) {
-        db.collection("qrcodes")
+        db.collection("Events")
                 .add(eventData)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Toast.makeText(CreateEventActivity.this, "Event created successfully", Toast.LENGTH_SHORT).show();
-                        String eventId = documentReference.getId();
+                        String eventID = documentReference.getId();
                         String checkInQRCodeContent = eventData.get("checkInEventID").toString();
                         String eventQRCodeContent = eventData.get("eventID").toString();
+                        addCreatedEvent(eventID);
+
                         Intent intent = new Intent(CreateEventActivity.this, QRCodeActivity.class);
                         intent.putExtra("checkInQRCodeContent", checkInQRCodeContent);
                         intent.putExtra("eventQRCodeContent", eventQRCodeContent);
+
                         startActivity(intent);
                     }
                 })

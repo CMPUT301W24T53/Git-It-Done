@@ -12,14 +12,19 @@
         android:name="android.hardware.camera"
         android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -81,10 +86,13 @@
         <activity android:name=".AdminActivity" />
         <activity android:name=".AdminBrowseEvent" />
         <activity android:name=".AdminEventDetails" />
-        <activity android:name=".ProfileEditActivity" />
         <activity android:name=".CreateEventActivity" />
         <activity android:name=".QRCodeActivity" />
         <activity android:name=".DeleteEventFragment"/>
+        <activity android:name=".AdminBrowseProfilesActivity"/>
+        <activity android:name=".UserProfileDetailsPage"/>
+        <activity android:name=".EventDetailsEditActivity"/>
+        <activity android:name=".ParticipantListActivity"/>
     </application>
 
 </manifest>

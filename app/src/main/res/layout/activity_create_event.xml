@@ -7,10 +7,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:layout_gravity="start"/>
 
         <EditText
-            android:id="@+id/etOrganizerName"
+            android:id="@+id/etEventOrganizer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Organizer Name"
@@ -21,6 +28,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Event Title"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etEventLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Event Location"
             android:inputType="text" />
 
         <EditText
@@ -42,7 +56,21 @@
             android:id="@+id/btnSelectDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Event Date" />
+            android:text="Select Event start time" />
+
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/toggleAttendeeLimit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Set Attendee Limit" />
+
+        <EditText
+            android:id="@+id/etAttendeeLimit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Attendee Limit" />
 
 
         <ImageView
@@ -58,6 +86,7 @@
             android:layout_height="wrap_content"
             android:text="Upload Event Poster" />
 
+
         <Button
             android:id="@+id/btnReuseQR"
             android:layout_width="match_parent"
@@ -70,6 +99,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Generate QR Codes" />
+
+
 
     </LinearLayout>
 

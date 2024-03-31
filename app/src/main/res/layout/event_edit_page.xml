@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <ImageView
         android:id="@+id/poster"
         android:layout_width="match_parent"
@@ -11,8 +11,8 @@
         android:padding="6dp"
         android:src="@drawable/ic_launcher_background"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </ImageView>
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <TextView
         android:id="@+id/event_title"
@@ -20,11 +20,10 @@
         android:layout_height="wrap_content"
         android:text="Event Title"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:textSize="18dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/poster">
-    </TextView>
+        app:layout_constraintTop_toBottomOf="@+id/poster" />
 
     <TextView
         android:id="@+id/event_date"
@@ -33,18 +32,7 @@
         android:text="Event Date"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@id/event_title"
-        app:layout_constraintEnd_toEndOf="parent">
-    </TextView>
-
-    <TextView
-        android:id="@+id/event_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Event Location"
-        android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="@+id/event_title"
-        app:layout_constraintTop_toBottomOf="@+id/event_title"
-        />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/event_organizer"
@@ -52,11 +40,8 @@
         android:layout_height="wrap_content"
         android:text="Event Organizer"
         android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="@+id/event_location"
-        app:layout_constraintTop_toBottomOf="@+id/event_location" />
-
-
-
+        app:layout_constraintStart_toStartOf="@+id/event_title"
+        app:layout_constraintTop_toBottomOf="@+id/event_title" />
 
     <TextView
         android:id="@+id/event_description"
@@ -65,22 +50,31 @@
         android:text="Event Description"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/event_organizer">
-
-    </TextView>
+        app:layout_constraintTop_toBottomOf="@id/event_organizer" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/sign_up_button"
-        android:text="Sign up"
+        android:id="@+id/edit_button"
+        android:text="Edit Event Details"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-    </Button>
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/back_button"
+        android:text="Back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/view_participant_list"
+        android:text="View Participants"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

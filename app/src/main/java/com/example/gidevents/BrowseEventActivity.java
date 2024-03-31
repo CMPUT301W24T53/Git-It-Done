@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -58,7 +59,10 @@ public class BrowseEventActivity extends AppCompatActivity {
 
         EventsAdapter adapter = new EventsAdapter(this, eventsList);
         listView.setAdapter(adapter);
-
+        Button backBtn = (Button) findViewById(R.id.back_button);
+        backBtn.setOnClickListener(v -> {
+            finish();
+        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -80,14 +84,15 @@ public class BrowseEventActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot doc : querySnapshots) {
                         String eventTitle = doc.getString("eventTitle");
                         String eventDate = doc.getString("eventDate");
-                        String organizer = doc.getString("organizer");
-                        String eventDescription = doc.getString("eventDescription");
-                        String eventID = doc.getId();
                         String time= doc.getString("eventTime");
-                        String location= doc.getString("eventLocation");
+                        String eventLocation= doc.getString("eventLocation");
+                        String eventOrganizer = doc.getString("eventOrganizer");
+                        String eventDescription = doc.getString("eventDescription");
                         String eventPoster = doc.getString("eventPoster");
+                        String eventID = doc.getId();
+
                         Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
-                        eventsList.add(new Events(eventTitle, eventDate, organizer,time, location, eventDescription, eventPoster, eventID));
+                        eventsList.add(new Events(eventTitle, eventDate, time, eventLocation, eventOrganizer, eventDescription, eventPoster, eventID));
                     }
                     adapter.notifyDataSetChanged();
                 }

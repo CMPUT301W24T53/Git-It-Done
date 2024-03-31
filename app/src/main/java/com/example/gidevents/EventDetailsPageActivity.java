@@ -17,10 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +32,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
     Events eventDetails;
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
+    private String userID;
 
 
 
@@ -49,6 +47,11 @@ public class EventDetailsPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_details_page);
         db = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+           userID = user.getUid();
+        }
+
 
         eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
 
@@ -61,6 +64,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                 ImageView poster = findViewById(R.id.poster);
                 TextView date = findViewById(R.id.event_date);
                 TextView organizer = findViewById(R.id.event_organizer);
+                TextView location = findViewById(R.id.event_location);
                 TextView description = findViewById(R.id.event_description);
 
                 title.setText(eventDetails.getEventTitle());
@@ -74,6 +78,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
 
                 date.setText(eventDetails.getEventDate());
                 organizer.setText(eventDetails.getEventOrganizer());
+                location.setText(eventDetails.getEventLocation());
                 description.setText(eventDetails.getEventDescription());
 
                 signUpButton = findViewById(R.id.sign_up_button);
@@ -81,7 +86,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                 signUpButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        signUpWindow();
+                        signUpWindow(userID);
                     }
                 });
             } else {
@@ -120,7 +125,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
      * A dialog is shown with EditText for the user to input his info for the event sign up.
      * Set up an onClickListener for the confirm button
      */
-    private void signUpWindow() {
+    private void signUpWindow(String userID) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.sign_up_window, null);
@@ -144,7 +149,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                 String phoneNumber = phoneNumberInput.getText().toString();
                 addEventToMyEvents(eventID);
 
-                participantSignUp(username, email, phoneNumber);
+                participantSignUp(userID, username, email, phoneNumber);
                 dialog.dismiss();
             }
         });
@@ -187,21 +192,15 @@ public class EventDetailsPageActivity extends AppCompatActivity {
      * @param email is the user input email for sign up
      * @param phoneNumber is the user input phoneNumber for sign up
      */
-    private void participantSignUp(String username, String email, String phoneNumber) {
+    private void participantSignUp(String userID, String username, String email, String phoneNumber) {
         Map<String, Object> newParticipant = new HashMap<>();
         newParticipant.put("username", username);
         newParticipant.put("email", email);
         newParticipant.put("phoneNumber", phoneNumber);
 
-        db.collection("Events").document(eventID).collection("participants")
-                .add(newParticipant)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        String participantID = documentReference.getId();
-                        Log.d("Firestore", "New participant added with ID: " +eventID);
-                    }
-                });
+        db.collection("Events").document(eventID).collection("participants").document(userID)
+                .set(newParticipant)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Participant added with userID: " + userID))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error adding participant", e));
     }
-
 }

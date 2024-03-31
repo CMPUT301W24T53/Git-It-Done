@@ -44,10 +44,13 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 
 public class CreateEventActivity extends AppCompatActivity {
@@ -56,8 +59,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private TextView tvSelectedDate;
     private ImageView ivEventPoster;
     private Button btnSelectDate, btnUploadPoster, btnGenerateQRCodes, btnReuseQR;
-    private ListView QRList;
-    private ArrayAdapter<String> QRListAdapter;
+
+
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private StorageReference posterStorageRef;
@@ -181,12 +184,12 @@ public class CreateEventActivity extends AppCompatActivity {
     private void showQRPickerDialog(){
         ListView listView = new ListView(this);
 
-        List<String> QRCodes = new ArrayList<>();
-        ArrayAdapter<String> adapter= new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, QRCodes);
+        ArrayList<String[]> data = new ArrayList<>();
+        OrganizerReuseQRAdapter adapter= new OrganizerReuseQRAdapter(this, data);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
-        db.collection("qrcodes").whereEqualTo("organizerUID", auth.getUid()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        db.collection("Events").whereEqualTo("creatorID", auth.getUid()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot querySnapshot) {
 
@@ -194,7 +197,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 querySnapshot.forEach(new Consumer<QueryDocumentSnapshot>() {
                                           @Override
                                           public void accept(QueryDocumentSnapshot queryDocumentSnapshot) {
-                                              QRCodes.add(queryDocumentSnapshot.get("checkInEventID").toString());
+                                              String[] d = {queryDocumentSnapshot.get("checkInEventID").toString(),queryDocumentSnapshot.get("eventTitle").toString() };
+                                              data.add(d);
                                               adapter.notifyDataSetChanged();
                                           }
                                       }
@@ -223,7 +227,7 @@ public class CreateEventActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        reuseQR = QRCodes.get(listView.getCheckedItemPosition());
+                        reuseQR = data.get(listView.getCheckedItemPosition())[0];
                         Log.d("test", "this is the selected item" + (String)listView.getSelectedItem());
 
                     }

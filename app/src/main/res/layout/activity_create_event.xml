@@ -88,6 +88,12 @@
 
 
         <Button
+            android:id="@+id/btnReuseQR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reuse QR Code" />
+
+        <Button
             android:id="@+id/btnGenerateQRCodes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

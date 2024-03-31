@@ -51,7 +51,7 @@ import java.util.Map;
  * Outstanding Issues:
  * - Consider implementing better error handling for database operations.
  */
-public class ScanQRCodeActivity extends AppCompatActivity {
+public class  ScanQRCodeActivity extends AppCompatActivity {
 
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int SELECT_IMAGE_REQUEST_CODE = 2;

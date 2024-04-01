@@ -51,7 +51,7 @@ import java.util.Map;
  * Outstanding Issues:
  * - Consider implementing better error handling for database operations.
  */
-public class  ScanQRCodeActivity extends AppCompatActivity {
+public class   ScanQRCodeActivity extends AppCompatActivity {
 
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int SELECT_IMAGE_REQUEST_CODE = 2;
@@ -237,7 +237,7 @@ public class  ScanQRCodeActivity extends AppCompatActivity {
                                         if (participantDocument.exists()) {
                                             updateParticipantCheckIn(participantDocument);
                                         } else {
-                                            addNewParticipant(participantsRef, userId);
+                                            addNewParticipant(participantsRef, userId, eventDocument.get("eventTitle").toString());
                                         }
                                     } else {
                                         handleFailure("Participants lookup failed: " +
@@ -290,11 +290,13 @@ public class  ScanQRCodeActivity extends AppCompatActivity {
                 });
     }
 
-    private void addNewParticipant(CollectionReference participantsRef, String userId) {
+    private void addNewParticipant(CollectionReference participantsRef, String userId, String Event) {
         Map<String, Object> participantData = new HashMap<>();
         participantData.put("userId", userId);
         participantData.put("checkedIn", true);
         participantData.put("timestamp", FieldValue.serverTimestamp());
+        participantData.put("numOfCheckIns", 1);
+        participantData.put("eventName", Event);
 
         participantsRef.document(userId).set(participantData)
                 .addOnSuccessListener(aVoid -> showToast("Check-in successful"))
@@ -303,10 +305,12 @@ public class  ScanQRCodeActivity extends AppCompatActivity {
 
     private void updateParticipantCheckIn(DocumentSnapshot participantDocument) {
         participantDocument.getReference()
-                .update("checkedIn", true, "timestamp", FieldValue.serverTimestamp())
+                .update("checkedIn", true, "timestamp", FieldValue.serverTimestamp(), "numOfCheckIns", (Integer) participantDocument.get("numOfCheckIns") + 1 )
                 .addOnSuccessListener(aVoid -> showToast("Check-in updated"))
                 .addOnFailureListener(e -> handleFailure("Participant check-in update failed: " + e.getMessage()));
     }
+
+
 
     private void handleFailure(String message) {
         showToast(message);

@@ -25,7 +25,7 @@ public class ParticipantListActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     String eventID;
     CollectionReference participantRef;
-    private ArrayList<String> participantList = new ArrayList<>();
+    private ArrayList<Map<String, Object>> participantList = new ArrayList<>();
     private ListView listView;
 
     @Override
@@ -58,10 +58,9 @@ public class ParticipantListActivity extends AppCompatActivity {
                         db.collection("Events").document(eventID).collection("participants").document(participantID).get()
                                 .addOnSuccessListener(participant -> {
                                     if (participant.exists()) {
-                                        String participantName = participant.getString("username");
-                                        Log.d("Firestore", String.format("Participant (%s) fetched", participantName));
+                                        Map<String,Object> data = participant.getData();
 
-                                        participantList.add(participantName);
+                                        participantList.add(data);
                                         adapter.notifyDataSetChanged();
                                     }
                                 })

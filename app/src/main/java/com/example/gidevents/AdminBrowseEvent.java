@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -35,12 +36,14 @@ public class AdminBrowseEvent extends AppCompatActivity {
     private ListView listView;
     private SearchView searchview;
 
-    /** onCreate method for AdminBrowseEvent
+    /**
+     * onCreate method for AdminBrowseEvent
      * Connect to database on create
      * Set up onItemClickListener for listview to get to AdminEventDetails
+     *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +56,8 @@ public class AdminBrowseEvent extends AppCompatActivity {
         CollectionReference eventRef = db.collection("Events");
         searchview = findViewById(R.id.search_bar);
 
-        EventsAdapter adapter = new EventsAdapter(this, eventsList);
+        AdminEventsAdapter adapter = new AdminEventsAdapter(this, eventsList);
         listView.setAdapter(adapter);
-
-
 
         // onItemClickListener, goes to that event's detail page
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -104,18 +105,17 @@ public class AdminBrowseEvent extends AppCompatActivity {
         });
 
         //search and filter options, user enters event to be searched
-//        searchview.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                adapter.filter(newText);
-//                return false;
-//            }
-//        });
-    }
+        searchview.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter.filter(newText);
+                return false;
+            }
+        });
+    }
 }

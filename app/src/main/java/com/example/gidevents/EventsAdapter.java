@@ -16,13 +16,8 @@ import java.util.List;
  */
 public class EventsAdapter extends ArrayAdapter<Events> {
 
-//        private List<Events> events;
-//        private List<Events> filteredEvents;
-
         public EventsAdapter(Context context, List<Events> events) {
             super(context, 0, events);
-//            this.events = events;
-//            this.filteredEvents = new ArrayList<>(events);
         }
 
         @Override
@@ -52,31 +47,6 @@ public class EventsAdapter extends ArrayAdapter<Events> {
 
             return convertView;
         }
-//    @Override
-//    public int getCount() {
-//        return filteredEvents.size();
-//    }
-//
-//    @Override
-//    public Events getItem(int position) {
-//        return filteredEvents.get(position);
-//    }
-//
-//    public void filter(String text) {
-//        text = text.toLowerCase();
-//        filteredEvents.clear();
-//        if (text.length() == 0) {
-//            filteredEvents.addAll(events);
-//        } else {
-//            for (Events item : events) {
-//                if (item.getEventTitle().toLowerCase().contains(text) ||
-//                        item.getEventDate().toLowerCase().contains(text) ||
-//                        item.getLocation().toLowerCase().contains(text)) {
-//                    filteredEvents.add(item);
-//                }
-//            }
-//        }
-//        notifyDataSetChanged();
-//    }
+
 
 }

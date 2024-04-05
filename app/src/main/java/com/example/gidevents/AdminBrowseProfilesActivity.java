@@ -44,8 +44,7 @@ public class AdminBrowseProfilesActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
         Button backBtn = (Button) findViewById(R.id.back_button);
         backBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(AdminBrowseProfilesActivity.this, UserProfileDetailsPage.class);
-            startActivity(intent);
+            finish();
         });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

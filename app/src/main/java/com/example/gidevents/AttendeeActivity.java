@@ -26,6 +26,12 @@ public class AttendeeActivity extends AppCompatActivity {
         Button notifBtn = (Button) findViewById(R.id.notificationButton);
         Button profileEditBtn = (Button) findViewById(R.id.profileEditButton);
         Button browseEventsBtn = (Button) findViewById(R.id.browseEventsButton);
+        Button backBtn = (Button) findViewById(R.id.back_button);
+
+
+        backBtn.setOnClickListener(v -> {
+            finish();
+        });
 
         checkInBtn.setOnClickListener(v -> {
             Intent intent = new Intent(AttendeeActivity.this, ScanQRCodeActivity.class);

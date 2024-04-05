@@ -82,11 +82,17 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                 description.setText(eventDetails.getEventDescription());
 
                 signUpButton = findViewById(R.id.sign_up_button);
-
+                Button backBtn = (Button) findViewById(R.id.back_button);
+                backBtn.setOnClickListener(v -> {
+                    finish();
+                });
+                String eventID = eventDetails.getEventID();
                 signUpButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        signUpWindow(userID);
+                        addEventToMyEvents(eventID);
+                        participantSignUp(userID,eventID);
+                        Toast.makeText(getApplicationContext(), "Sign up successful", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
@@ -114,46 +120,6 @@ public class EventDetailsPageActivity extends AppCompatActivity {
             return false;
         }
 
-    }
-
-    TextView eventTitleDisplay;
-    Button signUpConfirm;
-    String eventID;
-
-    /**
-     * This method implements the display of the signup window after the signUpButton is clicked
-     * A dialog is shown with EditText for the user to input his info for the event sign up.
-     * Set up an onClickListener for the confirm button
-     */
-    private void signUpWindow(String userID) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.sign_up_window, null);
-        builder.setView(dialogView);
-        final AlertDialog dialog = builder.create();
-
-        eventID = eventDetails.getEventID();
-        eventTitleDisplay = dialogView.findViewById(R.id.eventTitleDisplay);
-        eventTitleDisplay.setText(eventDetails.getEventTitle());
-        EditText usernameInput = dialogView.findViewById(R.id.usernameInput);
-        EditText emailInput = dialogView.findViewById(R.id.emailInput);
-        EditText phoneNumberInput = dialogView.findViewById(R.id.phoneNumberInput);
-
-
-        signUpConfirm = dialogView.findViewById(R.id.confirmButton);
-        signUpConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = usernameInput.getText().toString();
-                String email = emailInput.getText().toString();
-                String phoneNumber = phoneNumberInput.getText().toString();
-                addEventToMyEvents(eventID);
-
-                participantSignUp(userID, username, email, phoneNumber);
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
     }
 
 
@@ -186,20 +152,12 @@ public class EventDetailsPageActivity extends AppCompatActivity {
 
     /**
      * This method complete the user event sign up, sends the user info to the database
-     * Once the confirm button is clicked, the inputs from the EditTexts are read and send
-     * to the database, to the participants collection under the selected event
-     * @param username is the user input username for sign up
-     * @param email is the user input email for sign up
-     * @param phoneNumber is the user input phoneNumber for sign up
+     * Add the user ID to the "participants" collection under the event that the user is signing up
      */
-    private void participantSignUp(String userID, String username, String email, String phoneNumber) {
-        Map<String, Object> newParticipant = new HashMap<>();
-        newParticipant.put("username", username);
-        newParticipant.put("email", email);
-        newParticipant.put("phoneNumber", phoneNumber);
-
+    private void participantSignUp(String userID, String eventID) {
+        Map<String, Object> emptyData = new HashMap<>();
         db.collection("Events").document(eventID).collection("participants").document(userID)
-                .set(newParticipant)
+                .set(emptyData)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "Participant added with userID: " + userID))
                 .addOnFailureListener(e -> Log.e("Firestore", "Error adding participant", e));
     }

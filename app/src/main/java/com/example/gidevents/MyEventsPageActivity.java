@@ -3,6 +3,8 @@ package com.example.gidevents;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.widget.Button;
 import android.widget.ListView;
 import android.content.Intent;
 import android.os.Bundle;
@@ -54,6 +56,7 @@ public class MyEventsPageActivity extends AppCompatActivity{
         FirebaseUser currentUser = mAuth.getCurrentUser();
         MyEventsText = findViewById(R.id.browze_events_text);
         MyEventsText.setText("My Events");
+        Button back_button =  findViewById(R.id.back_button);
 
 
         EventsAdapter adapter = new EventsAdapter(this, eventsList);
@@ -67,6 +70,7 @@ public class MyEventsPageActivity extends AppCompatActivity{
                 startActivity(intent);
             }
         });
+
         //Set up Snapshot listener, populate listview with events in MyEvents
         String userID = currentUser.getUid();
         eventRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -85,10 +89,15 @@ public class MyEventsPageActivity extends AppCompatActivity{
                                     if (myEvent.exists()) {
                                         String eventTitle = doc.getString("eventTitle");
                                         String eventDate = doc.getString("eventDate");
+                                        String eventTime = doc.getString("eventTime");
                                         String organizer = doc.getString("organizer");
+                                        String location = doc.getString("location");
                                         String eventDescription = doc.getString("eventDescription");
+                                        String eventPoster = doc.getString("eventPoster");
                                         Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
-                                        eventsList.add(new Events(eventTitle, eventDate, organizer, eventDescription, R.drawable.poster1, eventID));
+
+                                        eventsList.add(new Events(eventTitle, eventDate, eventTime, location, organizer, eventDescription, eventPoster, eventID));
+
                                         adapter.notifyDataSetChanged();
                                     }
                                 })
@@ -97,6 +106,10 @@ public class MyEventsPageActivity extends AppCompatActivity{
                     adapter.notifyDataSetChanged();
                 }
             }
+        });
+
+        back_button.setOnClickListener(v -> {
+            finish();
         });
     }
 }

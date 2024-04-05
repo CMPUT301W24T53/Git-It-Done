@@ -7,10 +7,12 @@ import java.io.Serializable;
 public class Events implements Serializable {
     private String eventTitle;
     private String eventDate;
-    private String organizer;
+    private String eventTime;
+    private String eventLocation;
+    private String eventOrganizer;
     private String eventDescription;
     private String eventID;
-    private int eventPoster;
+    private String eventPoster;
 
     /** No-argument constructor for Firebase */
     public Events() {
@@ -23,14 +25,19 @@ public class Events implements Serializable {
      * @param eventPoster poster of event
      * @param eventID event ID
      */
-    public Events (String title, String date, String organizer, String description, int eventPoster, String eventID) {
+
+    public Events (String title, String date, String time, String location, String organizer, String description, String eventPoster, String eventID) {
+      
         this.eventTitle = title;
         this.eventDate = date;
-        this.organizer = organizer;
+        this.eventTime = time;
+        this.eventLocation = location;
+        this.eventOrganizer = organizer;
         this.eventDescription = description;
         this.eventPoster = eventPoster;
         this.eventID = eventID;
     }
+
 
     /** Getter of event title
      * @return String of event title
@@ -46,11 +53,21 @@ public class Events implements Serializable {
         return eventDate;
     }
 
+    /** Getter of event time
+     * @return String of event time
+     */
+    public String getEventTime() { return eventTime; }
+
+    /** Getter of event location
+     * @return String of event location
+     */
+    public String getEventLocation() { return eventLocation; }
+
     /** Getter of event organizer
      * @return the string of event organizer
      */
     public String getEventOrganizer() {
-        return organizer;
+        return eventOrganizer;
     }
 
     /** Getter of event description
@@ -64,7 +81,7 @@ public class Events implements Serializable {
      * Not working for now
      * @return the event poster
      */
-    public int getEventPoster() {
+    public String getEventPoster() {
         return eventPoster;
     }
 
@@ -96,8 +113,13 @@ public class Events implements Serializable {
      * @param eventOrganizer string of the organizer name
      */
     public void setEventOrganizer(String eventOrganizer) {
-        this.organizer = eventOrganizer;
+        this.eventOrganizer = eventOrganizer;
     }
+
+    public void setEventLocation(String eventLocation) {
+        this.eventLocation = eventLocation;
+    }
+
 
     /** Setter of event description
      *
@@ -111,7 +133,7 @@ public class Events implements Serializable {
      * not working for now
      * @param posterAddress the address of the poster
      */
-    public void setEventPoster(int posterAddress) {
+    public void setEventPoster(String posterAddress) {
         this.eventPoster = posterAddress;
     }
 

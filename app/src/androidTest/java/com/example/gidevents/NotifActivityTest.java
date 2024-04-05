@@ -16,8 +16,8 @@ import org.junit.Test;
 
 public class NotifActivityTest {
     @Rule
-    public ActivityScenarioRule<NotificationActivity> scenario = new
-            ActivityScenarioRule<NotificationActivity>(NotificationActivity.class);
+    public ActivityScenarioRule<NotifActivity> scenario = new
+            ActivityScenarioRule<NotifActivity>(NotifActivity.class);
 
     /**
      * Test to check for correct navigation to notification details

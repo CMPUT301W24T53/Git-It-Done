@@ -8,12 +8,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
+
+
 import java.util.List;
 
 /** This is the EventsAdapter class
  * Sets up the adapter
  */
 public class EventsAdapter extends ArrayAdapter<Events> {
+
     public EventsAdapter(Context context, List<Events> events) {
         super(context, 0, events);
     }
@@ -27,14 +31,17 @@ public class EventsAdapter extends ArrayAdapter<Events> {
         ImageView posterImageView = convertView.findViewById(R.id.poster);
         TextView titleTextView = convertView.findViewById(R.id.event_title);
         TextView dateTextView = convertView.findViewById(R.id.event_date);
+        TextView timeTextView = convertView.findViewById(R.id.event_time);
+        TextView locationTextView = convertView.findViewById(R.id.event_location);
         TextView organizerTextView = convertView.findViewById(R.id.event_organizer);
         TextView descriptionTextView = convertView.findViewById(R.id.event_description);
 
         assert event != null;
-        posterImageView.setImageResource(event.getEventPoster());
 
         titleTextView.setText(event.getEventTitle());
         dateTextView.setText(event.getEventDate());
+        timeTextView.setText(event.getEventTime());
+        locationTextView.setText(event.getEventLocation());
         organizerTextView.setText(event.getEventOrganizer());
         descriptionTextView.setText(event.getEventDescription());
 

@@ -17,12 +17,10 @@ public class NotifDetailsActivity extends AppCompatActivity {
         Notification notifDetails = (Notification) getIntent().getSerializableExtra("notifDetails");
 
         TextView title = findViewById(R.id.event_title);
-        TextView date = findViewById(R.id.notif_date);
         TextView description = findViewById(R.id.notif_details);
 
 
         title.setText(notifDetails.getEventTitle());
-        date.setText(notifDetails.getDate());
         description.setText(notifDetails.getNotifInfo());
 
         backBtn.setOnClickListener(v -> {

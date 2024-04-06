@@ -1,6 +1,12 @@
 package com.example.gidevents;
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,16 +17,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import com.example.gidevents.FirebaseTokenHelper;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +49,31 @@ public class EventDetailsPageActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
     private String userID;
+    private DocumentReference userRef;
 
+
+    public void subscribeToEventNotifs(String eventID) {
+        FirebaseMessaging.getInstance().subscribeToTopic(eventID)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                CharSequence name = "Notifications";
+                                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                                NotificationChannel channel = new NotificationChannel(eventID, name, importance);
+
+                                NotificationManager notificationManager = (NotificationManager) GlobalContext.context.getSystemService(Context.NOTIFICATION_SERVICE);
+                                notificationManager.createNotificationChannel(channel);
+                            }
+
+                            Log.d("FCM Notifications", "Subscribed to event: " + eventID);
+                        } else {
+                            Log.e("FCM Notifications", "Failed to subscribe to event: " + eventID);
+                        }
+                    }
+                });
+    }
 
 
     /**
@@ -147,12 +184,24 @@ public class EventDetailsPageActivity extends AppCompatActivity {
         signUpConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = usernameInput.getText().toString();
-                String email = emailInput.getText().toString();
-                String phoneNumber = phoneNumberInput.getText().toString();
-                addEventToMyEvents(eventID);
+                userRef = db.collection("Users").document(userID);
+                userRef.get()
+                        .addOnSuccessListener(user -> {
+                            if (user.exists()) {
+                                String fcmToken = user.getString("fcmToken");
 
-                participantSignUp(userID, username, email, phoneNumber);
+                                String username = usernameInput.getText().toString();
+                                String email = emailInput.getText().toString();
+                                String phoneNumber = phoneNumberInput.getText().toString();
+                                addEventToMyEvents(eventID);
+
+
+                                subscribeToEventNotifs(eventID);
+
+                                participantSignUp(userID, username, email, phoneNumber, fcmToken);
+                            }
+                        });
+
                 dialog.dismiss();
             }
         });
@@ -195,11 +244,13 @@ public class EventDetailsPageActivity extends AppCompatActivity {
      * @param email is the user input email for sign up
      * @param phoneNumber is the user input phoneNumber for sign up
      */
-    private void participantSignUp(String userID, String username, String email, String phoneNumber) {
+    private void participantSignUp(String userID, String username, String email, String phoneNumber, String fcmToken) {
+
         Map<String, Object> newParticipant = new HashMap<>();
         newParticipant.put("username", username);
         newParticipant.put("email", email);
         newParticipant.put("phoneNumber", phoneNumber);
+        newParticipant.put("fcmToken", fcmToken);
 
         db.collection("Events").document(eventID).collection("participants").document(userID)
                 .set(newParticipant)

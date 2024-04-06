@@ -25,12 +25,10 @@ public class NotificationsAdapter extends ArrayAdapter<Notification> {
 
         Notification notif = getItem(position);
         TextView notifEvent = convertView.findViewById(R.id.event_title);
-        TextView notifDate = convertView.findViewById(R.id.notif_date);
         TextView notifDetails = convertView.findViewById(R.id.notif_description);
         assert notif != null;
 
         notifEvent.setText(notif.getEventTitle());
-        notifDate.setText(notif.getDate());
         notifDetails.setText(notif.getNotifInfo());
 
         return convertView;

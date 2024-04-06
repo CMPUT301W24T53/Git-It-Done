@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     >
 
-    <!-- add this button into your organizer activity xml. When you merge, you can change the place, but please don't delete it.-->
     <Button
         android:id="@+id/back_button"
         android:layout_width="wrap_content"
@@ -14,7 +13,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
-    <!-- add this button into your organizer activity xml. When you merge, please don't delete it. -->
+
+    <Button
+        android:id="@+id/notif_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notify Participants"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
     <ListView
         android:id="@+id/organizer_participants_listview"
         android:layout_width="match_parent"

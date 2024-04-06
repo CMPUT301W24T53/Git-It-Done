@@ -2,8 +2,13 @@ package com.example.gidevents;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,23 +16,30 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+
 import java.util.ArrayList;
 
 public class NotifActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    private String userID;
     private CollectionReference notifRef;
-    FirebaseFirestore notifDB;
+    private CollectionReference userEventsRef;
+    FirebaseFirestore db;
     private NotificationsAdapter notifAdapter;
     private ArrayList<Notification> notifList = new ArrayList<Notification>();
     private ListView listView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +47,14 @@ public class NotifActivity extends AppCompatActivity {
         setContentView(R.layout.notif_list_display);
         listView = findViewById(R.id.notif_listview);
         mAuth = FirebaseAuth.getInstance();
-        notifDB = FirebaseFirestore.getInstance();
-        notifRef = notifDB.collection("Notifications");
+        userID = mAuth.getCurrentUser().getUid();
+        db = FirebaseFirestore.getInstance();
+        notifRef = db.collection("Notifications");
+        userEventsRef = db.collection("Users").document(userID).collection("myEvents");
 
         notifAdapter = new NotificationsAdapter(this, notifList);
         listView.setAdapter(notifAdapter);
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -50,33 +65,30 @@ public class NotifActivity extends AppCompatActivity {
             }
         });
 
-        notifRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot querySnapshot,
-                                @Nullable FirebaseFirestoreException error) {
-                if(error != null) {
-                    Log.e("NotifDB", error.toString());
-                    return;
-                }
+        notifRef.addSnapshotListener((querySnapshot, error) -> {
+            if (error != null) {
+                Log.e("Firestore Notifications", "Error fetching notifications: " + error.getMessage());
+                return;
+            }
 
-                if(querySnapshot != null) {
-                    notifList.clear();
-                    for(QueryDocumentSnapshot doc : querySnapshot) {
-                        String eventTitle = doc.getId();
-                        String details = doc.getString("details");
-                        String notifDate = doc.getString("notifDate");
-                        String notifType = doc.getString("notifType");
+            if (querySnapshot != null) {
+                notifList.clear(); // Clear existing notifications
 
-                        Log.d("NotifDB", String.format("Event: %s fetched", eventTitle));
-                        notifList.add(new Notification(eventTitle, details, notifDate, notifType));
+                for (DocumentSnapshot doc : querySnapshot) {
+                    String eventID = doc.getString("eventID");
+                    String eventTitle = doc.getString("eventTitle"); // Ensure field names are correct
+                    String details = doc.getString("details");
+
+                    if (eventID != null && eventTitle != null && details != null) {
+                        notifList.add(new Notification(eventTitle, details));
                     }
-                    notifAdapter.notifyDataSetChanged();
-                    Log.d("NotifDB", "NotifAdapter should be updated");
                 }
+
+                // Update the UI after fetching notifications
+                notifAdapter.notifyDataSetChanged();
+                Log.d("Firestore Notifications", "Notifications updated");
             }
         });
-
-
 
         Button backBtn = (Button) findViewById(R.id.back_button);
 

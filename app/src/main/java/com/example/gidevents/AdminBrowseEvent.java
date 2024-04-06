@@ -69,7 +69,8 @@ public class AdminBrowseEvent extends AppCompatActivity {
         // goes to AdminBrowseEvent page
         Button backBtn = (Button) findViewById(R.id.back_button);
         backBtn.setOnClickListener(v -> {
-            finish();
+            Intent intent = new Intent(AdminBrowseEvent.this, AdminActivity.class);
+            startActivity(intent);
         });
 
         //Set up Snapshot listener, populate listview with events in database

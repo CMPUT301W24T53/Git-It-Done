@@ -1,8 +1,10 @@
 package com.example.gidevents;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -12,8 +14,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -23,6 +26,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -30,9 +34,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -45,17 +47,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 
 public class CreateEventActivity extends AppCompatActivity {
 
-    private EditText etOrganizerName, etEventTitle, etEventDescription, etAttendeeLimit,etEventLocation;
+    private EditText etEventOrganizer, etEventTitle, etEventDescription, etAttendeeLimit,etEventLocation;
     private TextView tvSelectedDate;
     private ImageView ivEventPoster;
-    private Button btnSelectDate, btnUploadPoster, btnGenerateQRCodes;
+    private Button btnSelectDate, btnUploadPoster, btnGenerateQRCodes, btnReuseQR;
+
 
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
@@ -66,22 +70,29 @@ public class CreateEventActivity extends AppCompatActivity {
     private StorageReference qrCodeStorageRef;
     private SwitchMaterial toggleAttendeeLimit;
 
+    private String reuseQR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+
+        Button btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> onBackPressed());
+
         // Initialize Firebase Firestore and Storage references
         db = FirebaseFirestore.getInstance();
         posterStorageRef = FirebaseStorage.getInstance().getReference("eventPosters");
         qrCodeStorageRef = FirebaseStorage.getInstance().getReference("QRCodeBitmap");
 
-        etOrganizerName = findViewById(R.id.etOrganizerName);
+        etEventOrganizer = findViewById(R.id.etEventOrganizer);
         etEventTitle = findViewById(R.id.etEventTitle);
         etEventLocation = findViewById(R.id.etEventLocation);
         etEventDescription = findViewById(R.id.etEventDescription);
         ivEventPoster = findViewById(R.id.ivEventPoster);
         btnUploadPoster = findViewById(R.id.btnUploadPoster);
+        btnReuseQR = findViewById(R.id.btnReuseQR);
+
         btnGenerateQRCodes = findViewById(R.id.btnGenerateQRCodes);
         toggleAttendeeLimit = findViewById(R.id.toggleAttendeeLimit);
         etAttendeeLimit = findViewById(R.id.etAttendeeLimit);
@@ -102,6 +113,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 }
         });
 
+
+
         btnSelectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,6 +126,13 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openFileChooser();
+            }
+        });
+
+        btnReuseQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showQRPickerDialog();
             }
         });
 
@@ -161,6 +181,72 @@ public class CreateEventActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
+    private void showQRPickerDialog(){
+        ListView listView = new ListView(this);
+
+        ArrayList<String[]> data = new ArrayList<>();
+        OrganizerReuseQRAdapter adapter= new OrganizerReuseQRAdapter(this, data);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        db.collection("Events").whereEqualTo("creatorID", auth.getUid()).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+
+                Log.d("FireStore", "Queried QR codes Successfully!");
+                querySnapshot.forEach(new Consumer<QueryDocumentSnapshot>() {
+                                          @Override
+                                          public void accept(QueryDocumentSnapshot queryDocumentSnapshot) {
+                                              String[] d = {queryDocumentSnapshot.get("checkInEventID").toString(),queryDocumentSnapshot.get("eventTitle").toString() };
+                                              data.add(d);
+                                              adapter.notifyDataSetChanged();
+                                          }
+                                      }
+                );
+            }
+        });
+
+
+
+
+
+        listView.setAdapter(adapter);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listView.setFocusable(false);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                listView.setSelection(position);
+                Log.d("test", "this item has been clicked" );
+            }
+        });
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true)
+                .setTitle("Pick a QR Code")
+                .setPositiveButton("confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        reuseQR = data.get(listView.getCheckedItemPosition())[0];
+                        Log.d("test", "this is the selected item" + (String)listView.getSelectedItem());
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        reuseQR = null;
+                    }
+                })
+                .setView(listView);
+
+        final AlertDialog dialog = builder.create();
+
+        dialog.show();
+
+
+    }
+
     /**
      * Open a file chooser to select an image for the event poster.
      */
@@ -189,7 +275,7 @@ public class CreateEventActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         String creatorID = mAuth.getCurrentUser().getUid();
 
-        String organizerName = etOrganizerName.getText().toString().trim();
+        String eventOrganizer = etEventOrganizer.getText().toString().trim();
         String eventTitle = etEventTitle.getText().toString().trim();
         String eventLocation = etEventLocation.getText().toString().trim();
         String eventDescription = etEventDescription.getText().toString().trim();
@@ -203,7 +289,7 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
 
-        if (TextUtils.isEmpty(organizerName) || TextUtils.isEmpty(eventTitle) || TextUtils.isEmpty(eventLocation)
+        if (TextUtils.isEmpty(eventOrganizer) || TextUtils.isEmpty(eventTitle) || TextUtils.isEmpty(eventLocation)
                 || TextUtils.isEmpty(eventDescription) || TextUtils.isEmpty(eventDate)
                 || posterImageUri == null) {
             Toast.makeText(this, "Please fill in all fields and upload an event poster", Toast.LENGTH_SHORT).show();
@@ -211,10 +297,17 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         String eventId = generateRandomEventId();
-        String checkInEventId = "CHECKIN-" + eventId;
+        String checkInEventId;
+        if (reuseQR != null) {
+            checkInEventId = reuseQR;
 
+        }else {
+            checkInEventId ="CHECKIN-" + eventId;
+
+        }
+        Log.d("test", "created event qr with this checkin ID: " + checkInEventId);
         Map<String, Object> eventData = new HashMap<>();
-        eventData.put("eventOrganizer", organizerName);
+        eventData.put("eventOrganizer", eventOrganizer);
         eventData.put("eventTitle", eventTitle);
         eventData.put("eventLocation", eventLocation);
         eventData.put("eventDescription", eventDescription);
@@ -282,12 +375,12 @@ public class CreateEventActivity extends AppCompatActivity {
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(CreateEventActivity.this, "QR Code uploaded successfully", Toast.LENGTH_SHORT).show();
+                // QR Code uploaded successfully
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(CreateEventActivity.this, "Failed to upload QR Code", Toast.LENGTH_SHORT).show();
+                // Failed to upload QR Code
             }
         });
     }
@@ -367,4 +460,5 @@ public class CreateEventActivity extends AppCompatActivity {
     private String generateRandomEventId() {
         return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 6);
     }
+
 }

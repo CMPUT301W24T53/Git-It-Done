@@ -31,6 +31,9 @@ public class QRCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_code);
 
+        Button btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> onBackPressed());
+
         checkInQRCodeImageView = findViewById(R.id.checkInQRCodeImageView);
         eventQRCodeImageView = findViewById(R.id.eventQRCodeImageView);
 

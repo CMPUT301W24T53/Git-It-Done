@@ -27,10 +27,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.example.gidevents.FirebaseTokenHelper;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -118,15 +115,21 @@ public class EventDetailsPageActivity extends AppCompatActivity {
 
                 date.setText(eventDetails.getEventDate());
                 organizer.setText(eventDetails.getEventOrganizer());
-                location.setText(eventDetails.getLocation());
+                location.setText(eventDetails.getEventLocation());
                 description.setText(eventDetails.getEventDescription());
 
                 signUpButton = findViewById(R.id.sign_up_button);
-
+                Button backBtn = (Button) findViewById(R.id.back_button);
+                backBtn.setOnClickListener(v -> {
+                    finish();
+                });
+                String eventID = eventDetails.getEventID();
                 signUpButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        signUpWindow(userID);
+                        addEventToMyEvents(eventID);
+                        participantSignUp(userID,eventID);
+                        Toast.makeText(getApplicationContext(), "Sign up successful", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
@@ -208,7 +211,6 @@ public class EventDetailsPageActivity extends AppCompatActivity {
         dialog.show();
     }
 
-
     /**
      * This method now add the eventID of the current event to the User's MyEvents collection
      * @param eventID the ID of the current event
@@ -238,12 +240,9 @@ public class EventDetailsPageActivity extends AppCompatActivity {
 
     /**
      * This method complete the user event sign up, sends the user info to the database
-     * Once the confirm button is clicked, the inputs from the EditTexts are read and send
-     * to the database, to the participants collection under the selected event
-     * @param username is the user input username for sign up
-     * @param email is the user input email for sign up
-     * @param phoneNumber is the user input phoneNumber for sign up
+     * Add the user ID to the "participants" collection under the event that the user is signing up
      */
+
     private void participantSignUp(String userID, String username, String email, String phoneNumber, String fcmToken) {
 
         Map<String, Object> newParticipant = new HashMap<>();

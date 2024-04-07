@@ -1,13 +1,24 @@
 package com.example.gidevents;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -28,6 +39,8 @@ public class ParticipantListActivity extends AppCompatActivity {
     CollectionReference participantRef;
     private ArrayList<String> participantList = new ArrayList<>();
     private ListView listView;
+    private String nTitle;
+    private String nDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +86,7 @@ public class ParticipantListActivity extends AppCompatActivity {
         });
 
         Button back_button = findViewById(R.id.back_button);
+        Button newNotifBtn = findViewById(R.id.notif_button);
 
         back_button.setOnClickListener(v -> {
             finish();
@@ -149,5 +163,18 @@ public class ParticipantListActivity extends AppCompatActivity {
             notifCreatePopup.dismiss();
         });
 
+    }
+
+    public void notifSender(Context context, String eventID, String eventName, String body) {
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, eventID);
+        builder.setSmallIcon(R.drawable.ic_event);
+        builder.setContentTitle(eventName);
+        builder.setContentText(body);
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
+
+
+        managerCompat.notify(1, builder.build());
     }
 }

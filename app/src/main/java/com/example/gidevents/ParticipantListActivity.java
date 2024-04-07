@@ -52,7 +52,7 @@ public class ParticipantListActivity extends AppCompatActivity {
         Events eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
         eventID = eventDetails.getEventID();
 
-        ParticipantsAdapter adapter = new ParticipantsAdapter(this, participantList);
+        CheckInsAdapter adapter = new CheckInsAdapter(this, participantList);
         listView = findViewById(R.id.organizer_participants_listview);
         listView.setAdapter(adapter);
 

@@ -61,9 +61,8 @@ public class EventDetailsEditActivity extends AppCompatActivity {
 
                 date.setText(eventDetails.getEventDate());
                 organizer.setText(eventDetails.getEventOrganizer());
-                location.setText(eventDetails.getEventLocation());
-
                 description.setText(eventDetails.getEventDescription());
+
 
             }
         } catch (Exception e) {

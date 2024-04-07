@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.example.gidevents.FirebaseTokenHelper;
@@ -46,31 +47,6 @@ public class EventDetailsPageActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
     private String userID;
-    private DocumentReference userRef;
-
-
-    public void subscribeToEventNotifs(String eventID) {
-        FirebaseMessaging.getInstance().subscribeToTopic(eventID)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                CharSequence name = "Notifications";
-                                int importance = NotificationManager.IMPORTANCE_DEFAULT;
-                                NotificationChannel channel = new NotificationChannel(eventID, name, importance);
-
-                                NotificationManager notificationManager = (NotificationManager) GlobalContext.context.getSystemService(Context.NOTIFICATION_SERVICE);
-                                notificationManager.createNotificationChannel(channel);
-                            }
-
-                            Log.d("FCM Notifications", "Subscribed to event: " + eventID);
-                        } else {
-                            Log.e("FCM Notifications", "Failed to subscribe to event: " + eventID);
-                        }
-                    }
-                });
-    }
 
 
     /**
@@ -88,10 +64,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
         if (user != null) {
            userID = user.getUid();
         }
-
-
         eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
-
 
         try {
             Events eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
@@ -128,7 +101,9 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         addEventToMyEvents(eventID);
-                        participantSignUp(userID,eventID);
+                        participantSignUp(userID, eventID);
+                        subscribeToEventNotifs(eventID);
+
                         Toast.makeText(getApplicationContext(), "Sign up successful", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -140,75 +115,6 @@ public class EventDetailsPageActivity extends AppCompatActivity {
             Log.e("EventDetailsPageActivity", "Error setting event details", e);
             Toast.makeText(this, "Error displaying event details.", Toast.LENGTH_LONG).show();
         }
-    }
-    /**
-     * Checks if the given resource identifier is valid by attempting to retrieve the resource name.
-     * If the resource name is not found, it means the resource identifier is invalid.
-     *
-     * @param resId The resource identifier to validate.
-     * @return True if the resource identifier is valid, false otherwise.
-     */
-    private boolean isValidResource(int resId) {
-        try {
-            // Attempting to obtain the resource will throw if it doesn't exist
-            getResources().getResourceName(resId);
-            return true;
-        } catch (Resources.NotFoundException e) {
-            return false;
-        }
-
-    }
-
-    TextView eventTitleDisplay;
-    Button signUpConfirm;
-    String eventID;
-
-    /**
-     * This method implements the display of the signup window after the signUpButton is clicked
-     * A dialog is shown with EditText for the user to input his info for the event sign up.
-     * Set up an onClickListener for the confirm button
-     */
-    private void signUpWindow(String userID) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.sign_up_window, null);
-        builder.setView(dialogView);
-        final AlertDialog dialog = builder.create();
-
-        eventID = eventDetails.getEventID();
-        eventTitleDisplay = dialogView.findViewById(R.id.eventTitleDisplay);
-        eventTitleDisplay.setText(eventDetails.getEventTitle());
-        EditText usernameInput = dialogView.findViewById(R.id.usernameInput);
-        EditText emailInput = dialogView.findViewById(R.id.emailInput);
-        EditText phoneNumberInput = dialogView.findViewById(R.id.phoneNumberInput);
-
-
-        signUpConfirm = dialogView.findViewById(R.id.confirmButton);
-        signUpConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userRef = db.collection("Users").document(userID);
-                userRef.get()
-                        .addOnSuccessListener(user -> {
-                            if (user.exists()) {
-                                String fcmToken = user.getString("fcmToken");
-
-                                String username = usernameInput.getText().toString();
-                                String email = emailInput.getText().toString();
-                                String phoneNumber = phoneNumberInput.getText().toString();
-                                addEventToMyEvents(eventID);
-
-
-                                subscribeToEventNotifs(eventID);
-
-                                participantSignUp(userID, username, email, phoneNumber, fcmToken);
-                            }
-                        });
-
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
     }
 
     /**
@@ -236,24 +142,53 @@ public class EventDetailsPageActivity extends AppCompatActivity {
 
     }
 
-
-
     /**
      * This method complete the user event sign up, sends the user info to the database
      * Add the user ID to the "participants" collection under the event that the user is signing up
      */
+    private void participantSignUp(String userID, String eventID) {
 
-    private void participantSignUp(String userID, String username, String email, String phoneNumber, String fcmToken) {
+        db.collection("Users").document(userID)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    String name;
+                    name = documentSnapshot.getString("Username");
+                    if (name == null) {
+                        name = "";
+                    }
 
-        Map<String, Object> newParticipant = new HashMap<>();
-        newParticipant.put("username", username);
-        newParticipant.put("email", email);
-        newParticipant.put("phoneNumber", phoneNumber);
-        newParticipant.put("fcmToken", fcmToken);
+                    Log.d("Name", name);
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("name", name);
+                    db.collection("Events").document(eventID).collection("participants").document(userID)
+                            .set(data)
+                            .addOnSuccessListener(aVoid -> Log.d("Firestore", "Participant added with userID: " + userID))
+                            .addOnFailureListener(e -> Log.e("Firestore", "Error adding participant", e));
 
-        db.collection("Events").document(eventID).collection("participants").document(userID)
-                .set(newParticipant)
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Participant added with userID: " + userID))
-                .addOnFailureListener(e -> Log.e("Firestore", "Error adding participant", e));
+                });
+    }
+
+
+    public void subscribeToEventNotifs(String eventID) {
+        FirebaseMessaging.getInstance().subscribeToTopic(eventID)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                CharSequence name = "Notifications";
+                                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                                NotificationChannel channel = new NotificationChannel(eventID, name, importance);
+
+                                NotificationManager notificationManager = (NotificationManager) GlobalContext.context.getSystemService(Context.NOTIFICATION_SERVICE);
+                                notificationManager.createNotificationChannel(channel);
+                            }
+
+                            Log.d("FCM Notifications", "Subscribed to event: " + eventID);
+                        } else {
+                            Log.e("FCM Notifications", "Failed to subscribe to event: " + eventID);
+                        }
+                    }
+                });
     }
 }

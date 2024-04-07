@@ -30,12 +30,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ParticipantListActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     String eventID;
     CollectionReference participantRef;
-    private ArrayList<Map<String, Object>> participantList = new ArrayList<>();
+    private ArrayList<String> participantList = new ArrayList<>();
     private ListView listView;
     private String nTitle;
     private String nDetails;
@@ -81,12 +82,11 @@ public class ParticipantListActivity extends AppCompatActivity {
                     participantList.clear();
                     for (QueryDocumentSnapshot doc : querySnapshots) {
                         String participantID = doc.getId();
-                        participantRef.document(participantID).get()
+                        db.collection("Events").document(eventID).collection("participants").document(participantID).get()
                                 .addOnSuccessListener(participant -> {
                                     if (participant.exists()) {
-                                        Map<String,Object> data = participant.getData();
-
-                                        participantList.add(data);
+                                        String name = participant.getString("name");
+                                        participantList.add(name);
                                         adapter.notifyDataSetChanged();
                                     }
                                 })
@@ -169,7 +169,6 @@ public class ParticipantListActivity extends AppCompatActivity {
                 NotifHandler notifHandler = new NotifHandler();
                 notifHandler.storeNotifDetails(nTitle,nDetails,eventID);
                 Log.d("NotifDB", "Notif should be stored");
-
 
                 notifCreatePopup.dismiss(); // Close popup window
             }

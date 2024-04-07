@@ -1,12 +1,6 @@
 package com.example.gidevents;
 
-import android.Manifest;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,21 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import com.example.gidevents.FirebaseTokenHelper;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +34,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
     private String userID;
+
 
 
     /**
@@ -117,6 +105,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
         }
     }
 
+
     /**
      * This method now add the eventID of the current event to the User's MyEvents collection
      * @param eventID the ID of the current event
@@ -147,7 +136,6 @@ public class EventDetailsPageActivity extends AppCompatActivity {
      * Add the user ID to the "participants" collection under the event that the user is signing up
      */
     private void participantSignUp(String userID, String eventID) {
-
         db.collection("Users").document(userID)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -190,5 +178,6 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                         }
                     }
                 });
+
     }
 }

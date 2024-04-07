@@ -39,14 +39,11 @@ android {
 dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
 
-    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-firestore:24.11.0")
     implementation("com.google.firebase:firebase-auth")
     androidTestImplementation("androidx.test:runner:1.5.0")
 
-    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
-    implementation ("com.google.code.gson:gson:2.8.9")
     implementation("androidx.core:core-ktx:1.12.0")
-
 
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.code.gson:gson:2.10.1")
@@ -65,7 +62,9 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
 
+    implementation("com.google.firebase:firebase-core:21.1.1")
     implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
     androidTestImplementation("org.mockito:mockito-android:4.2.0")
     androidTestImplementation("org.mockito:mockito-inline:4.2.0")

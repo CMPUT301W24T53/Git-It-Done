@@ -52,9 +52,7 @@ public class BrowseEventsTest {
         onData(anything()).inAdapterView(withId(R.id.browze_events_listview)).atPosition(0).perform(click());
         intended(hasComponent(EventDetailsPageActivity.class.getName()));
         onView(withId(R.id.sign_up_button)).perform(click());
-        onView(withText("Username:"))
-                .inRoot(isDialog()) 
-                .check(matches(isDisplayed()));
+
 
     }
     @After

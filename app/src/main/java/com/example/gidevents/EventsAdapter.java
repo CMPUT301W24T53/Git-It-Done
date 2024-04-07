@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -31,16 +31,18 @@ public class EventsAdapter extends ArrayAdapter<Events> {
         ImageView posterImageView = convertView.findViewById(R.id.poster);
         TextView titleTextView = convertView.findViewById(R.id.event_title);
         TextView dateTextView = convertView.findViewById(R.id.event_date);
-        TextView timeTextView = convertView.findViewById(R.id.event_time);
         TextView locationTextView = convertView.findViewById(R.id.event_location);
         TextView organizerTextView = convertView.findViewById(R.id.event_organizer);
         TextView descriptionTextView = convertView.findViewById(R.id.event_description);
 
         assert event != null;
-
+        Glide.with(getContext())
+                .load(event.getEventPoster())
+                .placeholder(R.drawable.my_event_icon) // Optional placeholder while image loads
+                .error(R.drawable.my_event_icon)       // Optional error image if load fails
+                .into(posterImageView);                         // Set the ImageView to display the image
         titleTextView.setText(event.getEventTitle());
         dateTextView.setText(event.getEventDate());
-        timeTextView.setText(event.getEventTime());
         locationTextView.setText(event.getEventLocation());
         organizerTextView.setText(event.getEventOrganizer());
         descriptionTextView.setText(event.getEventDescription());

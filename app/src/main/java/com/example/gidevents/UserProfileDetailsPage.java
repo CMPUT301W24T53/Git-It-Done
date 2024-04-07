@@ -71,6 +71,10 @@ public class UserProfileDetailsPage extends AppCompatActivity {
                 genderTextView.setText("Gender: "+ userDetails.getGender());
                 birthdayTextView.setText("Birthday: "+ userDetails.getBirthday());
 
+                Button backBtn = (Button) findViewById(R.id.back_button);
+                backBtn.setOnClickListener(v -> {
+                    finish();
+                });
 
 
 

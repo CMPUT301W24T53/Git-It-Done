@@ -170,7 +170,7 @@ public class CreateEventActivity extends AppCompatActivity {
                                     Toast.makeText(CreateEventActivity.this, "The start time must be after the current time", Toast.LENGTH_SHORT).show();
                                 } else {
                                     String selectedDateTime = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.MEDIUM, SimpleDateFormat.SHORT).format(selectedCalendar.getTime());
-                                    tvSelectedDate.setText("Event start time: " + selectedDateTime);
+                                    tvSelectedDate.setText(selectedDateTime);
                                 }
                             }, currentHour, currentMinute, false);
 

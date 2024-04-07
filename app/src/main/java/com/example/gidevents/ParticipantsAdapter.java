@@ -10,9 +10,9 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.Map;
 
-public class CheckInsAdapter extends ArrayAdapter<Map<String,Object>> {
+public class ParticipantsAdapter extends ArrayAdapter<Map<String,Object>> {
     private List<Map<String, Object>> data;
-    public CheckInsAdapter(Context context, List<Map<String, Object>> participants) {
+    public ParticipantsAdapter(Context context, List<Map<String, Object>> participants) {
         super(context, 0, participants);
         data = participants;
     }

@@ -110,10 +110,10 @@ public class ProfileEditActivity extends AppCompatActivity  implements AttendeeE
                         String Usrname = user.getUsrName();
                         pfpImage.setVisibility(View.INVISIBLE);
                         if (Usrname.length()<2){
-                            pfpText.setText(user.getUsrName());
+                            pfpText.setText(Usrname);
                         }
                         else{
-                            pfpText.setText(user.getUsrName().substring(0,2));
+                            pfpText.setText(Usrname.substring(0,2));
                         }
                         pfpText.setVisibility(View.VISIBLE);
                     }

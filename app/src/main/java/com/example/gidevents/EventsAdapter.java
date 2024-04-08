@@ -21,27 +21,25 @@ import java.util.List;
  */
 public class EventsAdapter extends ArrayAdapter<Events> implements Filterable {
     private List<Events> events;
+    private List<Events> filteredEvents;
     public EventsAdapter(Context context, List<Events> events) {
         super(context, 0, events);
-        this.events = events;
+        this.events =events;
+        this.filteredEvents = new ArrayList<>(events);
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view;
         if (convertView == null) {
-            view = LayoutInflater.from(getContext()).inflate(R.layout.event_display, parent, false);
-        }
-        else{
-            view = convertView;
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.event_display, parent, false);
         }
 
         Events event = getItem(position);
-        ImageView posterImageView = view.findViewById(R.id.poster);
-        TextView titleTextView = view.findViewById(R.id.event_title);
-        TextView dateTextView = view.findViewById(R.id.event_date);
-        TextView locationTextView = view.findViewById(R.id.event_location);
-        TextView organizerTextView = view.findViewById(R.id.event_organizer);
-        TextView descriptionTextView = view.findViewById(R.id.event_description);
+        ImageView posterImageView = convertView.findViewById(R.id.poster);
+        TextView titleTextView = convertView.findViewById(R.id.event_title);
+        TextView dateTextView = convertView.findViewById(R.id.event_date);
+        TextView locationTextView = convertView.findViewById(R.id.event_location);
+        TextView organizerTextView = convertView.findViewById(R.id.event_organizer);
+        TextView descriptionTextView = convertView.findViewById(R.id.event_description);
 
         assert event != null;
         Glide.with(getContext())
@@ -55,6 +53,47 @@ public class EventsAdapter extends ArrayAdapter<Events> implements Filterable {
         organizerTextView.setText(event.getEventOrganizer());
         descriptionTextView.setText(event.getEventDescription());
 
-        return view;
+        return convertView;
     }
+    @Override
+    public int getCount() {
+        return filteredEvents.size();
+    }
+
+    @Override
+    public Events getItem(int position) {
+        return filteredEvents.get(position);
+    }
+
+    @Override
+    public Filter getFilter () {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+                if (constraint == null || constraint.length()==0) {
+                    results.values = events;
+                } else {
+                    List<Events> filteredList = new ArrayList<>();
+                    String filteredText = constraint.toString().toLowerCase().trim();
+                    for (Events event : events) {
+                        if (event.getEventTitle().toLowerCase().trim().contains(filteredText)) {
+                            filteredList.add(event);
+                        }
+                    }
+                    results.values = filteredList;
+                }
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredEvents = (List<Events>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+
+
 }

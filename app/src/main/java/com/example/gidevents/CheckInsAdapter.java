@@ -38,11 +38,11 @@ public class CheckInsAdapter extends ArrayAdapter<Map<String,Object>> {
             username = (String)participant.get("username");
         }
 
-        if ((String)participant.get("timestamp") == null ||(String)participant.get("timestamp") == "" ){
+        if (participant.get("timestamp").toString() == null ||participant.get("timestamp").toString() == "" ){
             timeStamp = "None";
         }
         else {
-            timeStamp = (String)participant.get("timestamp");
+            timeStamp = participant.get("timestamp").toString();
         }
 
         if (participant.get("numOfCheckIns") == null){

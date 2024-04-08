@@ -7,6 +7,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.google.firebase.Timestamp;
+import com.google.type.Date;
+import com.google.type.DateTime;
+import com.google.type.DateTimeOrBuilder;
+
+import java.text.DateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +48,8 @@ public class CheckInsAdapter extends ArrayAdapter<Map<String,Object>> {
             timeStamp = "None";
         }
         else {
-            timeStamp = participant.get("timestamp").toString();
+            Timestamp time = (Timestamp) participant.get("timestamp");
+            timeStamp = time.toDate().toString();
         }
 
         if (participant.get("numOfCheckIns") == null){

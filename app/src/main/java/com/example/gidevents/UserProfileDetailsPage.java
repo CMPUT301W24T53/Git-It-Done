@@ -137,10 +137,8 @@ public class UserProfileDetailsPage extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firestore", "User deleted: " + userID);
                     Toast.makeText(getApplicationContext(), "User deleted!", Toast.LENGTH_SHORT).show();
+                    finish();
 
-                    Intent intent = new Intent(UserProfileDetailsPage.this, AdminBrowseProfilesActivity.class);
-                    startActivity(intent);
-                    //Maybe delete the user from the events he participated?
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Error deleting user: " + userID, e);

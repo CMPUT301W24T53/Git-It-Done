@@ -56,7 +56,7 @@ public class OrganizerActivity extends AppCompatActivity {
                     return;
                 }
                 if(querySnapshots != null) {
-                    eventsList.clear();
+                    adapter.clear();
                     for (QueryDocumentSnapshot doc : querySnapshots) {
                         String eventID = doc.getId();
                         eventRef.document(eventID).get()
@@ -71,12 +71,12 @@ public class OrganizerActivity extends AppCompatActivity {
 
                                         Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
 
-                                        eventsList.add(new Events(eventTitle, eventDate, location, organizer, eventDescription, eventPoster, eventID));
+                                        adapter.add(new Events(eventTitle, eventDate, location, organizer, eventDescription, eventPoster, eventID));
 
                                     }
-                                    adapter.notifyDataSetChanged();
                                 });
                     }
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
@@ -99,7 +99,8 @@ public class OrganizerActivity extends AppCompatActivity {
         });
 
         backBtn.setOnClickListener(v -> {
-            finish();
+            Intent intent = new Intent(OrganizerActivity.this, MainActivity.class);
+            startActivity(intent);
         });
     }
 }

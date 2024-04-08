@@ -10,10 +10,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Objects;
 
 public class UserProfileDetailsPage extends AppCompatActivity {
     private FirebaseFirestore db;
@@ -38,6 +45,7 @@ public class UserProfileDetailsPage extends AppCompatActivity {
             if (userDetails != null) {
                 TextView usernameTextView = findViewById(R.id.username);
                 ImageView profilePic = findViewById(R.id.profile_pic);
+                TextView profilePicText = findViewById(R.id.profile_pic_text);
                 TextView userIdTextView = findViewById(R.id.user_id);
                 TextView nameTextView = findViewById(R.id.name);
                 TextView emailTextView = findViewById(R.id.email);
@@ -60,6 +68,32 @@ public class UserProfileDetailsPage extends AppCompatActivity {
                     eventCountTextView.setText("# of Events Signed Up: "+ eventCount);
 
 
+                });
+                db.collection("Users").document(userID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot userDoc = task.getResult();
+                        String pfpImage = userDoc.getString("pfpImage");
+                        if (pfpImage == null || pfpImage.isEmpty()){
+                            String Usrname = userDetails.getName();
+                            if (Objects.equals(Usrname, "N/A")){
+                                Usrname = "None";
+                            }
+                            profilePic.setVisibility(View.INVISIBLE);
+                            if (Usrname.length()<2){
+                                profilePicText.setText(Usrname);
+                            }
+                            else{
+                                profilePicText.setText(Usrname.substring(0,2));
+                            }
+                            profilePicText.setVisibility(View.VISIBLE);
+                        }
+                        else{
+                            profilePicText.setVisibility(View.INVISIBLE);
+                            Glide.with(profilePic).load(pfpImage).into(profilePic);
+                            profilePic.setVisibility(View.VISIBLE);
+                        }
+                    }
                 });
 
                 usernameTextView.setText(userDetails.getUsername());

@@ -29,9 +29,9 @@ public class CheckInsAdapter extends ArrayAdapter<Map<String,Object>> {
 
 
         assert participant != null;
-        usernameTextView.setText("User Name: " + participant.get("username").toString());
-        timestampTextView.setText("Time Stamp: " + participant.get("timeStamp").toString());
-        numCheckinTextView.setText("Number Of Check Ins: " + participant.get("numOfCheckIns").toString());
+        usernameTextView.setText("User Name: " + (String)participant.get("username"));
+        timestampTextView.setText("Time Stamp: " + (String)participant.get("timeStamp"));
+        numCheckinTextView.setText("Number Of Check Ins: " + (String)participant.get("timeStamp"));
 
 
 

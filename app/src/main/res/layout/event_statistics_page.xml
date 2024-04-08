@@ -38,5 +38,17 @@
         map:layout_constraintStart_toEndOf="@+id/eventStatsText"
         map:layout_constraintTop_toBottomOf="@+id/map" />
 
+    <Button
+        android:id="@+id/event_stats_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="@string/back_button"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        map:layout_constraintStart_toStartOf="parent"
+        map:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,7 +42,7 @@ public class ProfileEditActivity extends AppCompatActivity  implements AttendeeE
     private FirebaseFirestore db;
     private DocumentReference userRef;
     private AttendeeProfileEditAdapter optionAdapter;
-    private Button changepfpbttn;
+    private Button changepfpbttn, backbttn;
     private TextView pfpText;
     private ImageView pfpImage;
 
@@ -92,6 +92,7 @@ public class ProfileEditActivity extends AppCompatActivity  implements AttendeeE
 
         optionsList = findViewById(R.id.attendeeOptionsList);
         changepfpbttn = findViewById(R.id.upChangeProfilePicture);
+        backbttn = findViewById(R.id.attendee_profile_back_button);
         pfpImage = findViewById(R.id.upProfilePictureImage);
         pfpText = findViewById(R.id.upProfilePictureText);
         optionAdapter = new AttendeeProfileEditAdapter(this, options);
@@ -135,6 +136,13 @@ public class ProfileEditActivity extends AppCompatActivity  implements AttendeeE
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProfileEditActivity.this, AttendeeUploadImageActivity.class);
+                startActivity(intent);
+            }
+        });
+        backbttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileEditActivity.this, AttendeeActivity.class);
                 startActivity(intent);
             }
         });

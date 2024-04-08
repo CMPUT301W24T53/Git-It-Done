@@ -40,7 +40,7 @@ public class AttendeeUploadImageActivity extends AppCompatActivity {
     Uri pfpImage;
     FirebaseAuth mAuth;
     DocumentReference userRef;
-    Button selectImage, uploadImage, deleteImage;
+    Button selectImage, uploadImage, deleteImage, backbttn;
     ImageView pfpImageView;
     private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
@@ -69,6 +69,7 @@ public class AttendeeUploadImageActivity extends AppCompatActivity {
         selectImage = findViewById(R.id.attendeeSelectImagebttn);
         uploadImage = findViewById(R.id.attendeeUploadImagebttn);
         deleteImage = findViewById(R.id.attendeeDeleteImagebttn);
+        backbttn = findViewById(R.id.pfp_upload_back_button);
         mAuth = FirebaseAuth.getInstance();
         userRef = FirebaseFirestore.getInstance().collection("Users").document(mAuth.getCurrentUser().getUid());
 
@@ -103,6 +104,13 @@ public class AttendeeUploadImageActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
+            }
+        });
+        backbttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AttendeeUploadImageActivity.this, ProfileEditActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -140,4 +148,5 @@ public class AttendeeUploadImageActivity extends AppCompatActivity {
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(contentResolver.getType(uri));
     }
+
 }

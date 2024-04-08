@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,12 +42,14 @@ public class EventStatisticsActivity extends FragmentActivity implements OnMapRe
     private HashSet<Location> locations;
     private long numCheckIns;
     private TextView checkins;
+    private Button backbttn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_statistics_page);
         checkins = findViewById(R.id.eventStatsTextStat);
+        backbttn = findViewById(R.id.event_stats_back_button);
         eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -78,6 +82,12 @@ public class EventStatisticsActivity extends FragmentActivity implements OnMapRe
                 eventDb.set(data, SetOptions.merge());
                 String text = " " + numCheckIns + " ";
                 checkins.setText(text);
+            }
+        });
+        backbttn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

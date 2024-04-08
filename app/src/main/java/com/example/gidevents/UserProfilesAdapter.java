@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Adapter for user profile
+ */
 public class UserProfilesAdapter extends ArrayAdapter<User> implements Filterable {
     private List<User> users;
     private List<User> filteredUsers;
@@ -34,6 +37,20 @@ public class UserProfilesAdapter extends ArrayAdapter<User> implements Filterabl
         this.users =users;
         this.filteredUsers = new ArrayList<>(users);
     }
+
+    /**
+     * Sets the listview display
+     * @param position The position of the item within the adapter's data set of the item whose view
+     *        we want.
+     * @param convertView The old view to reuse, if possible. Note: You should check that this view
+     *        is non-null and of an appropriate type before using. If it is not possible to convert
+     *        this view to display the correct data, this method can create a new view.
+     *        Heterogeneous lists can specify their number of view types, so that this View is
+     *        always of the right type (see {@link #getViewTypeCount()} and
+     *        {@link #getItemViewType(int)}).
+     * @param parent The parent that this view will eventually be attached to
+     * @return the convert view
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -94,6 +111,11 @@ public class UserProfilesAdapter extends ArrayAdapter<User> implements Filterabl
         return filteredUsers.get(position);
     }
 
+    /**
+     * The filter method implemented for the search function
+     * Performs filtering based on the username field of a user
+     * @return the filtered users
+     */
     @Override
     public Filter getFilter () {
         return new Filter() {

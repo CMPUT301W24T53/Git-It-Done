@@ -37,7 +37,7 @@ public class EventDetailsEditActivity extends AppCompatActivity {
      * It also allows the user to click on the Sign up button to sign up for the event
      */
     private FirebaseFirestore db;
-    CollectionReference checkInRef;
+    private CollectionReference checkInRef;
     private ArrayList<Map<String, Object>> checkInsList = new ArrayList<>();
     private ListView listView;
 

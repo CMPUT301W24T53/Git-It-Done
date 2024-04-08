@@ -99,7 +99,8 @@ public class OrganizerActivity extends AppCompatActivity {
         });
 
         backBtn.setOnClickListener(v -> {
-            finish();
+            Intent intent = new Intent(OrganizerActivity.this, MainActivity.class);
+            startActivity(intent);
         });
     }
 }

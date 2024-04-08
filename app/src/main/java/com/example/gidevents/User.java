@@ -6,6 +6,9 @@ import android.location.Address;
 
 import java.io.Serializable;
 
+/**
+ * This is the User class used to display user profile
+ */
 public class User implements Serializable {
     private String name;
     private String username;
@@ -16,6 +19,17 @@ public class User implements Serializable {
     private String userID;
     private String phone;
 
+    /**
+     * Constructor for User class
+     * @param Name String read from Firestore
+     * @param Username String read from Firestore
+     * @param Address String read from Firestore
+     * @param Birthday String read from Firestore
+     * @param Email String read from Firestore
+     * @param Gender String read from Firestore
+     * @param UserID String read from Firestore
+     * @param Phone String read from Firestore
+     */
     public User(String Name, String Username, String Address, String Birthday, String Email, String Gender, String UserID, String Phone) {
         this.name = Name;
         this.username = Username;
@@ -26,6 +40,7 @@ public class User implements Serializable {
         this.userID = UserID;
         this.phone = Phone;
     }
+    //Some basic getters
     public String getName(){return name == null || name.isEmpty()? "N/A" : name;}
     public String getUsername(){return username == null || username.isEmpty()? "Anonymous User" : username;}
     public String getAddress() {return address == null || address.isEmpty()? "N/A" : address;}

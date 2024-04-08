@@ -41,7 +41,7 @@ public class EventDetailsEditActivity extends AppCompatActivity {
     private ArrayList<Map<String, Object>> checkInsList = new ArrayList<>();
     private ListView listView;
 
-    private String eventID;
+    String eventID;
 
 
     /**
@@ -118,7 +118,11 @@ public class EventDetailsEditActivity extends AppCompatActivity {
                                         db.collection("Users").document(participantID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                             @Override
                                             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                data.put("username", documentSnapshot.get("Username").toString());// Add Username to Map
+                                                if (documentSnapshot.contains("Username")) {
+                                                    data.put("username", documentSnapshot.get("Username").toString());// Add Username to Map
+                                                } else{
+                                                    data.put("username",null);
+                                                }
                                                 checkInsList.add(data);
                                                 adapter.notifyDataSetChanged();
                                             }

@@ -32,15 +32,27 @@
         app:layout_constraintBottom_toBottomOf="@+id/profile_details_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/profile_pic"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
         android:padding="6dp"
         android:src="@drawable/ic_launcher_background"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_details_text">
-    </ImageView>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_details_text" />
+
+    <TextView
+        android:id="@+id/profile_pic_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:textSize="40dp"
+        android:background="@drawable/up_profile_picture_background"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="@id/profile_pic"
+        app:layout_constraintTop_toTopOf="@id/profile_pic"/>
 
     <TextView
         android:id="@+id/username"

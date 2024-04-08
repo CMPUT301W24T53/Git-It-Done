@@ -1,6 +1,15 @@
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+}
+
+secrets{
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "local.defaults.properties"
+    ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+    ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
+
 }
 
 android {
@@ -39,14 +48,12 @@ android {
 dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
 
-    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-firestore:24.11.0")
     implementation("com.google.firebase:firebase-auth")
     androidTestImplementation("androidx.test:runner:1.5.0")
 
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
-    implementation ("com.google.code.gson:gson:2.8.9")
     implementation("androidx.core:core-ktx:1.12.0")
-
 
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.code.gson:gson:2.10.1")
@@ -65,18 +72,23 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
 
+    implementation("com.google.firebase:firebase-core:21.1.1")
     implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
     androidTestImplementation("org.mockito:mockito-android:4.2.0")
     androidTestImplementation("org.mockito:mockito-inline:4.2.0")
     androidTestImplementation("org.mockito:mockito-core:4.5.1")
     testImplementation ("org.hamcrest:hamcrest:2.2")
     implementation ("com.google.firebase:firebase-storage:20.3.0")
+    androidTestImplementation ("androidx.test.espresso:espresso-contrib:3.4.0")
 
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation ("com.google.android.gms:play-services-base:18.3.0")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 
 
 }

@@ -18,6 +18,18 @@
     </ImageView>
 
     <TextView
+        android:id="@+id/profilePicText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        android:visibility="invisible"
+        android:gravity="center"
+        android:background="@drawable/admin_user_profile_text_background"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/profilePic"
+        app:layout_constraintTop_toTopOf="@+id/profilePic"/>
+
+    <TextView
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

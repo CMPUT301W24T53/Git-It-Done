@@ -1,6 +1,10 @@
 package com.example.gidevents;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,13 +15,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,12 +39,14 @@ import java.util.Map;
  * It displays the selected event's details
  * It also allows the user to click on the Sign up button to sign up for the event
  */
-public class EventDetailsPageActivity extends AppCompatActivity {
+public class EventDetailsPageActivity extends AppCompatActivity implements EventListener {
     Button signUpButton;
     Events eventDetails;
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
     private String userID;
+    int intAttendeeCount;
+    int intAttendeeLimit;
 
 
 
@@ -51,10 +65,7 @@ public class EventDetailsPageActivity extends AppCompatActivity {
         if (user != null) {
            userID = user.getUid();
         }
-
-
         eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
-
 
         try {
             Events eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
@@ -87,12 +98,14 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                     finish();
                 });
                 String eventID = eventDetails.getEventID();
+                getAttendeeCount(eventID, this);
+                getAttendeeLimit(eventID, this);
                 signUpButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        addEventToMyEvents(eventID);
-                        participantSignUp(userID,eventID);
-                        Toast.makeText(getApplicationContext(), "Sign up successful", Toast.LENGTH_SHORT).show();
+                        if(spaceAvailable()) {
+                            participantSignUp(userID, eventID);
+                        }
                     }
                 });
             } else {
@@ -103,23 +116,6 @@ public class EventDetailsPageActivity extends AppCompatActivity {
             Log.e("EventDetailsPageActivity", "Error setting event details", e);
             Toast.makeText(this, "Error displaying event details.", Toast.LENGTH_LONG).show();
         }
-    }
-    /**
-     * Checks if the given resource identifier is valid by attempting to retrieve the resource name.
-     * If the resource name is not found, it means the resource identifier is invalid.
-     *
-     * @param resId The resource identifier to validate.
-     * @return True if the resource identifier is valid, false otherwise.
-     */
-    private boolean isValidResource(int resId) {
-        try {
-            // Attempting to obtain the resource will throw if it doesn't exist
-            getResources().getResourceName(resId);
-            return true;
-        } catch (Resources.NotFoundException e) {
-            return false;
-        }
-
     }
 
 
@@ -148,17 +144,115 @@ public class EventDetailsPageActivity extends AppCompatActivity {
 
     }
 
-
-
     /**
      * This method complete the user event sign up, sends the user info to the database
      * Add the user ID to the "participants" collection under the event that the user is signing up
      */
     private void participantSignUp(String userID, String eventID) {
-        Map<String, Object> emptyData = new HashMap<>();
-        db.collection("Events").document(eventID).collection("participants").document(userID)
-                .set(emptyData)
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Participant added with userID: " + userID))
-                .addOnFailureListener(e -> Log.e("Firestore", "Error adding participant", e));
+
+        db.collection("Users").document(userID)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                        signUpButton.setEnabled(false);
+                        String name;
+                        name = documentSnapshot.getString("Username");
+                        if (name == null) {
+                            name = "Anonymous User";
+                        }
+                        addEventToMyEvents(eventID);
+                        subscribeToEventNotifs(eventID);
+
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("name", name);
+                        db.collection("Events").document(eventID).collection("participants").document(userID)
+                                .set(data)
+                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Participant added with userID: " + userID))
+                                .addOnFailureListener(e -> Log.e("Firestore", "Error adding participant", e));
+
+                        db.collection("Events").document(eventID)
+                                .update("attendeeCount", FieldValue.increment(1))
+                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Count incremented: " + intAttendeeCount))
+                                .addOnFailureListener(e -> Log.e("Firestore", "Error adding participant", e));
+
+                        Toast.makeText(getApplicationContext(), "Sign up successful", Toast.LENGTH_SHORT).show();
+
+                });
+    }
+
+    public void getAttendeeCount(String eventID, EventListener listener) {
+        db.collection("Events").document(eventID)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    int strAttendeeCount;
+                    if (documentSnapshot.getLong("attendeeCount") != null){
+                        strAttendeeCount = Math.toIntExact(documentSnapshot.getLong("attendeeCount"));
+                    }
+                    else{
+                        strAttendeeCount = 0;
+                    }
+                    listener.onAttendeeCountReceived(strAttendeeCount);
+
+                });
+    }
+
+    public void getAttendeeLimit(String eventID, EventListener listener) {
+        db.collection("Events").document(eventID)
+        .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    int attendeeLimit;
+                    if (documentSnapshot.getLong("attendeeLimit") != null){
+                        attendeeLimit = Math.toIntExact(documentSnapshot.getLong("attendeeLimit"));
+                    }
+                    else{
+                        attendeeLimit = 0;
+                    }
+                    listener.onAttendeeLimitReceived(attendeeLimit);
+                });
+    }
+
+    public void subscribeToEventNotifs(String eventID) {
+        FirebaseMessaging.getInstance().subscribeToTopic(eventID)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                CharSequence name = "Notifications";
+                                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                                NotificationChannel channel = new NotificationChannel(eventID, name, importance);
+
+                                NotificationManager notificationManager = (NotificationManager) GlobalContext.context.getSystemService(Context.NOTIFICATION_SERVICE);
+                                notificationManager.createNotificationChannel(channel);
+                            }
+
+                            Log.d("FCM Notifications", "Subscribed to event: " + eventID);
+                        } else {
+                            Log.e("FCM Notifications", "Failed to subscribe to event: " + eventID);
+                        }
+                    }
+                });
+
+    }
+
+    private boolean spaceAvailable() {
+        Log.d("AttendeeCount: ", "Currently at: " + intAttendeeCount);
+        Log.d("AttendeeLimit: ", "Limited to: " + intAttendeeLimit);
+
+        if ((intAttendeeCount < intAttendeeLimit) || (intAttendeeLimit == 0)) {
+            return true;
+        }
+        Toast.makeText(EventDetailsPageActivity.this, "Attendee limit reached",
+                Toast.LENGTH_LONG).show();
+        return false;
+    }
+
+    @Override
+    public void onAttendeeLimitReceived(int attendeeLimit) {
+        intAttendeeLimit = attendeeLimit;
+    }
+
+    @Override
+    public void onAttendeeCountReceived(int attendeeCount) {
+        intAttendeeCount = attendeeCount;
     }
 }

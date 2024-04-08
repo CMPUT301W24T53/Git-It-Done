@@ -6,19 +6,20 @@
 
     <TextView
         android:id="@+id/notification_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:text="Event Notifications"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="410dp"
+        android:layout_height="66dp"
         android:background="#8BFF8F"
         android:gravity="center"
         android:padding="10dp"
         android:shadowColor="#76FF7C"
-        android:text="Event Notifications"
-        android:textColor="#000000"
+        android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold|italic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </TextView>
+
+        />
 
     <ListView
         android:id="@+id/notif_listview"
@@ -31,15 +32,16 @@
 
     <Button
         android:id="@+id/back_button"
-        android:layout_height="75dp"
-        android:layout_width="150dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="16dp"
-        android:text="Back"
-        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="@string/back_button"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/notification_text"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,6 +20,7 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Class to directly interact with database for Attendee data
@@ -30,6 +31,8 @@ public class AttendeeDBConnector {
     private FirebaseFirestore db;
     private DocumentReference userRef;
     private AttendeeProfileEditAdapter optionAdapter;
+    private String pfpImage = "";
+    private String usrName = "";
 
     /**
      * Constructor that initiates variables, initializes data, and sets up a listener to update data when it is changed
@@ -63,9 +66,29 @@ public class AttendeeDBConnector {
         optionAdapter.clear();
         for (Map.Entry<String, Object> option: data.getData().entrySet()){
             AttendeeProfileEditOption optionEntry = new AttendeeProfileEditOption(option.getKey(),(String)option.getValue());
-            optionAdapter.add(optionEntry);
+            // Ignore these fields in the user database when displaying
+            if (Objects.equals(optionEntry.getOptionType(), "fcmToken")){
+                continue;
+            }
+            else if (Objects.equals(optionEntry.getOptionType(), "pfpImage")){
+                pfpImage = optionEntry.getCurrentvalue();
+            }
+            else if (Objects.equals(optionEntry.getOptionType(), "Name")){
+                usrName = optionEntry.getCurrentvalue();
+                optionAdapter.add(optionEntry);
+            }
+            else {
+                optionAdapter.add(optionEntry);
+            }
         }
         optionAdapter.notifyDataSetChanged();
+    }
+    public String getPfp() {
+        return pfpImage;
+    }
+
+    public String getUsrName(){
+        return usrName;
     }
 
     /**

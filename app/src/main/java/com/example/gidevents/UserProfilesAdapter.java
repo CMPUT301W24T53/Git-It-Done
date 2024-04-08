@@ -10,12 +10,25 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserProfilesAdapter extends ArrayAdapter<User> implements Filterable {
     private List<User> users;
     private List<User> filteredUsers;
+    private FirebaseFirestore db;
+    private DocumentReference userRef;
     public UserProfilesAdapter(Context context, List<User> users) {
         super(context, 0, users);
         this.users =users;
@@ -29,6 +42,7 @@ public class UserProfilesAdapter extends ArrayAdapter<User> implements Filterabl
 
         User user = getItem(position);
         ImageView userProfilePic = convertView.findViewById(R.id.profilePic);
+        TextView userProfileText = convertView.findViewById(R.id.profilePicText);
         TextView usernameTextView = convertView.findViewById(R.id.username);
         TextView userIDTextView = convertView.findViewById(R.id.user_id);
         TextView emailTextView = convertView.findViewById(R.id.user_email);
@@ -36,6 +50,35 @@ public class UserProfilesAdapter extends ArrayAdapter<User> implements Filterabl
 
         assert user != null;
 
+        db = FirebaseFirestore.getInstance();
+        userRef = db.collection("Users").document(user.getUserID());
+
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot userDoc = task.getResult();
+                String pfpImage = userDoc.getString("pfpImage");
+                if (pfpImage == null || pfpImage.isEmpty()){
+                    String Usrname = user.getName();
+                    if (Objects.equals(Usrname, "N/A")){
+                        Usrname = "None";
+                    }
+                    userProfilePic.setVisibility(View.INVISIBLE);
+                    if (Usrname.length()<2){
+                        userProfileText.setText(Usrname);
+                    }
+                    else{
+                        userProfileText.setText(Usrname.substring(0,2));
+                    }
+                    userProfileText.setVisibility(View.VISIBLE);
+                }
+                else{
+                    userProfileText.setVisibility(View.INVISIBLE);
+                    Glide.with(userProfilePic).load(pfpImage).into(userProfilePic);
+                    userProfilePic.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         usernameTextView.setText(user.getUsername());
         userIDTextView.setText("UserID: "+user.getUserID());
         emailTextView.setText("Email: "+user.getEmail());

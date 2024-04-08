@@ -170,7 +170,7 @@ public class CreateEventActivity extends AppCompatActivity {
                                     Toast.makeText(CreateEventActivity.this, "The start time must be after the current time", Toast.LENGTH_SHORT).show();
                                 } else {
                                     String selectedDateTime = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.MEDIUM, SimpleDateFormat.SHORT).format(selectedCalendar.getTime());
-                                    tvSelectedDate.setText("Event start time: " + selectedDateTime);
+                                    tvSelectedDate.setText(selectedDateTime);
                                 }
                             }, currentHour, currentMinute, false);
 
@@ -316,6 +316,8 @@ public class CreateEventActivity extends AppCompatActivity {
         eventData.put("eventID", eventId);
         eventData.put("attendeeLimit", attendeeLimit);
         eventData.put("creatorID", creatorID);
+        eventData.put("numCheckIns", 0);
+        eventData.put("attendeeCount", 0);
 
 
 

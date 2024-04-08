@@ -30,5 +30,11 @@ public class AttendeeDB{
     public void setData(AttendeeProfileEditOption option){
         dbConnector.setData(option);
     }
+    public String getPfp(){
+        return dbConnector.getPfp();
+    }
+    public String getUsrName(){
+        return dbConnector.getUsrName();
+    }
 
 }

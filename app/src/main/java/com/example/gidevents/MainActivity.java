@@ -1,10 +1,16 @@
 package com.example.gidevents;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.Manifest;
 
 import android.util.Log;
 import android.widget.Button;
@@ -26,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         signInAnonymously();
+        geolocationPerms(GlobalContext.context);
+        notifPerms(GlobalContext.context);
+        NotifHandler notifHandler = new NotifHandler();
+        notifHandler.storeFCMToken();
         Button attendeeBtn = (Button) findViewById(R.id.attendeeButton);
         Button organizerBtn = (Button) findViewById(R.id.organizerButton);
         Button administratorBtn = (Button) findViewById(R.id.administratorButton);
@@ -70,5 +80,39 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+    private void geolocationPerms (Context context) {
+        ActivityResultLauncher<String[]> locationPermissionRequest =
+                registerForActivityResult(new ActivityResultContracts
+                                .RequestMultiplePermissions(), result -> {
+                            Boolean fineLocationGranted = result.getOrDefault(
+                                    Manifest.permission.ACCESS_FINE_LOCATION, false);
+                            Boolean coarseLocationGranted = result.getOrDefault(
+                                    Manifest.permission.ACCESS_COARSE_LOCATION,false);
+                            if (fineLocationGranted != null && fineLocationGranted) {
+                                // Precise location access granted.
+                            } else if (coarseLocationGranted != null && coarseLocationGranted) {
+                                // Only approximate location access granted.
+                            } else {
+                                // No location access granted.
+                            }
+                        }
+                );
+        locationPermissionRequest.launch(new String[] {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        });
+    }
+
+    private void notifPerms (Context context) {
+        final int MY_PERMISSIONS_REQUEST_POST_NOTIFICATIONS_SERVICE  = 1001;
+
+        if (ActivityCompat.checkSelfPermission(context,
+                android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    MY_PERMISSIONS_REQUEST_POST_NOTIFICATIONS_SERVICE );
+        }
+    }
+
 
 }

@@ -20,7 +20,11 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
+/**
+ * QRCodeActivity displays the generated QR codes for check-in and event information.
+ * It receives the QR code contents from the CreateEventActivity and generates the corresponding bitmaps.
+ * The activity also provides functionality to share the QR codes via intent sharing.
+ */
 public class QRCodeActivity extends AppCompatActivity {
 
     private ImageView checkInQRCodeImageView, eventQRCodeImageView;
@@ -72,14 +76,30 @@ public class QRCodeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Shares the check-in QR code bitmap.
+     *
+     * @param view The view that triggered the sharing action.
+     */
     public void shareCheckInQRCode(View view) {
         shareQRCode(checkInQRCodeBitmap, "check_in_qr_code.png");
     }
 
+    /**
+     * Shares the event QR code bitmap.
+     *
+     * @param view The view that triggered the sharing action.
+     */
     public void shareEventQRCode(View view) {
         shareQRCode(eventQRCodeBitmap, "event_qr_code.png");
     }
 
+    /**
+     * Shares the specified QR code bitmap with the given file name.
+     *
+     * @param qrCodeBitmap The QR code bitmap to be shared.
+     * @param fileName     The file name for the shared QR code image.
+     */
     private void shareQRCode(Bitmap qrCodeBitmap, String fileName) {
         // Save the bitmap to a file
         File file = new File(getExternalCacheDir(), fileName);

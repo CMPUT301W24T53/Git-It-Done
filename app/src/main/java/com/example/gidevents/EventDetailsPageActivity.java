@@ -129,7 +129,9 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         addEventToMyEvents(eventID);
-                        //participantSignUp(userID,eventID);
+                        participantSignUp(userID, eventID);
+                        subscribeToEventNotifs(eventID);
+
                         Toast.makeText(getApplicationContext(), "Sign up successful", Toast.LENGTH_SHORT).show();
                     }
                 });

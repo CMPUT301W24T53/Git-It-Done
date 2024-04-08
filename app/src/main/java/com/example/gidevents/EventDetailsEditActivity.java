@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -76,6 +75,40 @@ public class EventDetailsEditActivity extends AppCompatActivity {
         Button edit_details_button = findViewById(R.id.edit_button);
         Button view_participant_list = findViewById(R.id.view_participant_list);
         Button event_statisitcs = findViewById(R.id.orgEventAttendeeStats);
+        listView = findViewById(R.id.check_ins_listView);
+        CheckInsAdapter adapter = new CheckInsAdapter(this, checkInsList);
+        listView.setAdapter(adapter);
+
+        checkInRef = db.collection("Events").document(eventID).collection("participantsCheckIn");
+
+        checkInRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.e("Firestore", error.toString());
+                    return;
+                }
+                if (querySnapshots != null) {
+                    checkInsList.clear();
+                    for (QueryDocumentSnapshot doc : querySnapshots) {
+                        String participantID = doc.getId();
+                        db.collection("Events").document(eventID).collection("participantsCheckIn").document(participantID).get()
+                                .addOnSuccessListener(participant -> {
+                                    if (participant.exists()) {
+                                        Map<String,Object> data = participant.getData();
+
+                                        checkInsList.add(data);
+                                        Log.d("Firestore", "this is the data" + data);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                })
+                                .addOnFailureListener(e -> Log.e("Firestore", "Unable to fetch participant"));
+                    }
+                }
+
+            }
+
+        });
 
         back_button.setOnClickListener(v -> {
             finish();
@@ -89,14 +122,6 @@ public class EventDetailsEditActivity extends AppCompatActivity {
             Intent intent = new Intent(EventDetailsEditActivity.this, ParticipantListActivity.class);
             intent.putExtra("eventDetails", eventDetails);
             startActivity(intent);
-        });
-        event_statisitcs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(EventDetailsEditActivity.this, EventStatisticsActivity.class);
-                intent.putExtra("eventDetails", eventDetails);
-                startActivity(intent);
-            }
         });
     }
 }

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,10 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -47,7 +42,6 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -64,12 +58,12 @@ public class   ScanQRCodeActivity extends AppCompatActivity {
     private static final int SELECT_IMAGE_REQUEST_CODE = 2;
     FusedLocationProviderClient userLoc;
 
+    private boolean isHandlingCheckIn = false;
+    private String lastScannedQRCode = null;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_qr_code);
-
-        userLoc = LocationServices.getFusedLocationProviderClient(this);
 
         if (hasCameraPermission()) {
             ScanQRCode();
@@ -266,6 +260,56 @@ public class   ScanQRCodeActivity extends AppCompatActivity {
  * Queries the Firestore database for event details associated with the given eventId.
  * If the event is found, it navigates to the EventDetailsPageActivity with the event details.
  */
+
+
+
+    private void checkInToParticipants(String eventId, String userId, FirebaseFirestore db) {
+        DocumentReference eventDocRef = db.collection("Events").document(eventId);
+
+        CollectionReference participantsCheckInRef = eventDocRef.collection("participantsCheckIn");
+
+        participantsCheckInRef.document(userId).get()
+                .addOnCompleteListener(participantsCheckInTask -> {
+                    if (participantsCheckInTask.isSuccessful()) {
+                        DocumentSnapshot participantCheckInSnapshot = participantsCheckInTask.getResult();
+                        if (participantCheckInSnapshot.exists()) {
+                            checkInIncrease(participantsCheckInRef, userId);
+                        } else {
+                            addNewParticipant(participantsCheckInRef, userId, eventDocRef.getId());
+                        }
+                    } else {
+                        handleFailure("Failed to check if user has checked in: " + participantsCheckInTask.getException().getMessage());
+                    }
+                    isHandlingCheckIn = false;
+                });
+    }
+
+    private void checkInIncrease(CollectionReference participantsRef, String userId) {
+        DocumentReference participantDocRef = participantsRef.document(userId);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+                    DocumentSnapshot participantSnapshot = transaction.get(participantDocRef);
+                    transaction.update(participantDocRef, "numOfCheckIns",
+                            participantSnapshot.getLong("numOfCheckIns") + 1);
+                    return null;
+                }).addOnSuccessListener(aVoid -> showToast("number of check-ins increased"))
+                .addOnFailureListener(e -> handleFailure("Failed to increase number of check-ins: " + e.getMessage()));
+    }
+
+    private void addNewParticipant(CollectionReference participantsRef, String userId, String Event) {
+        Map<String, Object> participantData = new HashMap<>();
+        participantData.put("userId", userId);
+        participantData.put("checkedIn", true);
+        participantData.put("timestamp", FieldValue.serverTimestamp());
+        participantData.put("numOfCheckIns", 1);
+        participantData.put("eventName", Event);
+
+        participantsRef.document(userId).set(participantData)
+                .addOnSuccessListener(aVoid -> showToast("Check-in successful"))
+                .addOnFailureListener(e -> handleFailure("New participant check-in failed: " + e.getMessage()));
+    }
+
+
     private void navigateToEventDetails(String eventId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Events")
@@ -300,57 +344,6 @@ public class   ScanQRCodeActivity extends AppCompatActivity {
                 });
     }
 
-    private void addNewParticipant(CollectionReference participantsRef, String userId, String Event) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference userRef = db.collection("Users").document(userId);
-
-        HashSet<String> inputOptions = new HashSet<String>();
-        inputOptions.add("true");
-        inputOptions.add("t");
-        inputOptions.add("T");
-        inputOptions.add("True");
-        inputOptions.add("TRUE");
-
-        Map<String, Object> participantData = new HashMap<>();
-        participantData.put("userId", userId);
-        participantData.put("checkedIn", true);
-        participantData.put("timestamp", FieldValue.serverTimestamp());
-        participantData.put("numOfCheckIns", 1);
-        participantData.put("eventName", Event);
-        //To be Tested
-        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                DocumentSnapshot userInfo = task.getResult();
-                if (inputOptions.contains((String)userInfo.get("GeoLocation"))){
-                    if (checkLocPermissions()){
-                        userLoc.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Location> task) {
-                                Location location = task.getResult();
-                                participantData.put("geoLocation", location);
-                            }
-                        });
-                    }
-                }
-            }
-        });
-
-        participantsRef.document(userId).set(participantData)
-                .addOnSuccessListener(aVoid -> showToast("Check-in successful"))
-                .addOnFailureListener(e -> handleFailure("New participant check-in failed: " + e.getMessage()));
-    }
-
-    private boolean checkLocPermissions(){
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void updateParticipantCheckIn(DocumentSnapshot participantDocument) {
-        participantDocument.getReference()
-                .update("checkedIn", true, "timestamp", FieldValue.serverTimestamp(), "numOfCheckIns", (Integer) participantDocument.get("numOfCheckIns") + 1 )
-                .addOnSuccessListener(aVoid -> showToast("Check-in updated"))
-                .addOnFailureListener(e -> handleFailure("Participant check-in update failed: " + e.getMessage()));
-    }
 
 
 

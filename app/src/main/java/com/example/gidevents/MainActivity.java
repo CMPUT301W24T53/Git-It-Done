@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         DocumentSnapshot user = task.getResult();
                         if (Objects.equals(user.get("Name"), "Admin")){
+                            Toast.makeText(activity,"Welcome Administrator", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(MainActivity.this, AdminActivity.class);
                             startActivity(intent);
                         }

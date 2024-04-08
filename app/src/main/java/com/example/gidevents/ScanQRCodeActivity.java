@@ -402,4 +402,3 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         Log.e("ScanQRCodeActivity", message, e);
     }
 }
-

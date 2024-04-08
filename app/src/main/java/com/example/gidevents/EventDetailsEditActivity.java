@@ -87,7 +87,6 @@ public class EventDetailsEditActivity extends AppCompatActivity {
         }
 
         Button back_button = findViewById(R.id.back_button);
-        Button edit_details_button = findViewById(R.id.edit_button);
         Button view_participant_list = findViewById(R.id.view_participant_list);
         Button event_statisitcs = findViewById(R.id.orgEventAttendeeStats);
         listView = findViewById(R.id.check_ins_listView);
@@ -129,9 +128,6 @@ public class EventDetailsEditActivity extends AppCompatActivity {
             finish();
         });
 
-        edit_details_button.setOnClickListener(v -> {
-            finish();       // Implement actual event detail editing
-        });
 
         view_participant_list.setOnClickListener(v -> {
             Intent intent = new Intent(EventDetailsEditActivity.this, ParticipantListActivity.class);

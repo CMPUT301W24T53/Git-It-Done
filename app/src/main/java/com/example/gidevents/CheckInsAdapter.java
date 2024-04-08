@@ -28,7 +28,7 @@ public class CheckInsAdapter extends ArrayAdapter<Map<String,Object>> {
         TextView numCheckinTextView = convertView.findViewById(R.id.num_of_check_ins);
         String username;
         String timeStamp;
-        String checkIns;
+        Long checkIns;
 
         if ((String)participant.get("username") == null){
             username = "None";
@@ -44,17 +44,17 @@ public class CheckInsAdapter extends ArrayAdapter<Map<String,Object>> {
             timeStamp = (String)participant.get("timeStamp");
         }
 
-        if ((String)participant.get("numOfCheckIns") == null){
-            checkIns = "None";
+        if (participant.get("numOfCheckIns") == null){
+            checkIns = 0L;
         }
         else {
-            checkIns = (String)participant.get("numOfCheckIns");
+            checkIns = (Long) participant.get("numOfCheckIns");
         }
 
         assert participant != null;
         usernameTextView.setText("User Name: " + (String)participant.get("username"));
         timestampTextView.setText("Time Stamp: " + (String)participant.get("timeStamp"));
-        numCheckinTextView.setText("Number Of Check Ins: " + (String)participant.get("numOfCheckIns"));
+        numCheckinTextView.setText("Number Of Check Ins: " + (Long)participant.get("numOfCheckIns"));
 
 
 

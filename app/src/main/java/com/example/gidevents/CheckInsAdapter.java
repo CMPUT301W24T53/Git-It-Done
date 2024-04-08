@@ -38,7 +38,7 @@ public class CheckInsAdapter extends ArrayAdapter<Map<String,Object>> {
             username = (String)participant.get("username");
         }
 
-        if (participant.get("timestamp").toString() == null ||participant.get("timestamp").toString() == "" ){
+        if (participant.get("timestamp") == null ||participant.get("timestamp").toString() == "" ){
             timeStamp = "None";
         }
         else {

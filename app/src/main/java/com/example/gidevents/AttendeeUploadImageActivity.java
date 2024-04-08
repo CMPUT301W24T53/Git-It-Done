@@ -103,8 +103,7 @@ public class AttendeeUploadImageActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(AttendeeUploadImageActivity.this, "Profile picture removed", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(AttendeeUploadImageActivity.this, ProfileEditActivity.class);
-                        startActivity(intent);
+                        finish();
                     }
                 });
             }
@@ -112,8 +111,7 @@ public class AttendeeUploadImageActivity extends AppCompatActivity {
         backbttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AttendeeUploadImageActivity.this, ProfileEditActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
     }
@@ -136,8 +134,7 @@ public class AttendeeUploadImageActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void unused) {
                                 Toast.makeText(AttendeeUploadImageActivity.this, "Profile picture updated", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(AttendeeUploadImageActivity.this, ProfileEditActivity.class);
-                                startActivity(intent);
+                                finish();
                             }
                         });
                     }

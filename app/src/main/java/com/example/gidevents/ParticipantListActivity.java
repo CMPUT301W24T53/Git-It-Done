@@ -1,7 +1,9 @@
 package com.example.gidevents;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,6 +19,7 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -27,10 +30,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ParticipantListActivity extends AppCompatActivity {
@@ -162,11 +168,19 @@ public class ParticipantListActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(v -> {
             notifCreatePopup.dismiss();
         });
-
     }
 
     public void notifSender(Context context, String eventID, String eventName, String body) {
+        final int MY_PERMISSIONS_REQUEST_POST_NOTIFICATIONS_SERVICE  = 1001;
+        List<String> registrationTokens = Arrays.asList(
+                "YOUR_REGISTRATION_TOKEN_1");
 
+        if (ActivityCompat.checkSelfPermission(context,
+                android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    MY_PERMISSIONS_REQUEST_POST_NOTIFICATIONS_SERVICE );
+        }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, eventID);
         builder.setSmallIcon(R.drawable.ic_event);

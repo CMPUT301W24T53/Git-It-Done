@@ -4,9 +4,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.Manifest;
 
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         signInAnonymously();
         geolocationPerms(GlobalContext.context);
+        notifPerms(GlobalContext.context);
         Button attendeeBtn = (Button) findViewById(R.id.attendeeButton);
         Button organizerBtn = (Button) findViewById(R.id.organizerButton);
         Button administratorBtn = (Button) findViewById(R.id.administratorButton);
@@ -97,5 +100,17 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_COARSE_LOCATION
         });
     }
+
+    private void notifPerms (Context context) {
+        final int MY_PERMISSIONS_REQUEST_POST_NOTIFICATIONS_SERVICE  = 1001;
+
+        if (ActivityCompat.checkSelfPermission(context,
+                android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    MY_PERMISSIONS_REQUEST_POST_NOTIFICATIONS_SERVICE );
+        }
+    }
+
 
 }

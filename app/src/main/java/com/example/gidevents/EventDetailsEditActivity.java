@@ -41,7 +41,7 @@ public class EventDetailsEditActivity extends AppCompatActivity {
     private ArrayList<Map<String, Object>> checkInsList = new ArrayList<>();
     private ListView listView;
 
-    String eventID;
+    private String eventID;
 
 
     /**

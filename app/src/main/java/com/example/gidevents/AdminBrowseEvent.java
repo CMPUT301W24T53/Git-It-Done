@@ -97,9 +97,9 @@ public class AdminBrowseEvent extends AppCompatActivity {
                 }
             }
         });
-        SearchView searchBar = findViewById(R.id.search_bar);
+        android.widget.SearchView searchBar = findViewById(R.id.search_bar);
         adapter.getFilter().filter("");
-        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchBar.setOnQueryTextListener(new android.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;

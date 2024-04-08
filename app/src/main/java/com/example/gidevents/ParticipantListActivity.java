@@ -30,6 +30,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ParticipantListActivity extends AppCompatActivity {
     private FirebaseFirestore db;

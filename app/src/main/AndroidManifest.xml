@@ -27,6 +27,8 @@
     <uses-permission android:name="android.permission.SEND_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.REQUEST_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 
 
@@ -94,7 +96,7 @@
         <activity android:name=".NotifDetailsActivity" />
         <activity android:name=".ProfileEditActivity" />
         <activity android:name=".MyEventsPageActivity"/>
-
+        <activity android:name=".AttendeeUploadImageActivity"/>
         <activity android:name=".AdminActivity" />
         <activity android:name=".AdminBrowseEvent" />
         <activity android:name=".AdminEventDetails" />

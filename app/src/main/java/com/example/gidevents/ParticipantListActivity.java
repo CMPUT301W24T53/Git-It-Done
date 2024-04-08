@@ -172,8 +172,9 @@ public class ParticipantListActivity extends AppCompatActivity {
 
     public void notifSender(Context context, String eventID, String eventName, String body) {
         final int MY_PERMISSIONS_REQUEST_POST_NOTIFICATIONS_SERVICE  = 1001;
-        List<String> registrationTokens = Arrays.asList(
-                "YOUR_REGISTRATION_TOKEN_1");
+        List<String> tokenList = new ArrayList<String>();
+        participantRef = db.collection("Events").document(eventID).collection("participants");
+
 
         if (ActivityCompat.checkSelfPermission(context,
                 android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {

@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         signInAnonymously();
         geolocationPerms(GlobalContext.context);
         notifPerms(GlobalContext.context);
+        NotifHandler notifHandler = new NotifHandler();
+        notifHandler.storeFCMToken();
         Button attendeeBtn = (Button) findViewById(R.id.attendeeButton);
         Button organizerBtn = (Button) findViewById(R.id.organizerButton);
         Button administratorBtn = (Button) findViewById(R.id.administratorButton);

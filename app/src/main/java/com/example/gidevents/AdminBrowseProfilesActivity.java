@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -80,6 +81,20 @@ public class AdminBrowseProfilesActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
 
                 }
+            }
+        });
+        SearchView searchBar = findViewById(R.id.search_bar);
+        adapter.getFilter().filter("");
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
             }
         });
 

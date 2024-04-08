@@ -24,6 +24,15 @@
         app:layout_constraintBottom_toTopOf="@+id/back_button"
         />
 
+    <Button
+        android:id="@+id/notif_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notify Participants"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
 
 
 

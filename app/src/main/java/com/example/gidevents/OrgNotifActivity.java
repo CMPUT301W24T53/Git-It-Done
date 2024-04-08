@@ -167,7 +167,7 @@ public class OrgNotifActivity extends AppCompatActivity {
     public void newNotif(View view) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.organizer_notif_create, null);
-        EditText notifTitle = popupView.findViewById(R.id.orgNotifTitle);
+        EditText notifTitle = popupView.findViewById(R.id.orgEventTitle);
         EditText notifDetails = popupView.findViewById(R.id.orgNotifDetails);
 
         RelativeLayout.LayoutParams notifTitleParams = new RelativeLayout.LayoutParams(

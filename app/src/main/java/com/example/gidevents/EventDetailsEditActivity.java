@@ -14,7 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -110,6 +112,12 @@ public class EventDetailsEditActivity extends AppCompatActivity {
                                 .addOnSuccessListener(participant -> {
                                     if (participant.exists()) {
                                         Map<String,Object> data = participant.getData();
+                                        db.collection("Users").document(participantID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                data.put("username", documentSnapshot.get("Username"));
+                                            }
+                                        });
 
                                         checkInsList.add(data);
                                         Log.d("Firestore", "this is the data" + data);

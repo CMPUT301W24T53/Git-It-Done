@@ -184,7 +184,12 @@ public class EventDetailsPageActivity extends AppCompatActivity implements Event
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     int strAttendeeCount;
-                    strAttendeeCount = documentSnapshot.getLong("attendeeCount").intValue();
+                    if (documentSnapshot.getLong("attendeeCount") != null){
+                        strAttendeeCount = Math.toIntExact(documentSnapshot.getLong("attendeeCount"));
+                    }
+                    else{
+                        strAttendeeCount = 0;
+                    }
                     listener.onAttendeeCountReceived(strAttendeeCount);
 
                 });
@@ -195,7 +200,12 @@ public class EventDetailsPageActivity extends AppCompatActivity implements Event
         .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     int attendeeLimit;
-                    attendeeLimit = documentSnapshot.getLong("attendeeLimit").intValue();
+                    if (documentSnapshot.getLong("attendeeLimit") != null){
+                        attendeeLimit = Math.toIntExact(documentSnapshot.getLong("attendeeLimit"));
+                    }
+                    else{
+                        attendeeLimit = 0;
+                    }
                     listener.onAttendeeLimitReceived(attendeeLimit);
                 });
     }

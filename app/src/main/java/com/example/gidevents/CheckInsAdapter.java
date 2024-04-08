@@ -30,14 +30,15 @@ public class CheckInsAdapter extends ArrayAdapter<Map<String,Object>> {
         String timeStamp;
         Long checkIns;
 
-        if ((String)participant.get("username") == null){
+        if ((String)participant.get("username") == null || (String)participant.get("username")== "")
+        {
             username = "None";
         }
         else {
             username = (String)participant.get("username");
         }
 
-        if ((String)participant.get("timeStamp") == null){
+        if ((String)participant.get("timeStamp") == null ||(String)participant.get("timeStamp") == "" ){
             timeStamp = "None";
         }
         else {
@@ -52,9 +53,9 @@ public class CheckInsAdapter extends ArrayAdapter<Map<String,Object>> {
         }
 
         assert participant != null;
-        usernameTextView.setText("User Name: " + (String)participant.get("username"));
-        timestampTextView.setText("Time Stamp: " + (String)participant.get("timeStamp"));
-        numCheckinTextView.setText("Number Of Check Ins: " + (Long)participant.get("numOfCheckIns"));
+        usernameTextView.setText("User Name: " + username);
+        timestampTextView.setText("Time Stamp: " + timeStamp);
+        numCheckinTextView.setText("Number Of Check Ins: " + checkIns);
 
 
 

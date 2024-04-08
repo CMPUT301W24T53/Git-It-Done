@@ -28,8 +28,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+
 //ToDo: Implement Notifications
 public class EventStatisticsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -39,7 +42,7 @@ public class EventStatisticsActivity extends FragmentActivity implements OnMapRe
     private FirebaseFirestore db;
     private QuerySnapshot Participants;
     private DocumentReference eventDb;
-    private HashSet<Location> locations;
+    private ArrayList<ArrayList<Double>> locations;
     private long numCheckIns;
     private TextView checkins;
     private Button backbttn;
@@ -53,7 +56,7 @@ public class EventStatisticsActivity extends FragmentActivity implements OnMapRe
         eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        locations = new HashSet<>();
+        locations = new ArrayList<>();
         eventDb = db.collection("Events").document(eventDetails.getEventID());
         eventDb.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -72,10 +75,13 @@ public class EventStatisticsActivity extends FragmentActivity implements OnMapRe
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 Participants = task.getResult();
                 for (QueryDocumentSnapshot document : Participants){
-                    if (document.get("geoLocation") != null) {
-                        locations.add((Location) document.get("geoLocation"));
+                    if (document.get("geoLocationLat") != null & document.get("geoLocationLon") != null) {
+                        ArrayList<Double> location = new ArrayList<>();
+                        location.add((Double) document.get("geoLocationLat"));
+                        location.add((Double) document.get("geoLocationLon"));
+                        locations.add(location);
+                        numCheckIns += 1;
                     }
-                    numCheckIns += 1;
                 }
                 HashMap<String, Object> data = new HashMap<>();
                 data.put("numCheckIns", numCheckIns);
@@ -116,10 +122,10 @@ public class EventStatisticsActivity extends FragmentActivity implements OnMapRe
         float lonTotal = 0;
         float locTotal = locations.size();
 
-        for(Location location : locations){
-            latTotal += location.getLatitude();
-            lonTotal += location.getLongitude();
-            LatLng marker = new LatLng(location.getLatitude(), location.getLongitude());
+        for(ArrayList<Double> location : locations){
+            latTotal += location.get(0);
+            lonTotal += location.get(1);
+            LatLng marker = new LatLng(location.get(0), location.get(1));
             mMap.addMarker(new MarkerOptions().position(marker));
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latTotal/locTotal,lonTotal/locTotal)));

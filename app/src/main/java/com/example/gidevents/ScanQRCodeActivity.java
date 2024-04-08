@@ -22,6 +22,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.location.CurrentLocationRequest;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.CancellationToken;
+import com.google.android.gms.tasks.CancellationTokenSource;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -66,6 +71,11 @@ public class ScanQRCodeActivity extends AppCompatActivity {
     FusedLocationProviderClient userLoc;
     private boolean isHandlingCheckIn = false;
     private String lastScannedQRCode = null;
+    boolean doneTask;
+    Map<String, Object> participantData;
+    CollectionReference participantsRef;
+    String userId;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +108,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
     }
 
     private void requestCameraPermission() {
-        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
     }
 
     @Override
@@ -270,8 +280,6 @@ public class ScanQRCodeActivity extends AppCompatActivity {
     }
 
 
-
-
     private void checkInToParticipants(String eventId, String userId, FirebaseFirestore db) {
         DocumentReference eventDocRef = db.collection("Events").document(eventId);
 
@@ -308,6 +316,10 @@ public class ScanQRCodeActivity extends AppCompatActivity {
     private void addNewParticipant(CollectionReference participantsRef, String userId, String Event) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference userRef = db.collection("Users").document(userId);
+        doneTask = false;
+        this.userId = userId;
+        this.participantsRef = participantsRef;
+
 
         HashSet<String> inputOptions = new HashSet<String>();
         inputOptions.add("true");
@@ -316,7 +328,8 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         inputOptions.add("True");
         inputOptions.add("TRUE");
 
-        Map<String, Object> participantData = new HashMap<>();
+        participantData = new HashMap<>();
+
         participantData.put("userId", userId);
         participantData.put("checkedIn", true);
         participantData.put("timestamp", FieldValue.serverTimestamp());
@@ -327,23 +340,33 @@ public class ScanQRCodeActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot userInfo = task.getResult();
-                if (inputOptions.contains((String)userInfo.get("GeoLocation"))){
-                    if (checkLocPermissions()){
-                        userLoc.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                if (inputOptions.contains((String)userInfo.get("GeoLocation"))) {
+                    if (checkLocPermissions()) {
+                        CancellationTokenSource tokenSource = new CancellationTokenSource();
+                        userLoc.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, tokenSource.getToken()).addOnSuccessListener(new OnSuccessListener<Location>() {
                             @Override
-                            public void onComplete(@NonNull Task<Location> task) {
-                                Location location = task.getResult();
-                                participantData.put("geoLocation", location);
+                            public void onSuccess(Location location) {
+                                participantData.put("geoLocationLat", location.getLatitude());
+                                participantData.put("geoLocationLon", location.getLongitude());
+                                addParticipant(participantData,participantsRef,userId);
                             }
                         });
                     }
+                    else{
+                        addParticipant(participantData,participantsRef,userId);
+                    }
+                }
+                else {
+                    addParticipant(participantData,participantsRef,userId);
                 }
             }
         });
-
+    }
+    private void addParticipant(Map<String, Object> participantData, CollectionReference participantsRef, String userId){
         participantsRef.document(userId).set(participantData)
                 .addOnSuccessListener(aVoid -> showToast("Check-in successful"))
                 .addOnFailureListener(e -> handleFailure("New participant check-in failed: " + e.getMessage()));
+        Log.d("LOCATION", "set location");
     }
 
     private boolean checkLocPermissions(){

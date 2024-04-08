@@ -1,3 +1,4 @@
+
 package com.example.gidevents;
 
 import androidx.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -54,9 +56,13 @@ public class BrowseEventActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         eventRef = db.collection("Events");
 
+
         EventsAdapter adapter = new EventsAdapter(this, eventsList);
         listView.setAdapter(adapter);
-
+        Button backBtn = (Button) findViewById(R.id.back_button);
+        backBtn.setOnClickListener(v -> {
+            finish();
+        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -74,17 +80,19 @@ public class BrowseEventActivity extends AppCompatActivity {
                     return;
                 }
                 if (querySnapshots != null) {
-                     eventsList.clear();
+                    eventsList.clear();
                     for (QueryDocumentSnapshot doc : querySnapshots) {
                         String eventTitle = doc.getString("eventTitle");
                         String eventDate = doc.getString("eventDate");
-                        String eventTime = doc.getString("eventTime");
-                        String location = doc.getString("location");
-                        String organizer = doc.getString("organizer");
+                        String time= doc.getString("eventTime");
+                        String eventLocation= doc.getString("eventLocation");
+                        String eventOrganizer = doc.getString("eventOrganizer");
                         String eventDescription = doc.getString("eventDescription");
+                        String eventPoster = doc.getString("eventPoster");
                         String eventID = doc.getId();
+
                         Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
-                        eventsList.add(new Events(eventTitle, eventDate, eventTime, location, organizer, eventDescription, R.drawable.poster1, eventID));
+                        eventsList.add(new Events(eventTitle, eventDate, time, eventLocation, eventOrganizer, eventDescription, eventPoster, eventID));
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -93,3 +101,4 @@ public class BrowseEventActivity extends AppCompatActivity {
     }
 
 }
+

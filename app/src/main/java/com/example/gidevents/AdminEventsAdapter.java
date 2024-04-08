@@ -5,64 +5,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.test.espresso.core.internal.deps.guava.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.List;
-import android.widget.Filter;
-import android.widget.Filterable;
+import java.util.stream.Collectors;
 
-public class AdminEventsAdapter extends ArrayAdapter implements Filterable {
+/** This is the EventsAdapter class
+ * Sets up the adapter
+ */
+public class AdminEventsAdapter extends ArrayAdapter<Events> implements Filterable {
 
-    public Iterables getFilter;
-    private List<Events> events;
-    private ArrayList<Events> filteredEvents;
-    private Filter eventsFilter;
+    private List<Events> eventsList;
+    private List<Events> filteredList;
+    //private EventFilter eventFilter;
+    private Context context;
+
 
     public AdminEventsAdapter(Context context, List<Events> events) {
         super(context, 0, events);
-        //this.events = events;
-        //this.filteredEvents = new ArrayList<>(events);
-        this.events = new ArrayList<>(events);
-        this.filteredEvents = new ArrayList<>(events);
-        this.eventsFilter = new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                List<Events> filteredList = new ArrayList<>();
+        this.context = context;
+        this.eventsList = new ArrayList<>(events);
+        this.filteredList = new ArrayList<>(events);
 
-                if (constraint == null || constraint.length() == 0) {
-                    filteredList.addAll(events);
-                } else {
-                    String filterPattern = constraint.toString().toLowerCase().trim();
-
-                    for (Events item : events) {
-                        // You can adjust these conditions to match any field you want to include in the search
-                        if (item.getEventTitle().toLowerCase().contains(filterPattern) ||
-                                item.getLocation().toLowerCase().contains(filterPattern) ||
-                                item.getEventDate().toLowerCase().contains(filterPattern)) {
-                            filteredList.add(item);
-                        }
-                    }
-                }
-
-                FilterResults results = new FilterResults();
-                results.values = filteredList;
-                return results;
-            }
-
-            @SuppressWarnings("unchecked")
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                filteredEvents.clear();
-                filteredEvents.addAll((List) results.values);
-                notifyDataSetChanged();
-            }
-        };
     }
 
     @Override
@@ -71,7 +40,7 @@ public class AdminEventsAdapter extends ArrayAdapter implements Filterable {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.event_display, parent, false);
         }
 
-        Events event = (Events) getItem(position);
+        Events event = getItem(position);
         ImageView posterImageView = convertView.findViewById(R.id.poster);
         TextView titleTextView = convertView.findViewById(R.id.event_title);
         TextView dateTextView = convertView.findViewById(R.id.event_date);
@@ -81,12 +50,11 @@ public class AdminEventsAdapter extends ArrayAdapter implements Filterable {
         TextView descriptionTextView = convertView.findViewById(R.id.event_description);
 
         assert event != null;
-        posterImageView.setImageResource(event.getEventPoster());
 
         titleTextView.setText(event.getEventTitle());
         dateTextView.setText(event.getEventDate());
         timeTextView.setText(event.getEventTime());
-        locationTextView.setText(event.getLocation());
+        locationTextView.setText(event.getEventLocation());
         organizerTextView.setText(event.getEventOrganizer());
         descriptionTextView.setText(event.getEventDescription());
 
@@ -95,44 +63,103 @@ public class AdminEventsAdapter extends ArrayAdapter implements Filterable {
 
     @Override
     public int getCount() {
-        return filteredEvents.size();
+        return filteredList.size();
     }
 
     @Override
     public Events getItem(int position) {
-        return filteredEvents.get(position);
+        return filteredList.get(position);
     }
 
-    @NonNull
     @Override
-    public Filter getFilter() {
-        return eventsFilter;
+    public long getItemId(int position) {
+        return position;
     }
 
-//    @Override
-//    public int getCount() {
-//        return filteredEvents.size();
-//    }
-//
-//    @Override
-//    public Events getItem(int position) {
-//        return filteredEvents.get(position);
-//    }
-//
-//    public void filter(String text) {
-//        text = text.toLowerCase();
-//        filteredEvents.clear();
-//        if (text.length() == 0) {
-//            filteredEvents.addAll(events);
-//        } else {
-//            for (Events item : events) {
-//                if (item.getEventTitle().toLowerCase().contains(text) ||
-//                        item.getEventDate().toLowerCase().contains(text) ||
-//                        item.getLocation().toLowerCase().contains(text)) {
-//                    filteredEvents.add(item);
-//                }
-//            }
-//        }
-//        notifyDataSetChanged();
-//    }
 }
+
+//    @Override
+//    public View getView(int position, View convertView, ViewGroup parent) {
+//        if (convertView == null) {
+//            convertView = LayoutInflater.from(context).inflate(R.layout.item_layout, parent, false);
+//        }
+//
+//        ImageView imageView = convertView.findViewById(R.id.imageView);
+//        TextView titleTextView = convertView.findViewById(R.id.titleTextView);
+//        TextView subtitleTextView = convertView.findViewById(R.id.subtitleTextView);
+//
+//        Item item = filteredList.get(position);
+//        imageView.setImageResource(item.getImageResourceId());
+//        titleTextView.setText(item.getTitle());
+//        subtitleTextView.setText(item.getSubtitle());
+//
+//        return convertView;
+//    }
+
+
+//    @Override
+//    public Filter getFilter() {
+//        if (eventFilter == null) {
+//            eventFilter = new EventFilter();
+//        }
+//        return eventFilter;
+//    }
+//
+//    private class EventFilter extends Filter {
+//        @Override
+//        protected FilterResults performFiltering(CharSequence constraint) {
+//            FilterResults results = new FilterResults();
+//            if (constraint == null || constraint.length() == 0) {
+//                results.values = eventsList;
+//                results.count = eventsList.size();
+//            } else {
+//                List<Events> filteredList = new ArrayList<>();
+//                for (Events event : eventsList) {
+//                    if (event.getEventTitle().toLowerCase().contains(constraint.toString().toLowerCase())) {
+//                        filteredList.add(event);
+//                    }
+//                }
+//                results.values = filteredList;
+//                results.count = filteredList.size();
+//            }
+//            return results;
+//        }
+//
+//        @SuppressWarnings("unchecked")
+//        @Override
+//        protected void publishResults(CharSequence constraint, FilterResults results) {
+//            filteredList = (ArrayList<Events>) results.values;
+//            notifyDataSetChanged();
+//        }
+//    }
+//}
+
+//
+//    @Override
+//    public Filter getFilter() {
+//        return new Filter() {
+//            @Override
+//            protected FilterResults performFiltering(CharSequence constraint) {
+//                List<Events> filteredResults;
+//                if (constraint == null || constraint.length() == 0) {
+//                    filteredResults = eventsList;
+//                } else {
+//                    String filterPattern = constraint.toString().toLowerCase().trim();
+//                    filteredResults = eventsList.stream()
+//                            .filter(item -> item.getEventTitle().toLowerCase().contains(filterPattern) ||
+//                                    item.getEventOrganizer().toLowerCase().contains(filterPattern))
+//                            .collect(Collectors.toList());
+//                }
+//
+//                FilterResults results = new FilterResults();
+//                results.values = filteredResults;
+//
+//                return results;
+//            }
+//
+//            @Override
+//            protected void publishResults(CharSequence constraint, FilterResults results) {
+//                eventsList = (List<Events>) results.values;
+//                notifyDataSetChanged();
+//            }
+//        };

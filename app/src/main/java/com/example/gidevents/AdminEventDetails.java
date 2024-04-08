@@ -110,7 +110,8 @@ public class AdminEventDetails extends AppCompatActivity implements DeleteEventF
                 old_title = eventDetails.getEventTitle();
 
                 // Check if the event poster resource exists
-                int posterResource = eventDetails.getEventPoster();
+                String posterResourceName = eventDetails.getEventPoster();
+                int posterResource = getResources().getIdentifier(posterResourceName, "drawable", getPackageName());
                 if (isValidResource(posterResource)) {
                     poster.setImageResource(posterResource);
                 } else {
@@ -120,7 +121,7 @@ public class AdminEventDetails extends AppCompatActivity implements DeleteEventF
                 organizer.setText(eventDetails.getEventOrganizer());
                 description.setText(eventDetails.getEventDescription());
                 time.setText(eventDetails.getEventTime());
-                location.setText(eventDetails.getLocation());
+                location.setText(eventDetails.getEventLocation());
             } else {
                 Log.e("EventDetailsPageActivity", "No event details were provided.");
                 finish(); // End the activity since there's no data to display

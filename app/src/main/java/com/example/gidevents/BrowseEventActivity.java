@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -84,7 +86,6 @@ public class BrowseEventActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot doc : querySnapshots) {
                         String eventTitle = doc.getString("eventTitle");
                         String eventDate = doc.getString("eventDate");
-                        String time= doc.getString("eventTime");
                         String eventLocation= doc.getString("eventLocation");
                         String eventOrganizer = doc.getString("eventOrganizer");
                         String eventDescription = doc.getString("eventDescription");
@@ -92,12 +93,27 @@ public class BrowseEventActivity extends AppCompatActivity {
                         String eventID = doc.getId();
 
                         Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
-                        eventsList.add(new Events(eventTitle, eventDate, time, eventLocation, eventOrganizer, eventDescription, eventPoster, eventID));
+                        eventsList.add(new Events(eventTitle, eventDate, eventLocation, eventOrganizer, eventDescription, eventPoster, eventID));
                     }
                     adapter.notifyDataSetChanged();
                 }
             }
         });
+        SearchView searchBar = findViewById(R.id.search_bar);
+        adapter.getFilter().filter("");
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+
     }
 
 }

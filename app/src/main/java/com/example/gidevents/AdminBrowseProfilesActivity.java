@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * The Administrator browse user profile page activity
+ * Displays all Users in Firebase
+ */
 public class AdminBrowseProfilesActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -31,6 +36,14 @@ public class AdminBrowseProfilesActivity extends AppCompatActivity {
     private ArrayList<User> userList = new ArrayList<>();
     private int eventCount;
 
+    /**
+     * onCreate method for the class
+     * Inflates the listview, and set it onClickListener
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +57,7 @@ public class AdminBrowseProfilesActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
         Button backBtn = (Button) findViewById(R.id.back_button);
         backBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(AdminBrowseProfilesActivity.this, UserProfileDetailsPage.class);
-            startActivity(intent);
+            finish();
         });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -81,6 +93,21 @@ public class AdminBrowseProfilesActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
 
                 }
+            }
+        });
+        //Set up a filter for the search bar
+        SearchView searchBar = findViewById(R.id.search_bar);
+        adapter.getFilter().filter("");
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
             }
         });
 

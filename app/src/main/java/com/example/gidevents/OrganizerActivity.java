@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,13 +39,16 @@ public class OrganizerActivity extends AppCompatActivity {
         listView = findViewById(R.id.organizer_events_listview);
         EventsAdapter adapter = new EventsAdapter(this, eventsList);
         listView.setAdapter(adapter);
+        CollectionReference createdRef = db.collection("Users").document(userID).collection("CreatedEvents");
+        CollectionReference eventRef = db.collection("Events");
         /**
          * add all these into your organizerActivity when you try to merge.
          */
         Button btnNewEvent;
         btnNewEvent = findViewById(R.id.btnNewEvent);
+        Button backBtn = findViewById(R.id.backBtn);
 
-        db.collection("Events").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        createdRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
                 if(error != null) {
@@ -51,30 +56,35 @@ public class OrganizerActivity extends AppCompatActivity {
                     return;
                 }
                 if(querySnapshots != null) {
-                    eventsList.clear();
+                    adapter.clear();
                     for (QueryDocumentSnapshot doc : querySnapshots) {
                         String eventID = doc.getId();
-                        db.collection("Users").document(userID).collection("CreatedEvents").document(eventID).get()
+                        eventRef.document(eventID).get()
                                 .addOnSuccessListener(createdEvent -> {
                                     if (createdEvent.exists()) {
-                                        String eventTitle = doc.getString("eventTitle");
-                                        String eventDate = doc.getString("eventDate");
-                                        String eventTime = doc.getString("eventTime");
-                                        String organizer = doc.getString("organizer");
-                                        String location = doc.getString("location");
-                                        String eventDescription = doc.getString("eventDescription");
-                                        String eventPoster = doc.getString("eventPoster");
+                                        String eventTitle = createdEvent.getString("eventTitle");
+                                        String eventDate = createdEvent.getString("eventDate");
+                                        String organizer = createdEvent.getString("eventOrganizer");
+                                        String location = createdEvent.getString("eventLocation");
+                                        String eventDescription = createdEvent.getString("eventDescription");
+                                        String eventPoster = createdEvent.getString("eventPoster");
+
                                         Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
 
-                                        eventsList.add(new Events(eventTitle, eventDate, eventTime, location, organizer, eventDescription, eventPoster, eventID));
+                                        adapter.add(new Events(eventTitle, eventDate, location, organizer, eventDescription, eventPoster, eventID));
 
-                                        adapter.notifyDataSetChanged();
                                     }
                                 });
                     }
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
+        adapter.getFilter().filter("");
+
+
+
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -85,15 +95,15 @@ public class OrganizerActivity extends AppCompatActivity {
             }
         });
 
-        btnNewEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Start CreateEventActivity
-                Intent intent = new Intent(OrganizerActivity.this, CreateEventActivity.class);
-                startActivity(intent);
-            }
+        btnNewEvent.setOnClickListener(v -> {
+            Intent intent = new Intent(OrganizerActivity.this, CreateEventActivity.class);
+            startActivity(intent);
         });
 
+        backBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(OrganizerActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
     }
 }
 

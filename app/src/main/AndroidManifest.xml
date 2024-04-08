@@ -24,11 +24,17 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SEND_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.REQUEST_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".GlobalContext"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -38,6 +44,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GIDEvents"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_maps" />
+        <service
+            android:name=".NotifHandler"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -80,9 +101,9 @@
         <activity android:name=".NotifActivity" />
         <activity android:name=".NotifDetailsActivity" />
         <activity android:name=".ProfileEditActivity" />
-        <activity android:name=".OrgNotifActivity" />
         <activity android:name=".MyEventsPageActivity"/>
-
+        <activity android:name=".AttendeeUploadImageActivity" />
+        <activity android:name=".EventStatisticsActivity" />
         <activity android:name=".AdminActivity" />
         <activity android:name=".AdminBrowseEvent" />
         <activity android:name=".AdminEventDetails" />

@@ -15,17 +15,47 @@
         app:layout_constraintEnd_toEndOf="parent"
         />
     <!-- add this button into your organizer activity xml. When you merge, please don't delete it. -->
+
     <ListView
         android:id="@+id/organizer_events_listview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/btnNewEvent"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/created_events_text"
+        />
 
-    </ListView>
 
+    <TextView
+        android:id="@+id/created_events_text"
+        android:layout_width="410dp"
+        android:layout_height="66dp"
+        android:background="#8BFF8F"
+        android:gravity="center"
+        android:padding="10dp"
+        android:shadowColor="#76FF7C"
+        android:text="Created Events"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </TextView>
+
+    <Button
+        android:id="@+id/backBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:textAllCaps="false"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/created_events_text"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

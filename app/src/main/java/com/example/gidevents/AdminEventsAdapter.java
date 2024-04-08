@@ -11,8 +11,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import androidx.annotation.NonNull;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /** This is the EventsAdapter class
@@ -22,8 +32,9 @@ public class AdminEventsAdapter extends ArrayAdapter<Events> implements Filterab
 
     private List<Events> eventsList;
     private List<Events> filteredList;
-    //private EventFilter eventFilter;
     private Context context;
+    private FirebaseFirestore db;
+    private DocumentReference userRef;
 
 
     public AdminEventsAdapter(Context context, List<Events> events) {
@@ -51,6 +62,10 @@ public class AdminEventsAdapter extends ArrayAdapter<Events> implements Filterab
 
         assert event != null;
 
+        db = FirebaseFirestore.getInstance();
+        userRef = db.collection("Events").document(event.getEventTitle());
+
+
         titleTextView.setText(event.getEventTitle());
         dateTextView.setText(event.getEventDate());
         timeTextView.setText(event.getEventTime());
@@ -77,89 +92,3 @@ public class AdminEventsAdapter extends ArrayAdapter<Events> implements Filterab
     }
 
 }
-
-//    @Override
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//        if (convertView == null) {
-//            convertView = LayoutInflater.from(context).inflate(R.layout.item_layout, parent, false);
-//        }
-//
-//        ImageView imageView = convertView.findViewById(R.id.imageView);
-//        TextView titleTextView = convertView.findViewById(R.id.titleTextView);
-//        TextView subtitleTextView = convertView.findViewById(R.id.subtitleTextView);
-//
-//        Item item = filteredList.get(position);
-//        imageView.setImageResource(item.getImageResourceId());
-//        titleTextView.setText(item.getTitle());
-//        subtitleTextView.setText(item.getSubtitle());
-//
-//        return convertView;
-//    }
-
-
-//    @Override
-//    public Filter getFilter() {
-//        if (eventFilter == null) {
-//            eventFilter = new EventFilter();
-//        }
-//        return eventFilter;
-//    }
-//
-//    private class EventFilter extends Filter {
-//        @Override
-//        protected FilterResults performFiltering(CharSequence constraint) {
-//            FilterResults results = new FilterResults();
-//            if (constraint == null || constraint.length() == 0) {
-//                results.values = eventsList;
-//                results.count = eventsList.size();
-//            } else {
-//                List<Events> filteredList = new ArrayList<>();
-//                for (Events event : eventsList) {
-//                    if (event.getEventTitle().toLowerCase().contains(constraint.toString().toLowerCase())) {
-//                        filteredList.add(event);
-//                    }
-//                }
-//                results.values = filteredList;
-//                results.count = filteredList.size();
-//            }
-//            return results;
-//        }
-//
-//        @SuppressWarnings("unchecked")
-//        @Override
-//        protected void publishResults(CharSequence constraint, FilterResults results) {
-//            filteredList = (ArrayList<Events>) results.values;
-//            notifyDataSetChanged();
-//        }
-//    }
-//}
-
-//
-//    @Override
-//    public Filter getFilter() {
-//        return new Filter() {
-//            @Override
-//            protected FilterResults performFiltering(CharSequence constraint) {
-//                List<Events> filteredResults;
-//                if (constraint == null || constraint.length() == 0) {
-//                    filteredResults = eventsList;
-//                } else {
-//                    String filterPattern = constraint.toString().toLowerCase().trim();
-//                    filteredResults = eventsList.stream()
-//                            .filter(item -> item.getEventTitle().toLowerCase().contains(filterPattern) ||
-//                                    item.getEventOrganizer().toLowerCase().contains(filterPattern))
-//                            .collect(Collectors.toList());
-//                }
-//
-//                FilterResults results = new FilterResults();
-//                results.values = filteredResults;
-//
-//                return results;
-//            }
-//
-//            @Override
-//            protected void publishResults(CharSequence constraint, FilterResults results) {
-//                eventsList = (List<Events>) results.values;
-//                notifyDataSetChanged();
-//            }
-//        };

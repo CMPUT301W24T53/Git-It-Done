@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -96,7 +97,7 @@ public class MyEventsPageActivity extends AppCompatActivity{
                                         String eventPoster = doc.getString("eventPoster");
                                         Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
 
-                                        eventsList.add(new Events(eventTitle, eventDate, eventTime, location, organizer, eventDescription, eventPoster, eventID));
+                                        eventsList.add(new Events(eventTitle, eventDate, location, organizer, eventDescription, eventPoster, eventID));
 
                                         adapter.notifyDataSetChanged();
                                     }
@@ -105,6 +106,20 @@ public class MyEventsPageActivity extends AppCompatActivity{
                     }
                     adapter.notifyDataSetChanged();
                 }
+            }
+        });
+        SearchView searchBar = findViewById(R.id.search_bar);
+        adapter.getFilter().filter("");
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
             }
         });
 

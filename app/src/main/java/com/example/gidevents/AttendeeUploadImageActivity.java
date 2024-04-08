@@ -35,6 +35,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 
+/**
+ * Activity for a User to upload or delete an image for their profile Picture
+ */
 public class AttendeeUploadImageActivity extends AppCompatActivity {
     StorageReference storageReference;
     Uri pfpImage;
@@ -115,6 +118,10 @@ public class AttendeeUploadImageActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Uploads the image to our database and adds a link to the image in the Users document
+     * @param image image to be uploaded
+     */
     private void uploadImage(Uri image){
         HashMap<String, Object> data = new HashMap<>();
         StorageReference reference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(pfpImage));

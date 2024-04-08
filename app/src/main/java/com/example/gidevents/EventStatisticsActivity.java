@@ -34,6 +34,9 @@ import java.util.HashSet;
 import java.util.Map;
 
 //ToDo: Implement Notifications
+/**
+ * Runs the Activity for seeing a map of all check in locations for an event, and shows how many people are currently checked in to the event.
+ */
 public class EventStatisticsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;

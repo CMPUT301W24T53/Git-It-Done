@@ -26,11 +26,10 @@ public class Events implements Serializable {
      * @param eventID event ID
      */
 
-    public Events (String title, String date, String time, String location, String organizer, String description, String eventPoster, String eventID) {
+    public Events (String title, String date, String location, String organizer, String description, String eventPoster, String eventID) {
       
         this.eventTitle = title;
         this.eventDate = date;
-        this.eventTime = time;
         this.eventLocation = location;
         this.eventOrganizer = organizer;
         this.eventDescription = description;

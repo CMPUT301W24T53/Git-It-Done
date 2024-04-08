@@ -27,6 +27,8 @@
     <uses-permission android:name="android.permission.SEND_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.REQUEST_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -42,6 +44,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GIDEvents"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_maps" />
         <service
             android:name=".NotifHandler"
             android:exported="false">
@@ -92,7 +102,8 @@
         <activity android:name=".NotifDetailsActivity" />
         <activity android:name=".ProfileEditActivity" />
         <activity android:name=".MyEventsPageActivity"/>
-
+        <activity android:name=".AttendeeUploadImageActivity" />
+        <activity android:name=".EventStatisticsActivity" />
         <activity android:name=".AdminActivity" />
         <activity android:name=".AdminBrowseEvent" />
         <activity android:name=".AdminEventDetails" />

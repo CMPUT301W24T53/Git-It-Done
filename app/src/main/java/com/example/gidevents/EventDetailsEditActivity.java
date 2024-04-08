@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.view.View;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
@@ -89,6 +89,7 @@ public class EventDetailsEditActivity extends AppCompatActivity {
         Button back_button = findViewById(R.id.back_button);
         Button edit_details_button = findViewById(R.id.edit_button);
         Button view_participant_list = findViewById(R.id.view_participant_list);
+        Button event_statisitcs = findViewById(R.id.orgEventAttendeeStats);
         listView = findViewById(R.id.check_ins_listView);
         CheckInsAdapter adapter = new CheckInsAdapter(this, checkInsList);
         listView.setAdapter(adapter);
@@ -136,6 +137,14 @@ public class EventDetailsEditActivity extends AppCompatActivity {
             Intent intent = new Intent(EventDetailsEditActivity.this, ParticipantListActivity.class);
             intent.putExtra("eventDetails", eventDetails);
             startActivity(intent);
+        });
+        event_statisitcs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EventDetailsEditActivity.this, EventStatisticsActivity.class);
+                intent.putExtra("eventDetails", eventDetails);
+                startActivity(intent);
+            }
         });
     }
 }

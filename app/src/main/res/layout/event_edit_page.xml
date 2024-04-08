@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <ImageView
         android:id="@+id/poster"
         android:layout_width="match_parent"
@@ -12,8 +12,6 @@
         android:src="@drawable/ic_launcher_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
     <TextView
         android:id="@+id/event_title"
         android:layout_width="wrap_content"
@@ -24,7 +22,6 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/poster" />
-
     <TextView
         android:id="@+id/event_date"
         android:layout_width="wrap_content"
@@ -33,7 +30,6 @@
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@id/event_title"
         app:layout_constraintEnd_toEndOf="parent" />
-
     <TextView
         android:id="@+id/event_organizer"
         android:layout_width="wrap_content"
@@ -42,7 +38,6 @@
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="@+id/event_title"
         app:layout_constraintTop_toBottomOf="@+id/event_title" />
-
     <TextView
         android:id="@+id/event_description"
         android:layout_width="wrap_content"
@@ -53,12 +48,11 @@
         app:layout_constraintTop_toBottomOf="@id/event_organizer" />
 
     <Button
+        android:id="@+id/edit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/edit_button"
         android:text="Edit Event Details"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/view_participant_list"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
@@ -70,11 +64,30 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
+        android:id="@+id/view_participant_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/view_participant_list"
         android:text="View Participants"
+        app:layout_constraintBottom_toTopOf="@+id/orgEventAttendeeStats"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/orgEventAttendeeStats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Attendance Statistics"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <ListView
+        android:id="@+id/check_ins_listView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/edit_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_description"
+        app:layout_constraintVertical_bias="0.003" />
 </androidx.constraintlayout.widget.ConstraintLayout>

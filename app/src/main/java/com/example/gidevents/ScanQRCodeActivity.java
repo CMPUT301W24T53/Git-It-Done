@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.location.Location;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -22,6 +23,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -42,6 +47,7 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,12 +63,14 @@ public class ScanQRCodeActivity extends AppCompatActivity {
 
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int SELECT_IMAGE_REQUEST_CODE = 2;
+    FusedLocationProviderClient userLoc;
     private boolean isHandlingCheckIn = false;
     private String lastScannedQRCode = null;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_qr_code);
+        userLoc = LocationServices.getFusedLocationProviderClient(this);
 
         if (hasCameraPermission()) {
             ScanQRCode();
@@ -298,16 +306,48 @@ public class ScanQRCodeActivity extends AppCompatActivity {
     }
 
     private void addNewParticipant(CollectionReference participantsRef, String userId, String Event) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userRef = db.collection("Users").document(userId);
+
+        HashSet<String> inputOptions = new HashSet<String>();
+        inputOptions.add("true");
+        inputOptions.add("t");
+        inputOptions.add("T");
+        inputOptions.add("True");
+        inputOptions.add("TRUE");
+
         Map<String, Object> participantData = new HashMap<>();
         participantData.put("userId", userId);
         participantData.put("checkedIn", true);
         participantData.put("timestamp", FieldValue.serverTimestamp());
         participantData.put("numOfCheckIns", 1);
         participantData.put("eventName", Event);
+        //To be Tested
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot userInfo = task.getResult();
+                if (inputOptions.contains((String)userInfo.get("GeoLocation"))){
+                    if (checkLocPermissions()){
+                        userLoc.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Location> task) {
+                                Location location = task.getResult();
+                                participantData.put("geoLocation", location);
+                            }
+                        });
+                    }
+                }
+            }
+        });
 
         participantsRef.document(userId).set(participantData)
                 .addOnSuccessListener(aVoid -> showToast("Check-in successful"))
                 .addOnFailureListener(e -> handleFailure("New participant check-in failed: " + e.getMessage()));
+    }
+
+    private boolean checkLocPermissions(){
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
 
@@ -327,10 +367,9 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                             String eventOrganizer = doc.getString("eventOrganizer");
                             String eventDescription = doc.getString("eventDescription");
                             String eventID = doc.getId();
-                            String time= doc.getString("eventTime");
                             String eventLocation= doc.getString("eventLocation");
                             String eventPoster = doc.getString("eventPoster");
-                            Events eventDetails = new Events(eventTitle, eventDate, time, eventLocation, eventOrganizer, eventDescription, eventPoster, eventID);
+                            Events eventDetails = new Events(eventTitle, eventDate, eventLocation, eventOrganizer, eventDescription, eventPoster, eventID);
                             Intent intent = new Intent(ScanQRCodeActivity.this, EventDetailsPageActivity.class);
                             intent.putExtra("eventDetails", eventDetails);
                             startActivity(intent);

@@ -96,7 +96,7 @@ public class MyEventsPageActivity extends AppCompatActivity{
                                         String eventPoster = doc.getString("eventPoster");
                                         Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
 
-                                        eventsList.add(new Events(eventTitle, eventDate, eventTime, location, organizer, eventDescription, eventPoster, eventID));
+                                        eventsList.add(new Events(eventTitle, eventDate, location, organizer, eventDescription, eventPoster, eventID));
 
                                         adapter.notifyDataSetChanged();
                                     }

@@ -86,7 +86,6 @@ public class BrowseEventActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot doc : querySnapshots) {
                         String eventTitle = doc.getString("eventTitle");
                         String eventDate = doc.getString("eventDate");
-                        String time= doc.getString("eventTime");
                         String eventLocation= doc.getString("eventLocation");
                         String eventOrganizer = doc.getString("eventOrganizer");
                         String eventDescription = doc.getString("eventDescription");
@@ -94,7 +93,7 @@ public class BrowseEventActivity extends AppCompatActivity {
                         String eventID = doc.getId();
 
                         Log.d("Firestore", String.format("Event(%s) fetched", eventTitle));
-                        eventsList.add(new Events(eventTitle, eventDate, time, eventLocation, eventOrganizer, eventDescription, eventPoster, eventID));
+                        eventsList.add(new Events(eventTitle, eventDate, eventLocation, eventOrganizer, eventDescription, eventPoster, eventID));
                     }
                     adapter.notifyDataSetChanged();
                 }

@@ -1,0 +1,369 @@
+Index: app/src/main/res/layout/participant_display.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\">\n\n    <TextView\n        android:id=\"@+id/participant_name\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:layout_marginStart=\"16dp\"\n        android:layout_marginTop=\"60dp\"\n        android:padding=\"8dp\"\n        android:text=\"UserName: abcdefghijk\"\n        android:textAppearance=\"@style/TextAppearance.AppCompat.Large\"\n        app:layout_constraintStart_toStartOf=\"parent\"\n        app:layout_constraintTop_toTopOf=\"parent\" />\n\n    <TextView\n        android:id=\"@+id/timestamp_view\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:layout_marginStart=\"52dp\"\n        android:layout_marginTop=\"8dp\"\n        android:text=\"Time Stamp: 213123123123\"\n        android:textAppearance=\"@style/TextAppearance.AppCompat.Small\"\n        app:layout_constraintStart_toEndOf=\"@+id/num_of_check_ins\"\n        app:layout_constraintTop_toBottomOf=\"@+id/participant_name\" />\n\n    <TextView\n        android:id=\"@+id/num_of_check_ins\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:layout_marginStart=\"16dp\"\n        android:layout_marginTop=\"8dp\"\n        android:text=\"Number Of Check Ins: 23\"\n        android:textAppearance=\"@style/TextAppearance.AppCompat.Small\"\n        app:layout_constraintStart_toStartOf=\"parent\"\n        app:layout_constraintTop_toBottomOf=\"@+id/participant_name\" />\n\n    <TextView\n        android:id=\"@+id/event_name\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:layout_marginStart=\"24dp\"\n        android:layout_marginTop=\"16dp\"\n        android:text=\"Event: EVent Name\"\n        android:textAppearance=\"@style/TextAppearance.AppCompat.Large\"\n        app:layout_constraintStart_toStartOf=\"parent\"\n        app:layout_constraintTop_toTopOf=\"parent\" />\n\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/participant_display.xml b/app/src/main/res/layout/participant_display.xml
+--- a/app/src/main/res/layout/participant_display.xml	
++++ b/app/src/main/res/layout/participant_display.xml	
+@@ -10,9 +10,9 @@
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginStart="16dp"
+-        android:layout_marginTop="60dp"
++        android:layout_marginTop="16dp"
+         android:padding="8dp"
+-        android:text="UserName: abcdefghijk"
++        android:text="UserName: "
+         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent" />
+@@ -23,7 +23,7 @@
+         android:layout_height="wrap_content"
+         android:layout_marginStart="52dp"
+         android:layout_marginTop="8dp"
+-        android:text="Time Stamp: 213123123123"
++        android:text="Time Stamp:"
+         android:textAppearance="@style/TextAppearance.AppCompat.Small"
+         app:layout_constraintStart_toEndOf="@+id/num_of_check_ins"
+         app:layout_constraintTop_toBottomOf="@+id/participant_name" />
+@@ -34,20 +34,9 @@
+         android:layout_height="wrap_content"
+         android:layout_marginStart="16dp"
+         android:layout_marginTop="8dp"
+-        android:text="Number Of Check Ins: 23"
++        android:text="Number Of Check Ins: "
+         android:textAppearance="@style/TextAppearance.AppCompat.Small"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toBottomOf="@+id/participant_name" />
+ 
+-    <TextView
+-        android:id="@+id/event_name"
+-        android:layout_width="wrap_content"
+-        android:layout_height="wrap_content"
+-        android:layout_marginStart="24dp"
+-        android:layout_marginTop="16dp"
+-        android:text="Event: EVent Name"
+-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+-        app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintTop_toTopOf="parent" />
+-
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/event_edit_page.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\">\n\n    <ImageView\n        android:id=\"@+id/poster\"\n        android:layout_width=\"match_parent\"\n        android:layout_height=\"200dp\"\n        android:padding=\"6dp\"\n        android:src=\"@drawable/ic_launcher_background\"\n        app:layout_constraintEnd_toEndOf=\"parent\"\n        app:layout_constraintTop_toTopOf=\"parent\" />\n\n\n    <TextView\n        android:id=\"@+id/event_title\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:text=\"Event Title\"\n        android:textColor=\"@color/black\"\n        android:textSize=\"18dp\"\n        android:textStyle=\"bold\"\n        app:layout_constraintStart_toStartOf=\"parent\"\n        app:layout_constraintTop_toBottomOf=\"@+id/poster\" />\n\n    <TextView\n        android:id=\"@+id/event_date\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:text=\"Event Date\"\n        android:textColor=\"@color/black\"\n        app:layout_constraintBottom_toBottomOf=\"@id/event_title\"\n        app:layout_constraintEnd_toEndOf=\"parent\" />\n\n    <TextView\n        android:id=\"@+id/event_organizer\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:text=\"Event Organizer\"\n        android:textSize=\"15sp\"\n        app:layout_constraintStart_toStartOf=\"@+id/event_title\"\n        app:layout_constraintTop_toBottomOf=\"@+id/event_title\" />\n\n    <TextView\n        android:id=\"@+id/event_description\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:text=\"Event Description\"\n        android:textSize=\"12sp\"\n        app:layout_constraintStart_toStartOf=\"parent\"\n        app:layout_constraintTop_toBottomOf=\"@id/event_organizer\" />\n\n    <Button\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:id=\"@+id/edit_button\"\n        android:text=\"Edit Event Details\"\n        app:layout_constraintBottom_toBottomOf=\"parent\"\n        app:layout_constraintStart_toStartOf=\"parent\"\n        app:layout_constraintEnd_toEndOf=\"parent\" />\n\n    <Button\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:id=\"@+id/back_button\"\n        android:text=\"Back\"\n        app:layout_constraintBottom_toBottomOf=\"parent\"\n        app:layout_constraintStart_toStartOf=\"parent\" />\n\n    <Button\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:id=\"@+id/view_participant_list\"\n        android:text=\"View Participants\"\n        app:layout_constraintBottom_toBottomOf=\"parent\"\n        app:layout_constraintEnd_toEndOf=\"parent\" />\n\n</androidx.constraintlayout.widget.ConstraintLayout>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/event_edit_page.xml b/app/src/main/res/layout/event_edit_page.xml
+--- a/app/src/main/res/layout/event_edit_page.xml	
++++ b/app/src/main/res/layout/event_edit_page.xml	
+@@ -1,5 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     xmlns:app="http://schemas.android.com/apk/res-auto">
+@@ -53,13 +54,13 @@
+         app:layout_constraintTop_toBottomOf="@id/event_organizer" />
+ 
+     <Button
++        android:id="@+id/edit_button"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+-        android:id="@+id/edit_button"
+         android:text="Edit Event Details"
+         app:layout_constraintBottom_toBottomOf="parent"
+-        app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintEnd_toEndOf="parent" />
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent" />
+ 
+     <Button
+         android:layout_width="wrap_content"
+@@ -77,4 +78,14 @@
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent" />
+ 
++    <ListView
++        android:id="@+id/event_check_ins_list"
++        android:layout_width="409dp"
++        android:layout_height="421dp"
++        android:layout_marginTop="1dp"
++        android:layout_marginBottom="1dp"
++        app:layout_constraintBottom_toTopOf="@+id/edit_button"
++        app:layout_constraintTop_toBottomOf="@+id/event_description"
++        tools:layout_editor_absoluteX="1dp" />
++
+ </androidx.constraintlayout.widget.ConstraintLayout>
+Index: app/src/main/java/com/example/gidevents/EventDetailsEditActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.gidevents;\n\nimport androidx.appcompat.app.AppCompatActivity;\n\nimport android.content.Intent;\nimport android.content.res.Resources;\nimport android.os.Bundle;\nimport android.util.Log;\nimport android.widget.Button;\nimport android.widget.ImageView;\nimport android.widget.TextView;\nimport android.widget.Toast;\n\nimport com.bumptech.glide.Glide;\nimport com.google.firebase.firestore.FirebaseFirestore;\n\n\npublic class EventDetailsEditActivity extends AppCompatActivity {\n\n    /**\n     * This is the activity class for EventDetails page\n     * It displays the selected event's details\n     * It also allows the user to click on the Sign up button to sign up for the event\n     */\n    private FirebaseFirestore db;\n\n\n    /**\n     * Initialize the views, set up an onClickListener for the signUpButton\n     *\n     * @param savedInstanceState being shut down then this Bundle contains the data it most\n     *                 recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>\n     */\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.event_edit_page);\n        db = FirebaseFirestore.getInstance();\n        Events eventDetails = (Events) getIntent().getSerializableExtra(\"eventDetails\");\n\n        try {\n\n\n            if (eventDetails != null) {\n                TextView title = findViewById(R.id.event_title);\n                ImageView poster = findViewById(R.id.poster);\n                TextView date = findViewById(R.id.event_date);\n                TextView organizer = findViewById(R.id.event_organizer);\n                TextView description = findViewById(R.id.event_description);\n                TextView location = findViewById(R.id.event_location);\n\n\n                title.setText(eventDetails.getEventTitle());\n                String posterUrl = eventDetails.getEventPoster();\n                // Check if the event poster resource exists.\n                Glide.with(this)\n                        .load(posterUrl)\n                        .placeholder(R.drawable.my_event_icon) // Optional placeholder while image loads\n                        .error(R.drawable.my_event_icon)       // Optional error image if load fails\n                        .into(poster);                         // Set the ImageView to display the image\n\n                date.setText(eventDetails.getEventDate());\n                organizer.setText(eventDetails.getEventOrganizer());\n                location.setText(eventDetails.getEventLocation());\n\n                description.setText(eventDetails.getEventDescription());\n\n            }\n        } catch (Exception e) {\n            Log.e(\"EventDetailsPageActivity\", \"Error setting event details\", e);\n            Toast.makeText(this, \"Error displaying event details.\", Toast.LENGTH_LONG).show();\n        }\n\n        Button back_button = findViewById(R.id.back_button);\n        Button edit_details_button = findViewById(R.id.edit_button);\n        Button view_participant_list = findViewById(R.id.view_participant_list);\n\n        back_button.setOnClickListener(v -> {\n            finish();\n        });\n\n        edit_details_button.setOnClickListener(v -> {\n            finish();       // Implement actual event detail editing\n        });\n\n        view_participant_list.setOnClickListener(v -> {\n            Intent intent = new Intent(EventDetailsEditActivity.this, ParticipantListActivity.class);\n            intent.putExtra(\"eventDetails\", eventDetails);\n            startActivity(intent);\n        });\n    }\n}\n\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/gidevents/EventDetailsEditActivity.java b/app/src/main/java/com/example/gidevents/EventDetailsEditActivity.java
+--- a/app/src/main/java/com/example/gidevents/EventDetailsEditActivity.java	
++++ b/app/src/main/java/com/example/gidevents/EventDetailsEditActivity.java	
+@@ -1,5 +1,6 @@
+ package com.example.gidevents;
+ 
++import androidx.annotation.Nullable;
+ import androidx.appcompat.app.AppCompatActivity;
+ 
+ import android.content.Intent;
+@@ -8,11 +9,20 @@
+ import android.util.Log;
+ import android.widget.Button;
+ import android.widget.ImageView;
++import android.widget.ListView;
+ import android.widget.TextView;
+ import android.widget.Toast;
+ 
+ import com.bumptech.glide.Glide;
++import com.google.firebase.firestore.CollectionReference;
++import com.google.firebase.firestore.EventListener;
+ import com.google.firebase.firestore.FirebaseFirestore;
++import com.google.firebase.firestore.FirebaseFirestoreException;
++import com.google.firebase.firestore.QueryDocumentSnapshot;
++import com.google.firebase.firestore.QuerySnapshot;
++
++import java.util.ArrayList;
++import java.util.Map;
+ 
+ 
+ public class EventDetailsEditActivity extends AppCompatActivity {
+@@ -24,6 +34,12 @@
+      */
+     private FirebaseFirestore db;
+ 
++    String eventID;
++    CollectionReference participantRef;
++    private ArrayList<Map<String, Object>> checkInList = new ArrayList<>();
++    private ListView listView;
++
++
+ 
+     /**
+      * Initialize the views, set up an onClickListener for the signUpButton
+@@ -47,7 +63,7 @@
+                 TextView date = findViewById(R.id.event_date);
+                 TextView organizer = findViewById(R.id.event_organizer);
+                 TextView description = findViewById(R.id.event_description);
+-                TextView location = findViewById(R.id.event_location);
++                //TextView location = findViewById(R.id.event_location);
+ 
+ 
+                 title.setText(eventDetails.getEventTitle());
+@@ -61,8 +77,8 @@
+ 
+                 date.setText(eventDetails.getEventDate());
+                 organizer.setText(eventDetails.getEventOrganizer());
+-                location.setText(eventDetails.getEventLocation());
+-
++                //location.setText(eventDetails.getEventLocation());
++                eventID = eventDetails.getEventID();
+                 description.setText(eventDetails.getEventDescription());
+ 
+             }
+@@ -74,6 +90,40 @@
+         Button back_button = findViewById(R.id.back_button);
+         Button edit_details_button = findViewById(R.id.edit_button);
+         Button view_participant_list = findViewById(R.id.view_participant_list);
++        CheckInsAdapter adapter = new CheckInsAdapter(this, checkInList);
++        listView = findViewById(R.id.event_check_ins_list);
++        listView.setAdapter(adapter);
++
++        participantRef = db.collection("Events").document(eventID).collection("participantsCheckIn");
++        participantRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
++            @Override
++            public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
++                if (error != null) {
++                    Log.e("Firestore", error.toString());
++                    return;
++                }
++                if (querySnapshots != null) {
++                    checkInList.clear();
++                    for (QueryDocumentSnapshot doc : querySnapshots) {
++                        String participantID = doc.getId();
++                        db.collection("Events").document(eventID).collection("participantsCheckIn").document(participantID).get()
++                                .addOnSuccessListener(participant -> {
++                                    if (participant.exists()) {
++                                        Map<String,Object> data = participant.getData();
++
++                                        checkInList.add(data);
++                                        adapter.notifyDataSetChanged();
++                                    }
++                                })
++                                .addOnFailureListener(e -> Log.e("Firestore", "Unable to fetch participant"));
++                    }
++                }
++
++            }
++
++        });
++
++
+ 
+         back_button.setOnClickListener(v -> {
+             finish();
+Index: app/src/main/java/com/example/gidevents/ParticipantListActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.gidevents;\n\nimport android.content.Intent;\nimport android.os.Bundle;\nimport android.util.Log;\nimport android.widget.Button;\nimport android.widget.ListView;\n\nimport androidx.annotation.Nullable;\nimport androidx.appcompat.app.AppCompatActivity;\n\nimport com.google.firebase.firestore.CollectionReference;\nimport com.google.firebase.firestore.DocumentReference;\nimport com.google.firebase.firestore.EventListener;\nimport com.google.firebase.firestore.FirebaseFirestore;\nimport com.google.firebase.firestore.FirebaseFirestoreException;\nimport com.google.firebase.firestore.QueryDocumentSnapshot;\nimport com.google.firebase.firestore.QuerySnapshot;\n\nimport java.util.ArrayList;\nimport java.util.HashMap;\nimport java.util.Map;\n\npublic class ParticipantListActivity extends AppCompatActivity {\n    private FirebaseFirestore db;\n    String eventID;\n    CollectionReference participantRef;\n    private ArrayList<Map<String, Object>> participantList = new ArrayList<>();\n    private ListView listView;\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.participant_list_page);\n\n        db = FirebaseFirestore.getInstance();\n\n        Events eventDetails = (Events) getIntent().getSerializableExtra(\"eventDetails\");\n        eventID = eventDetails.getEventID();\n\n        ParticipantsAdapter adapter = new ParticipantsAdapter(this, participantList);\n        listView = findViewById(R.id.organizer_participants_listview);\n        listView.setAdapter(adapter);\n\n        participantRef = db.collection(\"Events\").document(eventID).collection(\"participants\");\n\n        participantRef.addSnapshotListener(new EventListener<QuerySnapshot>() {\n            @Override\n            public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {\n                if (error != null) {\n                    Log.e(\"Firestore\", error.toString());\n                    return;\n                }\n                if (querySnapshots != null) {\n                    participantList.clear();\n                    for (QueryDocumentSnapshot doc : querySnapshots) {\n                        String participantID = doc.getId();\n                        db.collection(\"Events\").document(eventID).collection(\"participants\").document(participantID).get()\n                                .addOnSuccessListener(participant -> {\n                                    if (participant.exists()) {\n                                        Map<String,Object> data = participant.getData();\n\n                                        participantList.add(data);\n                                        adapter.notifyDataSetChanged();\n                                    }\n                                })\n                                .addOnFailureListener(e -> Log.e(\"Firestore\", \"Unable to fetch participant\"));\n                    }\n                }\n\n            }\n\n        });\n\n        Button back_button = findViewById(R.id.back_button);\n\n        back_button.setOnClickListener(v -> {\n            finish();\n        });\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/gidevents/ParticipantListActivity.java b/app/src/main/java/com/example/gidevents/ParticipantListActivity.java
+--- a/app/src/main/java/com/example/gidevents/ParticipantListActivity.java	
++++ b/app/src/main/java/com/example/gidevents/ParticipantListActivity.java	
+@@ -38,7 +38,7 @@
+         Events eventDetails = (Events) getIntent().getSerializableExtra("eventDetails");
+         eventID = eventDetails.getEventID();
+ 
+-        ParticipantsAdapter adapter = new ParticipantsAdapter(this, participantList);
++        CheckInsAdapter adapter = new CheckInsAdapter(this, participantList);
+         listView = findViewById(R.id.organizer_participants_listview);
+         listView.setAdapter(adapter);
+ 
+Index: app/src/main/res/layout/qr_list_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    android:layout_width=\"match_parent\"\n    android:layout_height=\"match_parent\">\n\n    <TextView\n        android:id=\"@+id/qrTextView\"\n        android:layout_width=\"wrap_content\"\n        android:layout_height=\"wrap_content\"\n        android:layout_marginStart=\"16dp\"\n        android:layout_marginTop=\"52dp\"\n        android:text=\"TextView\"\n        app:layout_constraintStart_toStartOf=\"parent\"\n        app:layout_constraintTop_toTopOf=\"parent\" />\n\n    <ImageView\n        android:id=\"@+id/qrImageView\"\n        android:layout_width=\"100dp\"\n        android:layout_height=\"90dp\"\n        android:layout_marginStart=\"44dp\"\n        android:layout_marginTop=\"16dp\"\n        app:layout_constraintStart_toEndOf=\"@+id/qrTextView\"\n        app:layout_constraintTop_toTopOf=\"parent\"\n        tools:srcCompat=\"@tools:sample/avatars\" />\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/qr_list_item.xml b/app/src/main/res/layout/qr_list_item.xml
+--- a/app/src/main/res/layout/qr_list_item.xml	
++++ b/app/src/main/res/layout/qr_list_item.xml	
+@@ -9,19 +9,20 @@
+         android:id="@+id/qrTextView"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+-        android:layout_marginStart="16dp"
+-        android:layout_marginTop="52dp"
++        android:layout_marginStart="28dp"
++        android:layout_marginTop="56dp"
+         android:text="TextView"
++        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent" />
+ 
+     <ImageView
+         android:id="@+id/qrImageView"
+-        android:layout_width="100dp"
+-        android:layout_height="90dp"
+-        android:layout_marginStart="44dp"
+-        android:layout_marginTop="16dp"
+-        app:layout_constraintStart_toEndOf="@+id/qrTextView"
++        android:layout_width="150dp"
++        android:layout_height="150dp"
++        android:layout_marginTop="24dp"
++        android:layout_marginEnd="24dp"
++        app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         tools:srcCompat="@tools:sample/avatars" />
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: .idea/androidTestResultsUserPreferences.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AndroidTestResultsUserPreferences\">\n    <option name=\"androidTestResultsTableState\">\n      <map>\n        <entry key=\"-91615124\">\n        <entry key=\"465357169\">\n          <value>\n            <AndroidTestResultsTableState>\n              <option name=\"preferredColumnWidths\">\n                <map>\n                  <entry key=\"Duration\" value=\"90\" />\n                  <entry key=\"Pixel_3a_API_34_extension_level_7_x86_64\" value=\"120\" />\n                  <entry key=\"Tests\" value=\"360\" />\n                </map>\n              </option>\n            </AndroidTestResultsTableState>\n          </value>\n        </entry>\n        <entry key=\"1345650417\">\n          <value>\n            <AndroidTestResultsTableState>\n              <option name=\"preferredColumnWidths\">\n                <map>\n                  <entry key=\"Duration\" value=\"90\" />\n                  <entry key=\"Pixel_3a_API_34_extension_level_7_x86_64\" value=\"120\" />\n                  <entry key=\"Tests\" value=\"360\" />\n                </map>\n              </option>\n            </AndroidTestResultsTableState>\n          </value>\n        </entry>\n        <entry key=\"1751694322\">\n          <value>\n            <AndroidTestResultsTableState>\n              <option name=\"preferredColumnWidths\">\n                <map>\n                  <entry key=\"Duration\" value=\"90\" />\n                  <entry key=\"Pixel_3a_API_34_extension_level_7_x86_64\" value=\"120\" />\n                  <entry key=\"Tests\" value=\"360\" />\n                </map>\n              </option>\n            </AndroidTestResultsTableState>\n          </value>\n        </entry>\n        <entry key=\"2037101956\">\n        <entry key=\"473734335\">\n          <value>\n            <AndroidTestResultsTableState>\n              <option name=\"preferredColumnWidths\">\n                <map>\n                  <entry key=\"Duration\" value=\"90\" />\n                  <entry key=\"Pixel_3a_API_34_extension_level_7_x86_64\" value=\"120\" />\n                  <entry key=\"Tests\" value=\"360\" />\n                </map>\n              </option>\n            </AndroidTestResultsTableState>\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/androidTestResultsUserPreferences.xml b/.idea/androidTestResultsUserPreferences.xml
+--- a/.idea/androidTestResultsUserPreferences.xml	
++++ b/.idea/androidTestResultsUserPreferences.xml	
+@@ -3,54 +3,13 @@
+   <component name="AndroidTestResultsUserPreferences">
+     <option name="androidTestResultsTableState">
+       <map>
+-        <entry key="-91615124">
+-        <entry key="465357169">
+-          <value>
+-            <AndroidTestResultsTableState>
+-              <option name="preferredColumnWidths">
+-                <map>
+-                  <entry key="Duration" value="90" />
+-                  <entry key="Pixel_3a_API_34_extension_level_7_x86_64" value="120" />
+-                  <entry key="Tests" value="360" />
+-                </map>
+-              </option>
+-            </AndroidTestResultsTableState>
+-          </value>
+-        </entry>
+-        <entry key="1345650417">
++        <entry key="1807786988">
+           <value>
+             <AndroidTestResultsTableState>
+               <option name="preferredColumnWidths">
+                 <map>
+                   <entry key="Duration" value="90" />
+-                  <entry key="Pixel_3a_API_34_extension_level_7_x86_64" value="120" />
+-                  <entry key="Tests" value="360" />
+-                </map>
+-              </option>
+-            </AndroidTestResultsTableState>
+-          </value>
+-        </entry>
+-        <entry key="1751694322">
+-          <value>
+-            <AndroidTestResultsTableState>
+-              <option name="preferredColumnWidths">
+-                <map>
+-                  <entry key="Duration" value="90" />
+-                  <entry key="Pixel_3a_API_34_extension_level_7_x86_64" value="120" />
+-                  <entry key="Tests" value="360" />
+-                </map>
+-              </option>
+-            </AndroidTestResultsTableState>
+-          </value>
+-        </entry>
+-        <entry key="2037101956">
+-        <entry key="473734335">
+-          <value>
+-            <AndroidTestResultsTableState>
+-              <option name="preferredColumnWidths">
+-                <map>
+-                  <entry key="Duration" value="90" />
+-                  <entry key="Pixel_3a_API_34_extension_level_7_x86_64" value="120" />
++                  <entry key="Pixel_7_Pro_API_VanillaIceCream" value="120" />
+                   <entry key="Tests" value="360" />
+                 </map>
+               </option>
+Index: .idea/deploymentTargetDropDown.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"deploymentTargetDropDown\">\n    <value>\n      <entry key=\"app\">\n        <State>\n          <targetSelectedWithDropDown>\n            <Target>\n              <type value=\"QUICK_BOOT_TARGET\" />\n              <deviceKey>\n                <Key>\n                  <type value=\"VIRTUAL_DEVICE_PATH\" />\n                  <value value=\"C:\\Users\\jaket\\.android\\avd\\Pixel_6_Pro_API_34.avd\" />\n                </Key>\n              </deviceKey>\n            </Target>\n          </targetSelectedWithDropDown>\n          <timeTargetWasSelectedWithDropDown value=\"2024-03-21T06:10:28.412256400Z\" />\n        </State>\n      </entry>\n    </value>\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetDropDown.xml b/.idea/deploymentTargetDropDown.xml
+--- a/.idea/deploymentTargetDropDown.xml	
++++ b/.idea/deploymentTargetDropDown.xml	
+@@ -10,13 +10,17 @@
+               <deviceKey>
+                 <Key>
+                   <type value="VIRTUAL_DEVICE_PATH" />
+-                  <value value="C:\Users\jaket\.android\avd\Pixel_6_Pro_API_34.avd" />
++                  <value value="$USER_HOME$/.android/avd/Pixel_7_Pro_API_VanillaIceCream.avd" />
+                 </Key>
+               </deviceKey>
+             </Target>
+           </targetSelectedWithDropDown>
+           <timeTargetWasSelectedWithDropDown value="2024-03-21T06:10:28.412256400Z" />
++          <timeTargetWasSelectedWithDropDown value="2024-04-06T23:14:11.271027Z" />
+         </State>
++      </entry>
++      <entry key="scanQRCodeActivityTest()">
++        <State />
+       </entry>
+     </value>
+   </component>

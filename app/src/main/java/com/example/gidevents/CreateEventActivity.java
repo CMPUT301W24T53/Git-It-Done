@@ -316,6 +316,8 @@ public class CreateEventActivity extends AppCompatActivity {
         eventData.put("eventID", eventId);
         eventData.put("attendeeLimit", attendeeLimit);
         eventData.put("creatorID", creatorID);
+        eventData.put("numCheckIns", 0);
+        eventData.put("attendeeCount", 0);
 
 
 

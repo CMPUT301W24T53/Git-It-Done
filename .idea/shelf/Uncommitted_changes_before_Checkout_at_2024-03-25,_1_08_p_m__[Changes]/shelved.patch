@@ -1,0 +1,19 @@
+Index: app/src/main/java/com/example/gidevents/OrganizerActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.gidevents;\r\n\r\nimport android.content.Intent;\r\nimport android.content.pm.ApplicationInfo;\r\nimport android.os.Bundle;\r\nimport android.view.View;\r\nimport android.widget.AdapterView;\r\nimport android.widget.Button;\r\nimport android.widget.ListView;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport java.util.ArrayList;\r\n\r\npublic class OrganizerActivity  extends AppCompatActivity {\r\n\r\n        @Override\r\n        protected void onCreate(Bundle savedInstanceState) {\r\n            super.onCreate(savedInstanceState);\r\n            setContentView(R.layout.);\r\n\r\n\r\n\r\n\r\n\r\n        }\r\n    }\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/gidevents/OrganizerActivity.java b/app/src/main/java/com/example/gidevents/OrganizerActivity.java
+--- a/app/src/main/java/com/example/gidevents/OrganizerActivity.java	
++++ b/app/src/main/java/com/example/gidevents/OrganizerActivity.java	
+@@ -17,7 +17,7 @@
+         @Override
+         protected void onCreate(Bundle savedInstanceState) {
+             super.onCreate(savedInstanceState);
+-            setContentView(R.layout.);
++            //setContentView(R.layout.);
+ 
+ 
+ 

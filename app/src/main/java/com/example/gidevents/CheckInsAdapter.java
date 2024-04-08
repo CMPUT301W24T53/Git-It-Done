@@ -35,7 +35,7 @@ public class CheckInsAdapter extends ArrayAdapter<Map<String,Object>> {
         String username;
         String timeStamp;
         Long checkIns;
-
+        // validate Data before displaying
         if ((String)participant.get("username") == null || (String)participant.get("username")== "")
         {
             username = "None";

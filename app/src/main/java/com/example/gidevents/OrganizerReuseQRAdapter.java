@@ -43,7 +43,7 @@ public class OrganizerReuseQRAdapter extends ArrayAdapter<String[]> {
         ImageView imageView = item.findViewById(R.id.qrImageView);
         TextView textView = item.findViewById(R.id.qrTextView);
 
-        Bitmap qrCode = QRCodeBitmap.generateQRCodeBitmap(currentStrings[0]);
+        Bitmap qrCode = QRCodeBitmap.generateQRCodeBitmap(currentStrings[0]); // get Bitmap of QRCode image
 
         imageView.setImageBitmap(qrCode);
         textView.setText(currentStrings[1]);

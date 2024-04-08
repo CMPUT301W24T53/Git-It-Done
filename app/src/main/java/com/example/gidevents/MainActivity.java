@@ -1,9 +1,19 @@
+
 package com.example.gidevents;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -15,17 +25,25 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.FirebaseApp;
+import com.example.gidevents.FirebaseTokenHelper;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
         signInAnonymously();
+        notifPerms(GlobalContext.context);
+        geolocationPerms(GlobalContext.context);
+        FirebaseTokenHelper tokenHelper = new FirebaseTokenHelper();
+        tokenHelper.retrieveTokenAndUpdateFirestore();
         Button attendeeBtn = (Button) findViewById(R.id.attendeeButton);
         Button organizerBtn = (Button) findViewById(R.id.organizerButton);
         Button administratorBtn = (Button) findViewById(R.id.administratorButton);
@@ -49,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     /**
      * Signs in user passively and allows for retention of information through app relaunches
      */
@@ -70,5 +90,38 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+    private void notifPerms (Context context) {
+        final int MY_PERMISSIONS_REQUEST_POST_NOTIFICATIONS_SERVICE  = 1001;
 
+        if (ActivityCompat.checkSelfPermission(context,
+                android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    MY_PERMISSIONS_REQUEST_POST_NOTIFICATIONS_SERVICE );
+            return;
+        }
+    }
+
+    private void geolocationPerms (Context context) {
+        ActivityResultLauncher<String[]> locationPermissionRequest =
+                registerForActivityResult(new ActivityResultContracts
+                                .RequestMultiplePermissions(), result -> {
+                            Boolean fineLocationGranted = result.getOrDefault(
+                                    Manifest.permission.ACCESS_FINE_LOCATION, false);
+                            Boolean coarseLocationGranted = result.getOrDefault(
+                                    Manifest.permission.ACCESS_COARSE_LOCATION,false);
+                            if (fineLocationGranted != null && fineLocationGranted) {
+                                // Precise location access granted.
+                            } else if (coarseLocationGranted != null && coarseLocationGranted) {
+                                // Only approximate location access granted.
+                            } else {
+                                // No location access granted.
+                            }
+                        }
+                );
+        locationPermissionRequest.launch(new String[] {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        });
+    }
 }

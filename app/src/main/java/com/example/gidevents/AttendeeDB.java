@@ -1,5 +1,7 @@
 package com.example.gidevents;
 
+import android.view.View;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,6 +31,12 @@ public class AttendeeDB{
      */
     public void setData(AttendeeProfileEditOption option){
         dbConnector.setData(option);
+    }
+    public String getPfp(){
+        return dbConnector.getPfp();
+    }
+    public String getUsrName(){
+        return dbConnector.getUsrName();
     }
 
 }

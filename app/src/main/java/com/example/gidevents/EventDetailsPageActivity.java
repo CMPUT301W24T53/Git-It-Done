@@ -99,7 +99,6 @@ public class EventDetailsPageActivity extends AppCompatActivity {
                         addEventToMyEvents(eventID);
                         participantSignUp(userID, eventID);
                         subscribeToEventNotifs(eventID);
-
                         Toast.makeText(getApplicationContext(), "Sign up successful", Toast.LENGTH_SHORT).show();
                     }
                 });

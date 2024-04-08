@@ -1,6 +1,9 @@
 package com.example.gidevents;
 
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,8 +21,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Class to directly interact with database for Attendee data
@@ -30,6 +36,9 @@ public class AttendeeDBConnector {
     private FirebaseFirestore db;
     private DocumentReference userRef;
     private AttendeeProfileEditAdapter optionAdapter;
+    private String pfpImage = "";
+    private String usrName = "";
+
 
     /**
      * Constructor that initiates variables, initializes data, and sets up a listener to update data when it is changed
@@ -55,6 +64,14 @@ public class AttendeeDBConnector {
         });
     }
 
+    public String getPfp() {
+        return pfpImage;
+    }
+
+    public String getUsrName(){
+        return usrName;
+    }
+
     /**
      * Clears Adapter and re-fills it with data from snapshot
      * @param data data to fill adapter with
@@ -63,7 +80,20 @@ public class AttendeeDBConnector {
         optionAdapter.clear();
         for (Map.Entry<String, Object> option: data.getData().entrySet()){
             AttendeeProfileEditOption optionEntry = new AttendeeProfileEditOption(option.getKey(),(String)option.getValue());
-            optionAdapter.add(optionEntry);
+            // Ignore these fields in the user database when displaying
+            if (Objects.equals(optionEntry.getOptionType(), "fcmToken")){
+                continue;
+            }
+            else if (Objects.equals(optionEntry.getOptionType(), "pfpImage")){
+                pfpImage = optionEntry.getCurrentvalue();
+            }
+            else if (Objects.equals(optionEntry.getOptionType(), "Name")){
+                usrName = optionEntry.getCurrentvalue();
+                optionAdapter.add(optionEntry);
+            }
+            else {
+                optionAdapter.add(optionEntry);
+            }
         }
         optionAdapter.notifyDataSetChanged();
     }

@@ -367,10 +367,9 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                             String eventOrganizer = doc.getString("eventOrganizer");
                             String eventDescription = doc.getString("eventDescription");
                             String eventID = doc.getId();
-                            String time= doc.getString("eventTime");
                             String eventLocation= doc.getString("eventLocation");
                             String eventPoster = doc.getString("eventPoster");
-                            Events eventDetails = new Events(eventTitle, eventDate, time, eventLocation, eventOrganizer, eventDescription, eventPoster, eventID);
+                            Events eventDetails = new Events(eventTitle, eventDate, eventLocation, eventOrganizer, eventDescription, eventPoster, eventID);
                             Intent intent = new Intent(ScanQRCodeActivity.this, EventDetailsPageActivity.class);
                             intent.putExtra("eventDetails", eventDetails);
                             startActivity(intent);

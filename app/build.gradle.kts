@@ -1,8 +1,15 @@
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
+secrets{
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "local.defaults.properties"
+    ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+    ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
 
+}
 android {
     namespace = "com.example.gidevents"
     compileSdk = 34
@@ -34,6 +41,9 @@ android {
     packagingOptions {
         pickFirst ("mockito-extensions/org.mockito.plugins.MockMaker")
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -41,12 +51,13 @@ dependencies {
 
     implementation("com.google.firebase:firebase-firestore:24.11.0")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
     androidTestImplementation("androidx.test:runner:1.5.0")
 
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("androidx.core:core-ktx:1.12.0")
 
-
+    implementation("com.google.android.gms:play-services-location:21.2.0")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.test:rules:1.5.0")
 

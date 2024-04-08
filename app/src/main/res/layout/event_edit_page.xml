@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -53,12 +54,11 @@
         app:layout_constraintTop_toBottomOf="@id/event_organizer" />
 
     <Button
+        android:id="@+id/edit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/edit_button"
         android:text="Edit Event Details"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/view_participant_list"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
@@ -70,10 +70,18 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
+        android:id="@+id/view_participant_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/view_participant_list"
         android:text="View Participants"
+        app:layout_constraintBottom_toTopOf="@+id/orgEventAttendeeStats"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/orgEventAttendeeStats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Attendance Statistics"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

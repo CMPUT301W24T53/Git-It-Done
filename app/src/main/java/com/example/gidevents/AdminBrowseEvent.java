@@ -33,7 +33,6 @@ public class AdminBrowseEvent extends AppCompatActivity {
     private ArrayList<Events> eventsList = new ArrayList<>();
     private ArrayList<String> eventTitleList = new ArrayList<>();
     private ListView listView;
-    private SearchView searchview;
 
     /** onCreate method for AdminBrowseEvent
      * Connect to database on create
@@ -51,7 +50,6 @@ public class AdminBrowseEvent extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference eventRef = db.collection("Events");
-        searchview = findViewById(R.id.search_bar);
 
         EventsAdapter adapter = new EventsAdapter(this, eventsList);
         listView.setAdapter(adapter);
@@ -97,6 +95,20 @@ public class AdminBrowseEvent extends AppCompatActivity {
                     }
                     adapter.notifyDataSetChanged();
                 }
+            }
+        });
+        SearchView searchBar = findViewById(R.id.search_bar);
+        adapter.getFilter().filter("");
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
             }
         });
 

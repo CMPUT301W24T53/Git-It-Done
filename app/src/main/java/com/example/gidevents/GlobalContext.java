@@ -5,7 +5,6 @@ import android.content.Context;
 
 public class GlobalContext extends Application {
 
-
     public static Context context;
 
     @Override

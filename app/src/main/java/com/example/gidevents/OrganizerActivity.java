@@ -69,6 +69,8 @@ public class OrganizerActivity extends AppCompatActivity {
                                         eventsList.add(new Events(eventTitle, eventDate, eventTime, location, organizer, eventDescription, eventPoster, eventID));
 
                                         adapter.notifyDataSetChanged();
+
+                                        Log.d("events list", "this is events list" + eventsList);
                                     }
                                 });
                     }

@@ -158,8 +158,7 @@ public class AttendeeDBConnector {
                         "GeoLocation", "",
                         "Gender", "",
                         "Name", "",
-                        "Homepage","",
-                        "fcmToken", "");
+                        "Homepage","");
 
         collUsers.document(Uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

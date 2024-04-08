@@ -1,0 +1,24 @@
+Index: app/src/main/java/com/example/gidevents/CheckInsAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.gidevents;\n\nimport android.content.Context;\nimport android.view.LayoutInflater;\nimport android.view.View;\nimport android.view.ViewGroup;\nimport android.widget.ArrayAdapter;\nimport android.widget.TextView;\n\nimport java.util.List;\nimport java.util.Map;\n\npublic class CheckInsAdapter extends ArrayAdapter<Map<String,Object>> {\n    private List<Map<String, Object>> data;\n    public CheckInsAdapter(Context context, List<Map<String, Object>> participants) {\n        super(context, 0, participants);\n        data = participants;\n    }\n\n    @Override\n    public View getView(int position, View convertView, ViewGroup parent) {\n        if (convertView == null) {\n            convertView = LayoutInflater.from(getContext()).inflate(R.layout.participant_display, parent, false);\n        }\n        Map<String,Object> participant = data.get(position);\n        TextView usernameTextView = convertView.findViewById(R.id.participant_name);\n        TextView timestampTextView = convertView.findViewById(R.id.timestamp_view);\n        TextView numCheckinTextView = convertView.findViewById(R.id.num_of_check_ins);\n        TextView eventNameTextView = convertView.findViewById(R.id.event_name);\n\n        assert participant != null;\n        usernameTextView.setText(\"User Name: \" + participant.get(\"username\").toString());\n        timestampTextView.setText(\"Time Stamp: \" + participant.get(\"timeStamp\").toString());\n        numCheckinTextView.setText(\"Number Of Check Ins: \" + participant.get(\"numOfCheckIns\").toString());\n        eventNameTextView.setText(\"Event: \" + participant.get(\"eventName\").toString());\n\n\n        return convertView;\n    }\n}\n
+===================================================================
+diff --git a/app/src/main/java/com/example/gidevents/CheckInsAdapter.java b/app/src/main/java/com/example/gidevents/CheckInsAdapter.java
+--- a/app/src/main/java/com/example/gidevents/CheckInsAdapter.java	
++++ b/app/src/main/java/com/example/gidevents/CheckInsAdapter.java	
+@@ -26,13 +26,13 @@
+         TextView usernameTextView = convertView.findViewById(R.id.participant_name);
+         TextView timestampTextView = convertView.findViewById(R.id.timestamp_view);
+         TextView numCheckinTextView = convertView.findViewById(R.id.num_of_check_ins);
+-        TextView eventNameTextView = convertView.findViewById(R.id.event_name);
++        //TextView eventNameTextView = convertView.findViewById(R.id.event_name);
+ 
+         assert participant != null;
+         usernameTextView.setText("User Name: " + participant.get("username").toString());
+         timestampTextView.setText("Time Stamp: " + participant.get("timeStamp").toString());
+         numCheckinTextView.setText("Number Of Check Ins: " + participant.get("numOfCheckIns").toString());
+-        eventNameTextView.setText("Event: " + participant.get("eventName").toString());
++        //eventNameTextView.setText("Event: " + participant.get("eventName").toString());
+ 
+ 
+         return convertView;

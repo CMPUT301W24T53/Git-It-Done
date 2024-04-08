@@ -1,7 +1,8 @@
 package com.example.gidevents;
 
+import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,27 +22,38 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
-import java.util.Map;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class ParticipantListActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     String eventID;
     CollectionReference participantRef;
-    private ArrayList<String> participantList = new ArrayList<>();
+    private ArrayList<Map<String, Object>> participantList = new ArrayList<>();
     private ListView listView;
     private String nTitle;
     private String nDetails;
+
+
+    public void notifSender(Context context, String eventID, String eventName, String body) {
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, eventID);
+        builder.setSmallIcon(R.drawable.ic_event);
+        builder.setContentTitle(eventName);
+        builder.setContentText(body);
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
+
+
+        managerCompat.notify(1, builder.build());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,15 +82,17 @@ public class ParticipantListActivity extends AppCompatActivity {
                     participantList.clear();
                     for (QueryDocumentSnapshot doc : querySnapshots) {
                         String participantID = doc.getId();
-                        db.collection("Events").document(eventID).collection("participants").document(participantID).get()
+                        participantRef.document(participantID).get()
                                 .addOnSuccessListener(participant -> {
                                     if (participant.exists()) {
-                                        String name = participant.getString("name");
-                                        participantList.add(name);
+                                        Map<String,Object> data = participant.getData();
+
+                                        participantList.add(data);
                                         adapter.notifyDataSetChanged();
                                     }
                                 })
                                 .addOnFailureListener(e -> Log.e("Firestore", "Unable to fetch participant"));
+
                     }
                 }
 
@@ -86,10 +100,11 @@ public class ParticipantListActivity extends AppCompatActivity {
 
         });
 
-        Button back_button = findViewById(R.id.back_button);
-        Button newNotifBtn = findViewById(R.id.notif_button);
 
-        back_button.setOnClickListener(v -> {
+        Button backBtn = findViewById(R.id.back_button);
+        Button newNotifBtn = (Button) findViewById(R.id.notif_button);
+
+        backBtn.setOnClickListener(v -> {
             finish();
         });
         newNotifBtn.setOnClickListener(v -> {
@@ -156,6 +171,7 @@ public class ParticipantListActivity extends AppCompatActivity {
                 notifHandler.storeNotifDetails(nTitle,nDetails,eventID);
                 Log.d("NotifDB", "Notif should be stored");
 
+
                 notifCreatePopup.dismiss(); // Close popup window
             }
         });
@@ -163,19 +179,5 @@ public class ParticipantListActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(v -> {
             notifCreatePopup.dismiss();
         });
-
-    }
-
-    public void notifSender(Context context, String eventID, String eventName, String body) {
-
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, eventID);
-        builder.setSmallIcon(R.drawable.ic_event);
-        builder.setContentTitle(eventName);
-        builder.setContentText(body);
-        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
-
-
-        managerCompat.notify(1, builder.build());
     }
 }

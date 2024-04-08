@@ -33,7 +33,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.Transaction;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.RGBLuminanceSource;
@@ -59,13 +58,11 @@ import java.util.Map;
  * Outstanding Issues:
  * - Consider implementing better error handling for database operations.
  */
-public class ScanQRCodeActivity extends AppCompatActivity {
+public class   ScanQRCodeActivity extends AppCompatActivity {
 
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int SELECT_IMAGE_REQUEST_CODE = 2;
     FusedLocationProviderClient userLoc;
-    private boolean isHandlingCheckIn = false;
-    private String lastScannedQRCode = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -149,12 +146,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         public void barcodeResult(BarcodeResult result) {
             if (result.getText() != null) {
                 String scannedData = result.getText();
-                if (!scannedData.equals(lastScannedQRCode)) {
-                    lastScannedQRCode = scannedData;
-                    checkQRCode(scannedData);
-                } else {
-                    returnToAttendeeActivity();
-                }
+                checkQRCode(scannedData);
             }
         }
 
@@ -168,8 +160,6 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         super.onResume();
         DecoratedBarcodeView barcodeView = findViewById(R.id.scanner_view);
         barcodeView.resume();
-        lastScannedQRCode = null;
-
     }
 
     @Override
@@ -178,6 +168,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         DecoratedBarcodeView barcodeView = findViewById(R.id.scanner_view);
         barcodeView.pause();
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -188,7 +179,6 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                 InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                 Result result = scanQRCodeFromBitmap(bitmap);
-                returnToAttendeeActivity();
                 if (result != null) {
                     String scannedData = result.getText();
                     checkQRCode(scannedData);
@@ -216,6 +206,10 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         return null;
     }
 
+    /**
+     * Checks the QR code data for proper format and determines the subsequent action,
+     * either check-in handling or navigation to event details.
+     */
     void checkQRCode(String scannedData) {
         if (scannedData != null && scannedData.startsWith("CHECKIN-")) {
             String eventId = scannedData.substring("CHECKIN-".length());
@@ -227,92 +221,56 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         }
     }
 
+
     /**
      * Handles the check-in process by verifying the event and participant's status in Firestore
      * and updating the check-in status accordingly.
      */
-
-
-    private void handleCheckIn(String eventIdFromQR) {
-        if (isHandlingCheckIn) {
-            return;
-        }
-
-        isHandlingCheckIn = true;
-
+    private void handleCheckIn(String eventId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         String userId = mAuth.getCurrentUser().getUid();
 
-        db.collection("Events").whereEqualTo("eventID", eventIdFromQR).limit(1).get()
+        CollectionReference eventsRef = db.collection("Events");
+
+        eventsRef.whereEqualTo("eventID", eventId).limit(1).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && !task.getResult().isEmpty()) {
                         DocumentSnapshot eventDocument = task.getResult().getDocuments().get(0);
-                        String actualEventId = eventDocument.getId();
+                        eventDocument.getId();
+                        CollectionReference participantsRef = eventDocument.getReference().collection("participants");
 
-                        eventDocument.getReference().collection("participants").document(userId).get()
+                        participantsRef.document(userId).get()
                                 .addOnCompleteListener(participantsTask -> {
                                     if (participantsTask.isSuccessful()) {
                                         DocumentSnapshot participantDocument = participantsTask.getResult();
                                         if (participantDocument.exists()) {
-                                            checkInToParticipants(actualEventId, userId, db);
+                                            updateParticipantCheckIn(participantDocument);
                                         } else {
-                                            showToast("You are not signed up for this event. Cannot check-in.");
+                                            addNewParticipant(participantsRef, userId, eventDocument.get("eventTitle").toString());
                                         }
                                     } else {
-                                        handleFailure("Failed to verify if user is a participant: " + participantsTask.getException().getMessage());
+                                        handleFailure("Participants lookup failed: " +
+                                                participantsTask.getException().getMessage());
                                     }
-                                    isHandlingCheckIn = false;
                                 });
                     } else {
-                        handleFailure("Event lookup failed: " + task.getException().getMessage());
-                        isHandlingCheckIn = false;
+                        // Handle event lookup failure or event not found
+                        handleFailure(task.isSuccessful() ? "Event not found" : "Event lookup failed: " + task.getException().getMessage());
                     }
-                });
+                })
+                .addOnCompleteListener(task -> returnToAttendeeActivity());
     }
 
-
-
-
-    private void checkInToParticipants(String eventId, String userId, FirebaseFirestore db) {
-        DocumentReference eventDocRef = db.collection("Events").document(eventId);
-
-        CollectionReference participantsCheckInRef = eventDocRef.collection("participantsCheckIn");
-
-        participantsCheckInRef.document(userId).get()
-                .addOnCompleteListener(participantsCheckInTask -> {
-                    if (participantsCheckInTask.isSuccessful()) {
-                        DocumentSnapshot participantCheckInSnapshot = participantsCheckInTask.getResult();
-                        if (participantCheckInSnapshot.exists()) {
-                            checkInIncrease(participantsCheckInRef, userId);
-                        } else {
-                            addNewParticipant(participantsCheckInRef, userId, eventDocRef.getId());
-                        }
-                    } else {
-                        handleFailure("Failed to check if user has checked in: " + participantsCheckInTask.getException().getMessage());
-                    }
-                    isHandlingCheckIn = false;
-                });
-    }
-
-    private void checkInIncrease(CollectionReference participantsRef, String userId) {
-        DocumentReference participantDocRef = participantsRef.document(userId);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.runTransaction((Transaction.Function<Void>) transaction -> {
-                    DocumentSnapshot participantSnapshot = transaction.get(participantDocRef);
-                    transaction.update(participantDocRef, "numOfCheckIns",
-                            participantSnapshot.getLong("numOfCheckIns") + 1);
-                    return null;
-                }).addOnSuccessListener(aVoid -> showToast("number of check-ins increased"))
-                .addOnFailureListener(e -> handleFailure("Failed to increase number of check-ins: " + e.getMessage()));
-    }
-
-
+/**
+ * Queries the Firestore database for event details associated with the given eventId.
+ * If the event is found, it navigates to the EventDetailsPageActivity with the event details.
+ */
     private void navigateToEventDetails(String eventId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Events")
                 .whereEqualTo("eventID", eventId)
-                .limit(1)
+                .limit(1) // Limit the documents to return only one
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -334,6 +292,7 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                         } else {
                             returnToAttendeeActivity();
                             showToast("Invalid QR code.");
+
                         }
                     } else {
                         logError("Error getting documents: ", task.getException());
@@ -393,6 +352,8 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> handleFailure("Participant check-in update failed: " + e.getMessage()));
     }
 
+
+
     private void handleFailure(String message) {
         showToast(message);
     }
@@ -411,4 +372,3 @@ public class ScanQRCodeActivity extends AppCompatActivity {
         Log.e("ScanQRCodeActivity", message, e);
     }
 }
-

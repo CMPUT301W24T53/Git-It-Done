@@ -5,27 +5,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /** This is the EventsAdapter class
  * Sets up the adapter
  */
-public class EventsAdapter extends ArrayAdapter<Events> implements Filterable {
-    private List<Events> events;
-    private List<Events> filteredEvents;
+public class EventsAdapter extends ArrayAdapter<Events> {
+
     public EventsAdapter(Context context, List<Events> events) {
         super(context, 0, events);
-        this.events =events;
-        this.filteredEvents = new ArrayList<>(events);
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -55,45 +49,5 @@ public class EventsAdapter extends ArrayAdapter<Events> implements Filterable {
 
         return convertView;
     }
-    @Override
-    public int getCount() {
-        return filteredEvents.size();
-    }
-
-    @Override
-    public Events getItem(int position) {
-        return filteredEvents.get(position);
-    }
-
-    @Override
-    public Filter getFilter () {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                FilterResults results = new FilterResults();
-                if (constraint == null || constraint.length()==0) {
-                    results.values = events;
-                } else {
-                    List<Events> filteredList = new ArrayList<>();
-                    String filteredText = constraint.toString().toLowerCase().trim();
-                    for (Events event : events) {
-                        if (event.getEventTitle().toLowerCase().trim().contains(filteredText)) {
-                            filteredList.add(event);
-                        }
-                    }
-                    results.values = filteredList;
-                }
-                return results;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                filteredEvents = (List<Events>) results.values;
-                notifyDataSetChanged();
-            }
-        };
-    }
-
-
 
 }

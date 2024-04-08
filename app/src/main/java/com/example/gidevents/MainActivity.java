@@ -1,4 +1,3 @@
-
 package com.example.gidevents;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -124,4 +123,6 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_COARSE_LOCATION
         });
     }
+
+
 }

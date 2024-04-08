@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -12,23 +13,26 @@
         android:name="android.hardware.camera"
         android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
 
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SEND_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.REQUEST_NOTIFICATION_POLICY" />
-
-
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -42,6 +46,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GIDEvents"
         tools:targetApi="31">
+
+        <!--
+             TODO: Before you run your application, you need a Google Maps API key.
+
+             To get one, follow the directions here:
+
+                https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+             Once you have your API key (it starts with "AIza"), define a new property in your
+             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
+             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_maps" />
+
         <service
             android:name=".NotifHandler"
             android:exported="false">
@@ -59,14 +84,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".CustomScannerActivity"
+            android:exported="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:exported="true">
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="com.google.zxing.client.android.SCAN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -79,30 +104,28 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
-        </provider>
-
-
-        <!-- Add other views as needed -->
-        <activity android:name=".BrowseEventActivity"/>
+        </provider> <!-- Add other views as needed -->
+        <activity android:name=".BrowseEventActivity" />
         <activity android:name=".EventDetailsPageActivity" />
-        <activity android:name=".ScanQRCodeActivity"/>
+        <activity android:name=".ScanQRCodeActivity" />
         <activity android:name=".AttendeeActivity" />
         <activity android:name=".OrganizerActivity" />
         <activity android:name=".NotifActivity" />
         <activity android:name=".NotifDetailsActivity" />
         <activity android:name=".ProfileEditActivity" />
-        <activity android:name=".MyEventsPageActivity"/>
-
+        <activity android:name=".MyEventsPageActivity" />
+        <activity android:name=".AttendeeUploadImageActivity" />
         <activity android:name=".AdminActivity" />
         <activity android:name=".AdminBrowseEvent" />
         <activity android:name=".AdminEventDetails" />
+        <activity android:name=".EventStatisticsActivity" />
         <activity android:name=".CreateEventActivity" />
         <activity android:name=".QRCodeActivity" />
-        <activity android:name=".DeleteEventFragment"/>
-        <activity android:name=".AdminBrowseProfilesActivity"/>
-        <activity android:name=".UserProfileDetailsPage"/>
-        <activity android:name=".EventDetailsEditActivity"/>
-        <activity android:name=".ParticipantListActivity"/>
+        <activity android:name=".DeleteEventFragment" />
+        <activity android:name=".AdminBrowseProfilesActivity" />
+        <activity android:name=".UserProfileDetailsPage" />
+        <activity android:name=".EventDetailsEditActivity" />
+        <activity android:name=".ParticipantListActivity" />
     </application>
 
 </manifest>

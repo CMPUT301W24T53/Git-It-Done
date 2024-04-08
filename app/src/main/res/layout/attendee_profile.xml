@@ -12,24 +12,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="Placeholder for profile picture for later"
+        android:text="AB"
+        android:visibility="visible"
         android:clickable="false"
+        android:textSize="40dp"
+        android:background="@drawable/up_profile_picture_background"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/upProfilePictureImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/upProfilePictureText"/>
-
     <Button
         android:id="@+id/upChangeProfilePicture"
-        android:layout_width="100dp"
-        android:layout_height="48dp"
+        android:layout_width="200dp"
+        android:layout_height="45dp"
         android:text="Change Profile Picture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,6 +35,15 @@
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/upChangeProfilePicture"
         app:layout_constraintStart_toStartOf="parent"/>
+
+    <ImageView
+        android:id="@+id/upProfilePictureImage"
+        android:layout_width="125sp"
+        android:layout_height="125sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/upProfilePictureText"
+        app:layout_constraintTop_toTopOf="@+id/upProfilePictureText"
+        tools:srcCompat="@tools:sample/avatars" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

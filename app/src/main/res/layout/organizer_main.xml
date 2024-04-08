@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".OrganizerActivity">
     <TextView
-        android:id="@+id/placeHolder"
+        android:id="@+id/AttendeeImageText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="212dp"
@@ -24,7 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/placeHolder" />
+        app:layout_constraintTop_toBottomOf="@+id/AttendeeImageText" />
 
     <Button
         android:id="@+id/enrolledEventsButton"

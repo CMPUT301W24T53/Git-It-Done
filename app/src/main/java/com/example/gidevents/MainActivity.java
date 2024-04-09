@@ -63,24 +63,31 @@ public class MainActivity extends AppCompatActivity {
         });
 
         administratorBtn.setOnClickListener(v -> {
-            //Admin User Verification based on if users name is Admin
-            if (!(mAuth.getUid() == null)) {
-                userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        DocumentSnapshot user = task.getResult();
-                        if (Objects.equals(user.get("Name"), "Admin")){
-                            Toast.makeText(activity,"Welcome Administrator", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
-                            startActivity(intent);
-                        }
-                        else{
-                            Toast.makeText(activity,"ERROR: Not An Admin", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
+            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+            startActivity(intent);
+
         });
+
+
+//        administratorBtn.setOnClickListener(v -> {
+//            //Admin User Verification based on if users name is Admin
+//            if (!(mAuth.getUid() == null)) {
+//                userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                        DocumentSnapshot user = task.getResult();
+//                        if (Objects.equals(user.get("Name"), "Admin")){
+//                            Toast.makeText(activity,"Welcome Administrator", Toast.LENGTH_SHORT).show();
+//                            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+//                            startActivity(intent);
+//                        }
+//                        else{
+//                            Toast.makeText(activity,"ERROR: Not An Admin", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//            }
+//        });
 
     }
 

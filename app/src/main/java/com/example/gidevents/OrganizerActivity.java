@@ -80,6 +80,8 @@ public class OrganizerActivity extends AppCompatActivity {
                 }
             }
         });
+        adapter.getFilter().filter("");
+
 
 
 

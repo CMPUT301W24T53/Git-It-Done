@@ -1,5 +1,6 @@
 package com.example.gidevents;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,7 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -33,7 +37,7 @@ public class EventDetailsEditActivity extends AppCompatActivity {
      * It also allows the user to click on the Sign up button to sign up for the event
      */
     private FirebaseFirestore db;
-    CollectionReference checkInRef;
+    private CollectionReference checkInRef;
     private ArrayList<Map<String, Object>> checkInsList = new ArrayList<>();
     private ListView listView;
 
@@ -89,6 +93,7 @@ public class EventDetailsEditActivity extends AppCompatActivity {
         Button back_button = findViewById(R.id.back_button);
         Button view_participant_list = findViewById(R.id.view_participant_list);
         Button event_statisitcs = findViewById(R.id.orgEventAttendeeStats);
+        // Check Ined User data displayed in this list view
         listView = findViewById(R.id.check_ins_listView);
         CheckInsAdapter adapter = new CheckInsAdapter(this, checkInsList);
         listView.setAdapter(adapter);
@@ -109,14 +114,31 @@ public class EventDetailsEditActivity extends AppCompatActivity {
                         db.collection("Events").document(eventID).collection("participantsCheckIn").document(participantID).get()
                                 .addOnSuccessListener(participant -> {
                                     if (participant.exists()) {
-                                        Map<String,Object> data = participant.getData();
+                                        Map<String,Object> data = participant.getData(); // Checked In user data
+                                        db.collection("Users").document(participantID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                if (documentSnapshot.contains("Username")) {
+                                                    data.put("username", documentSnapshot.get("Username").toString());// Add Username to Map
+                                                } else{
+                                                    data.put("username",null);
+                                                }
+                                                checkInsList.add(data);
+                                                adapter.notifyDataSetChanged();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.d("Firestore", "Failed to Get Checked In User UserName");
+                                            }
+                                        });
 
-                                        checkInsList.add(data);
+
                                         Log.d("Firestore", "this is the data" + data);
-                                        adapter.notifyDataSetChanged();
+
                                     }
                                 })
-                                .addOnFailureListener(e -> Log.e("Firestore", "Unable to fetch participant"));
+                                .addOnFailureListener(e -> Log.e("Firestore", "Unable to fetch Checked In User"));
                     }
                 }
 

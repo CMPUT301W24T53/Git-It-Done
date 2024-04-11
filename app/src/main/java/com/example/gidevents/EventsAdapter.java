@@ -65,6 +65,11 @@ public class EventsAdapter extends ArrayAdapter<Events> implements Filterable {
         return filteredEvents.get(position);
     }
 
+    /**
+     * The filter set up for the search function
+     * Perform filtering based on the eventTitle section of an event
+     * @return the filtered events
+     */
     @Override
     public Filter getFilter () {
         return new Filter() {

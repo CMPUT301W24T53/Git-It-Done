@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,16 +22,25 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private DocumentReference userRef;
+    private Activity activity = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         signInAnonymously();
         geolocationPerms(GlobalContext.context);
         notifPerms(GlobalContext.context);
@@ -53,8 +63,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
         administratorBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
-            startActivity(intent);
+            //Admin User Verification based on if users name is Admin
+            if (!(mAuth.getUid() == null)) {
+                userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot user = task.getResult();
+                        if (Objects.equals(user.get("Name"), "Admin")){
+                            Toast.makeText(activity,"Welcome Administrator", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+                            startActivity(intent);
+                        }
+                        else{
+                            Toast.makeText(activity,"ERROR: Not An Admin", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
         });
 
     }
@@ -71,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("UserAuth", "signInAnonymously:success");
                             AttendeeDBConnector.populateDB();
+                            userRef = db.collection("Users").document(mAuth.getCurrentUser().getUid());
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("UserAuth", "signInAnonymously:failure", task.getException());

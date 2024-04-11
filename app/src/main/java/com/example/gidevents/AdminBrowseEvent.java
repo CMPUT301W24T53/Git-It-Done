@@ -8,10 +8,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -33,7 +33,6 @@ public class AdminBrowseEvent extends AppCompatActivity {
     private ArrayList<Events> eventsList = new ArrayList<>();
     private ArrayList<String> eventTitleList = new ArrayList<>();
     private ListView listView;
-    private SearchView searchview;
 
     /** onCreate method for AdminBrowseEvent
      * Connect to database on create
@@ -51,7 +50,6 @@ public class AdminBrowseEvent extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference eventRef = db.collection("Events");
-        searchview = findViewById(R.id.search_bar);
 
         EventsAdapter adapter = new EventsAdapter(this, eventsList);
         listView.setAdapter(adapter);
@@ -101,6 +99,20 @@ public class AdminBrowseEvent extends AppCompatActivity {
         });
 
 
+        android.widget.SearchView searchBar = findViewById(R.id.search_bar);
+        adapter.getFilter().filter("");
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
     }
 
 }

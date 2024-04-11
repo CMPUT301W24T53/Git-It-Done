@@ -182,6 +182,7 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void showQRPickerDialog(){
+        // objects needed to store and display QRCodes
         ListView listView = new ListView(this);
 
         ArrayList<String[]> data = new ArrayList<>();
@@ -197,7 +198,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 querySnapshot.forEach(new Consumer<QueryDocumentSnapshot>() {
                                           @Override
                                           public void accept(QueryDocumentSnapshot queryDocumentSnapshot) {
-                                              String[] d = {queryDocumentSnapshot.get("checkInEventID").toString(),queryDocumentSnapshot.get("eventTitle").toString() };
+                                              String[] d = {queryDocumentSnapshot.get("checkInEventID").toString(),queryDocumentSnapshot.get("eventTitle").toString() }; // store Data in String[] for use with adapter
                                               data.add(d);
                                               adapter.notifyDataSetChanged();
                                           }
@@ -298,7 +299,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         String eventId = generateRandomEventId();
         String checkInEventId;
-        if (reuseQR != null) {
+        if (reuseQR != null) { // check for a reuseable QR code
             checkInEventId = reuseQR;
 
         }else {

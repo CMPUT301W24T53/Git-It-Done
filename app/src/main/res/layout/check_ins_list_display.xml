@@ -13,7 +13,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:padding="8dp"
-        android:text="UserName: abcdefghijk"
+        android:text="UserName: Error"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,20 +22,20 @@
         android:id="@+id/timestamp_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="32dp"
-        android:text="Time Stamp: 213123123123"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:text="Time Stamp: Error"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        app:layout_constraintStart_toEndOf="@+id/num_of_check_ins"
-        app:layout_constraintTop_toBottomOf="@+id/participant_name" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/num_of_check_ins" />
 
     <TextView
         android:id="@+id/num_of_check_ins"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:text="Number Of Check Ins: 23"
+        android:layout_marginTop="12dp"
+        android:text="Number Of Check Ins: Error"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/participant_name" />

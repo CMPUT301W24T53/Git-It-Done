@@ -35,6 +35,9 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 
+/**
+ * Activity for a User to upload or delete an image for their profile Picture
+ */
 public class AttendeeUploadImageActivity extends AppCompatActivity {
     StorageReference storageReference;
     Uri pfpImage;
@@ -100,8 +103,7 @@ public class AttendeeUploadImageActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(AttendeeUploadImageActivity.this, "Profile picture removed", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(AttendeeUploadImageActivity.this, ProfileEditActivity.class);
-                        startActivity(intent);
+                        finish();
                     }
                 });
             }
@@ -109,12 +111,15 @@ public class AttendeeUploadImageActivity extends AppCompatActivity {
         backbttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AttendeeUploadImageActivity.this, ProfileEditActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
     }
 
+    /**
+     * Uploads the image to our database and adds a link to the image in the Users document
+     * @param image image to be uploaded
+     */
     private void uploadImage(Uri image){
         HashMap<String, Object> data = new HashMap<>();
         StorageReference reference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(pfpImage));
@@ -129,8 +134,7 @@ public class AttendeeUploadImageActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void unused) {
                                 Toast.makeText(AttendeeUploadImageActivity.this, "Profile picture updated", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(AttendeeUploadImageActivity.this, ProfileEditActivity.class);
-                                startActivity(intent);
+                                finish();
                             }
                         });
                     }

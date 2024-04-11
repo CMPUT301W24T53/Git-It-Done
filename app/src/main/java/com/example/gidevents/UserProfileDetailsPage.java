@@ -22,6 +22,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
+/**
+ * User profile Details page
+ * After the admin clicks on one of the user profiles, go to this page
+ * displays Full user information
+ * Allows admin to delete this user
+ */
 public class UserProfileDetailsPage extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
@@ -29,14 +35,18 @@ public class UserProfileDetailsPage extends AppCompatActivity {
     private User userDetails;
     private int eventCount;
 
+    /**
+     * onCreate method for this class, displays all the user info
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile_details_page);
         db = FirebaseFirestore.getInstance();
-
-
-
 
 
         try {
@@ -131,16 +141,18 @@ public class UserProfileDetailsPage extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method allows admin to delete the current user
+     * @param userID the current user ID
+     */
     private void deleteUser(String userID){
         db.collection("Users").document(userID)
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firestore", "User deleted: " + userID);
                     Toast.makeText(getApplicationContext(), "User deleted!", Toast.LENGTH_SHORT).show();
+                    finish();
 
-                    Intent intent = new Intent(UserProfileDetailsPage.this, AdminBrowseProfilesActivity.class);
-                    startActivity(intent);
-                    //Maybe delete the user from the events he participated?
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Error deleting user: " + userID, e);

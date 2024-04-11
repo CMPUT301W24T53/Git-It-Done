@@ -76,8 +76,7 @@ public class AttendeeActivity extends AppCompatActivity {
         });
 
         backBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(AttendeeActivity.this, MainActivity.class);
-            startActivity(intent);
+            finish();
         });
         checkInBtn.setOnClickListener(v -> {
             Intent intent = new Intent(AttendeeActivity.this, ScanQRCodeActivity.class);

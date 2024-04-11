@@ -142,8 +142,7 @@ public class ProfileEditActivity extends AppCompatActivity  implements AttendeeE
         backbttn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfileEditActivity.this, AttendeeActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
     }
